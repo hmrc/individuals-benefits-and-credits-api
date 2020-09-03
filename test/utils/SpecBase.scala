@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils
 
 import com.typesafe.config.ConfigFactory
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

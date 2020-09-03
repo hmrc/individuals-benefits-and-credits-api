@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import akka.stream.Materializer
 import org.mockito.ArgumentMatchers._
 import org.scalatest.{BeforeAndAfterEach, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
-import utils.SpecBase
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.MicroserviceHelloWorldController
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 class MicroserviceHelloWorldControllerSpec
     extends SpecBase
