@@ -24,7 +24,7 @@ import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.api.controllers.DocumentationController
 
 @Singleton
-class ApiDocumentationController @Inject()(cc: ControllerComponents,
+class APIDocumentationController @Inject()(cc: ControllerComponents,
                                            assets: Assets,
                                            errorHandler: HttpErrorHandler,
                                            config: Configuration)
