@@ -23,7 +23,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
-import controllers.MicroserviceHelloWorldController
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.MicroserviceHelloWorldController
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 class MicroserviceHelloWorldControllerSpec

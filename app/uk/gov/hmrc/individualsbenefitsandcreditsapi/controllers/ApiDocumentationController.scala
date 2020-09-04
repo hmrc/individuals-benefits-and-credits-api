@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import controllers.Assets
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.http.HttpErrorHandler
