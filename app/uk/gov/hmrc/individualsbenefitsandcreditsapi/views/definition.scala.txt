@@ -6,7 +6,7 @@
       "name":"Hello World",
       "description":"Access Hello world"
     }
-  ]
+  ],
   "api":{
     "name":"Individuals Benefits and Credits",
     "description":"Retrieves benefit and credit information for an individual",
