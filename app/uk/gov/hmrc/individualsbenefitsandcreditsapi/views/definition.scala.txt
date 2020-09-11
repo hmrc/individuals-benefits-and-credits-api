@@ -14,7 +14,7 @@
     "versions":[
       {
         "version":"P1.0",
-        "status":"PUBLISHED",
+        "status":"PUBLISHED"
       }
     ]
   }
