@@ -15,9 +15,6 @@
       {
         "version":"P1.0",
         "status":"PUBLISHED",
-        "access":{
-          "type":"PRIVATE"
-        }
       }
     ]
   }
