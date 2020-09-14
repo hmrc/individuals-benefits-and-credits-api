@@ -32,7 +32,7 @@ class APIDocumentationController @Inject()(cc: ControllerComponents,
     extends DocumentationController(cc, assets, errorHandler) {
 
   override def definition(): Action[AnyContent] = Action { _ =>
-    Ok(txt.definition()).withHeaders(CONTENT_TYPE -> JSON)
+    Ok(txt.definition(Seq[String]())).withHeaders(CONTENT_TYPE -> JSON)
   }
 
   def raml(version: String, file: String) =
