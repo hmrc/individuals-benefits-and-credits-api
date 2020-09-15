@@ -32,10 +32,14 @@ class APIDocumentationController @Inject()(cc: ControllerComponents,
     extends DocumentationController(cc, assets, errorHandler) {
 
   private lazy val privilegedWhitelistedApplicationIds =
-    config.getOptional[Seq[String]]("api.access.version-P1.0.whitelistedApplicationIds").getOrElse(Seq.empty)
+    config
+      .getOptional[Seq[String]](
+        "api.access.version-P1.0.whitelistedApplicationIds")
+      .getOrElse(Seq.empty)
 
   override def definition(): Action[AnyContent] = Action { _ =>
-    Ok(txt.definition(privilegedWhitelistedApplicationIds)).withHeaders(CONTENT_TYPE -> JSON)
+    Ok(txt.definition(privilegedWhitelistedApplicationIds))
+      .withHeaders(CONTENT_TYPE -> JSON)
   }
 
   def raml(version: String, file: String) =
