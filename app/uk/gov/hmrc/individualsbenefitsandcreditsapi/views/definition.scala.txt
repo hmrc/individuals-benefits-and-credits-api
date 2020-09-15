@@ -12,6 +12,7 @@
     "name":"Individuals Benefits and Credits",
     "description":"Retrieves benefit and credit information for an individual",
     "context":"individuals/benefits-and-credits",
+    "categories": ["PRIVATE_GOVERNMENT"],
     "versions":[
       {
         "version":"P1.0",
