@@ -24,15 +24,22 @@ import play.api.http.Status._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.MicroserviceHelloWorldController
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.actions.IdentifierAction
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
+  MicroserviceHelloWorldController,
+  PrivilegedAuthentication
+}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
+import org.mockito.Mockito.when
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+
+import scala.concurrent.Future
 
 class MicroserviceHelloWorldControllerSpec
     extends SpecBase
     with MockitoSugar
     with Matchers
-    with BeforeAndAfterEach {
+    with BeforeAndAfterEach
+    with GuiceOneAppPerSuite {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
   trait Fixture {
@@ -41,10 +48,9 @@ class MicroserviceHelloWorldControllerSpec
 
   val env = "TEST"
   val conf = mock[AppConfig]
-  val ia = mock[IdentifierAction]
   val ac = mock[AuthConnector]
   val mockMicroserviceHelloWorldController =
-    new MicroserviceHelloWorldController(conf, ia, ac, env, cc)
+    new MicroserviceHelloWorldController(conf, ac, env, cc)
 
   "hello function" should {
 

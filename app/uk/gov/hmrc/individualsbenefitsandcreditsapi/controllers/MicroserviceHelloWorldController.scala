@@ -19,9 +19,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.actions.IdentifierAction
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -29,7 +27,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Singleton
 class MicroserviceHelloWorldController @Inject()(
     appConfig: AppConfig,
-    identify: IdentifierAction,
     val authConnector: AuthConnector,
     val environment: String,
     cc: ControllerComponents)
@@ -40,13 +37,14 @@ class MicroserviceHelloWorldController @Inject()(
     Future.successful(Ok("Hello world"))
   }
 
-  //Option one
-  def hello2(): Action[AnyContent] = identify.async { implicit request =>
+  def helloScopes(): Action[AnyContent] = Action.async { implicit request =>
     //TODO get these endpoint scopes into config
-    val endPointScopes = List("read:hello2-scope-1", "read:hello2-scope-2")
+    val endPointScopes = List("read:hello-scopes-1", "read:hello-scopes-2")
 
-    requiresPrivilegedAuthentication(request.scopes, endPointScopes) {
-      Future.successful(Ok("Hello world"))
-    }.recover(recovery)
+    requiresPrivilegedAuthentication(endPointScopes)
+      .flatMap { scopes =>
+        Future.successful(Ok("hello: " + scopes.flatten.toStream))
+      }
+      .recover(recovery)
   }
 }

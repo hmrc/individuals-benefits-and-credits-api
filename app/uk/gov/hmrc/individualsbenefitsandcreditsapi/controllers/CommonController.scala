@@ -58,34 +58,19 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
 
   val environment: String
 
-  def hasScope(authScopes: List[String],
-               endpointScopes: List[String]): Boolean = {
-    endpointScopes.map(scope => authScopes.contains(scope)).contains(true)
+  def predicate(scopes: List[String]) = {
+    scopes.map(s => Enrolment(s)).asInstanceOf[Predicate]
   }
 
-  def validateScopes(enrolments: Enrolments, endpointScopes: List[String])(
-      block: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-
-    //Rule: If a scope is supplied from auth that matches any one scope in the list of endpoint scopes then
-    //the request is authenticated
-    val authScopes =
-      enrolments.enrolments.map(enrolment => enrolment.key).toList
-
-    if (hasScope(authScopes, endpointScopes))
-      block
-    else
-      throw new ScopeAuthorisationException("Not authorised")
-  }
-
-  def requiresPrivilegedAuthentication(authScopes: Enrolments,
-                                       endpointScopes: List[String])(
-      block: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-
+  def requiresPrivilegedAuthentication(endpointScopes: List[String])(
+      implicit hc: HeaderCarrier): Future[List[String]] = {
     if (environment == Environment.SANDBOX)
-      block
+      Future.successful(endpointScopes)
     else
-      validateScopes _
-    block
+      authorised(predicate(endpointScopes)).retrieve(Retrievals.allEnrolments) {
+        case scopes =>
+          Future.successful(scopes.enrolments.map(e => e.key).toList)
+      }
   }
 }
 
