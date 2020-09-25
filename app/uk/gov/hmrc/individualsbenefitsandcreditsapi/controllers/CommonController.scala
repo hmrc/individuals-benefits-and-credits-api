@@ -59,7 +59,7 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
   val environment: String
 
   def predicate(scopes: List[String]) = {
-    scopes.map(s => Enrolment(s)).asInstanceOf[Predicate]
+    scopes.map(Enrolment(_): Predicate).reduce(_ and _)
   }
 
   def requiresPrivilegedAuthentication(endpointScopes: List[String])(

@@ -24,11 +24,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-@Singleton
-class MicroserviceHelloWorldController @Inject()(
-    appConfig: AppConfig,
-    val authConnector: AuthConnector,
-    val environment: String,
+abstract class MicroserviceHelloWorldController @Inject()(
     cc: ControllerComponents)
     extends CommonController(cc)
     with PrivilegedAuthentication {
@@ -47,4 +43,20 @@ class MicroserviceHelloWorldController @Inject()(
       }
       .recover(recovery)
   }
+}
+
+@Singleton
+class LiveMicroserviceHelloWorldController @Inject()(
+    val authConnector: AuthConnector,
+    cc: ControllerComponents)
+    extends MicroserviceHelloWorldController(cc) {
+  override val environment = Environment.PRODUCTION
+}
+
+@Singleton
+class SandboxMicroserviceHelloWorldController @Inject()(
+    val authConnector: AuthConnector,
+    cc: ControllerComponents)
+    extends MicroserviceHelloWorldController(cc) {
+  override val environment = Environment.SANDBOX
 }
