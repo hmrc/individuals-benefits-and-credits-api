@@ -33,20 +33,20 @@ import scala.concurrent.{ExecutionContext, Future}
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent]
 
 final case class authException(msg: String = "Not Authorised")
-  extends AuthorisationException(msg)
+    extends AuthorisationException(msg)
 
 class AuthenticatedIdentifierAction @Inject()(
-                                               override val authConnector: AuthConnector,
-                                               val parser: BodyParsers.Default
-                                             )(implicit val executionContext: ExecutionContext)
-  extends IdentifierAction
+    override val authConnector: AuthConnector,
+    val parser: BodyParsers.Default
+)(implicit val executionContext: ExecutionContext)
+    extends IdentifierAction
     with AuthorisedFunctions
     with ActionRefiner[Request, IdentifierRequest] {
 
   // $COVERAGE-OFF$
   def exceptionLogger(aex: AuthorisationException) = {
     Logger.debug(s"AuthenticatedIdentifierAction:Refine - ${aex.getClass}:",
-      aex)
+                 aex)
   }
 
   def enrolmentMessage(message: String, parameters: Option[Enrolments]) = {
@@ -57,7 +57,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
   // Simple auth action based on confidence level to pull back all scopes (enrolments)
   override protected def refine[A](
-                                    request: Request[A]): Future[Either[Result, IdentifierRequest[A]]] = {
+      request: Request[A]): Future[Either[Result, IdentifierRequest[A]]] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter
       .fromHeadersAndSession(request.headers, Some(request.session))

@@ -40,11 +40,13 @@ class MicroserviceHelloWorldController @Inject()(
     Future.successful(Ok("Hello world"))
   }
 
+  //Option one
   def hello2(): Action[AnyContent] = identify.async { implicit request =>
-    {
-      requiresPrivilegedAuthentication(request.scopes) {
-        Future.successful(Ok("Hello world"))
-      }.recover(recovery)
-    }
+    //TODO get these endpoint scopes into config
+    val endPointScopes = List("read:hello2-scope-1", "read:hello2-scope-2")
+
+    requiresPrivilegedAuthentication(request.scopes, endPointScopes) {
+      Future.successful(Ok("Hello world"))
+    }.recover(recovery)
   }
 }

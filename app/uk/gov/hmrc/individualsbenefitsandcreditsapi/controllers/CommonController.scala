@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import akka.http.scaladsl.model.HttpHeader.ParsingResult.Ok
 import javax.inject.Inject
 import play.api.mvc.{ControllerComponents, Result}
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -33,15 +32,17 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
   ErrorNotFound,
   ErrorTooManyRequests,
   ErrorUnauthorized,
-  MatchNotFoundException
+  MatchNotFoundException,
+  ScopeAuthorisationException
 }
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class CommonController @Inject()(cc: ControllerComponents)
-    extends BackendController(cc) {
+abstract class CommonController @Inject()(
+    cc: ControllerComponents
+) extends BackendController(cc) {
 
   private[controllers] def recovery: PartialFunction[Throwable, Result] = {
     case _: MatchNotFoundException => ErrorNotFound.toHttpResponse
@@ -57,24 +58,34 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
 
   val environment: String
 
-  def predicate(scopes: List[String]) = {
-    scopes.map(s => Enrolment(s)).asInstanceOf[Predicate]
+  def hasScope(authScopes: List[String],
+               endpointScopes: List[String]): Boolean = {
+    endpointScopes.map(scope => authScopes.contains(scope)).contains(true)
   }
 
-  def validateScopes(authScopes: Enrolments)(body: => Future[Result])(
-      implicit hc: HeaderCarrier): Future[Result] = {
-    //TODO validate scopes here!! Throw EnrolmentNotFound (no scope for endpoint) if scopes are not matched to valid endpoint scopes
-    body
+  def validateScopes(enrolments: Enrolments, endpointScopes: List[String])(
+      block: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+
+    //Rule: If a scope is supplied from auth that matches any one scope in the list of endpoint scopes then
+    //the request is authenticated
+    val authScopes =
+      enrolments.enrolments.map(enrolment => enrolment.key).toList
+
+    if (hasScope(authScopes, endpointScopes))
+      block
+    else
+      throw new ScopeAuthorisationException("Not authorised")
   }
 
-  def requiresPrivilegedAuthentication(authScopes: Enrolments)(
-      body: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    if (environment == Environment.SANDBOX) body
-    else {
-      validateScopes(authScopes) {
-        body
-      }
-    }
+  def requiresPrivilegedAuthentication(authScopes: Enrolments,
+                                       endpointScopes: List[String])(
+      block: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+
+    if (environment == Environment.SANDBOX)
+      block
+    else
+      validateScopes _
+    block
   }
 }
 

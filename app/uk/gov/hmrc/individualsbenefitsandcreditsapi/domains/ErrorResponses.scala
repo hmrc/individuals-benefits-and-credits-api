@@ -20,6 +20,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results
 import JsonFormatters._
+import uk.gov.hmrc.auth.core.AuthorisationException
 
 sealed abstract class ErrorResponse(val httpStatusCode: Int,
                                     val errorCode: String,
@@ -47,3 +48,5 @@ case object ErrorTooManyRequests
 
 class MatchNotFoundException extends RuntimeException
 class ValidationException(message: String) extends RuntimeException(message)
+class ScopeAuthorisationException(message: String)
+    extends AuthorisationException(message)
