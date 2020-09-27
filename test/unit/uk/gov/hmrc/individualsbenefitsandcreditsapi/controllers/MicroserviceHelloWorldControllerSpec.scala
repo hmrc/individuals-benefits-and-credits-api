@@ -17,47 +17,61 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import akka.stream.Materializer
-import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito.`given`
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.auth.core.{
+  AuthConnector,
+  Enrolment,
+  EnrolmentIdentifier,
+  Enrolments
+}
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
-  LiveMicroserviceHelloWorldController,
-  SandboxMicroserviceHelloWorldController
+  LiveMicroserviceHelloWorldController
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
-import play.api.libs.json.Reads
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future.successful
+import scala.concurrent.{ExecutionContext, Future}
 
 class MicroserviceHelloWorldControllerSpec extends SpecBase with MockitoSugar {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
   val env = "TEST"
 
-  object testRetrieval extends Retrieval[Unit] {
-    val propertyNames = Seq("allEnrolments")
+  val enrolments = Enrolments(
+    Set(
+      Enrolment("read:hello-scopes-1",
+                Seq(EnrolmentIdentifier("FOO", "BAR")),
+                "Activated"),
+      Enrolment("read:hello-scopes-2",
+                Seq(EnrolmentIdentifier("FOO2", "BAR2")),
+                "Activated")
+    ))
 
-    def reads: Reads[Unit] = Reads.pure(())
-  }
+  private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) =
+    new AuthConnector {
 
-  val pred = Enrolment("read:hello-scopes-1") and Enrolment(
-    "read:hello-scopes-2")
+      def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
+          implicit hc: HeaderCarrier,
+          ec: ExecutionContext): Future[A] = {
+        stubbedRetrievalResult.map(_.asInstanceOf[A])
+      }
+    }
+
+  private def myRetrievals = Future.successful(
+    enrolments
+  )
 
   trait Fixture {
 
-    val ac = mock[AuthConnector]
-
     val liveMicroserviceHelloWorldController =
-      new LiveMicroserviceHelloWorldController(ac, cc)
-    val sandboxMicroserviceHelloWorldController =
-      new SandboxMicroserviceHelloWorldController(ac, cc)
-
-    given(ac.authorise(refEq(pred), refEq(testRetrieval))(any(), any()))
-      .willReturn(successful(()))
+      new LiveMicroserviceHelloWorldController(
+        fakeAuthConnector(myRetrievals),
+        cc
+      )
   }
 
   "hello world" when {
@@ -81,12 +95,12 @@ class MicroserviceHelloWorldControllerSpec extends SpecBase with MockitoSugar {
       "return hello world" in new Fixture {
 
         val fakeRequest =
-          FakeRequest("GET", s"/individuals/income/paye/2")
+          FakeRequest("GET", s"/hello-scopes/")
 
         val result =
           await(liveMicroserviceHelloWorldController.helloScopes()(fakeRequest))
         status(result) shouldBe OK
-        bodyOf(result) shouldBe "Hello world"
+        bodyOf(result) shouldBe "List(read:hello-scopes-1, read:hello-scopes-2)"
       }
     }
   }

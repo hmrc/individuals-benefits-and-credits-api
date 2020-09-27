@@ -39,7 +39,7 @@ abstract class MicroserviceHelloWorldController @Inject()(
 
     requiresPrivilegedAuthentication(endPointScopes)
       .flatMap { scopes =>
-        Future.successful(Ok("hello: " + scopes.flatten.toStream))
+        Future.successful(Ok(scopes.toString()))
       }
       .recover(recovery)
   }
