@@ -1,1 +1,1 @@
-GET        /hello-world             uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.MicroserviceHelloWorldController.hello
+GET        /hello-world             uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveMicroserviceHelloWorldController.hello

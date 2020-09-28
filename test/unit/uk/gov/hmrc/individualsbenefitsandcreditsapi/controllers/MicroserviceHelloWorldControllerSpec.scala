@@ -23,7 +23,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.MicroserviceHelloWorldController
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
+  LiveMicroserviceHelloWorldController
+}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 class MicroserviceHelloWorldControllerSpec
@@ -38,16 +40,27 @@ class MicroserviceHelloWorldControllerSpec
   }
 
   val conf = mock[AppConfig]
-  val mockMicroserviceHelloWorldController =
-    new MicroserviceHelloWorldController(conf, cc)
+  val mockLiveMicroserviceHelloWorldController =
+    new LiveMicroserviceHelloWorldController(conf, cc)
+
+  val mockSandboxMicroserviceHelloWorldController =
+    new LiveMicroserviceHelloWorldController(conf, cc)
 
   "hello function" should {
 
-    "return hello" in new Fixture {
-      val result = await(mockMicroserviceHelloWorldController.hello()(any()))
+    "return hello in Live Configuration" in new Fixture {
+      val result =
+        await(mockLiveMicroserviceHelloWorldController.hello()(any()))
       status(result) shouldBe OK
       bodyOf(result) shouldBe "Hello world"
     }
-  }
 
+    "return hello in Sandbox Configuration" in new Fixture {
+      val result =
+        await(mockSandboxMicroserviceHelloWorldController.hello()(any()))
+      status(result) shouldBe OK
+      bodyOf(result) shouldBe "Hello world"
+    }
+
+  }
 }
