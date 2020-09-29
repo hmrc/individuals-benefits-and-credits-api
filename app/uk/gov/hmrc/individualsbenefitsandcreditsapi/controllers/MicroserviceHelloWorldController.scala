@@ -23,12 +23,24 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
 
 import scala.concurrent.Future
 
-@Singleton
-class MicroserviceHelloWorldController @Inject()(appConfig: AppConfig,
-                                                 cc: ControllerComponents)
+abstract class MicroserviceHelloWorldController @Inject()(
+    appConfig: AppConfig,
+    cc: ControllerComponents)
     extends BackendController(cc) {
 
   def hello(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok("Hello world"))
   }
 }
+
+@Singleton
+class LiveMicroserviceHelloWorldController @Inject()(
+    appConfig: AppConfig,
+    cc: ControllerComponents)
+    extends MicroserviceHelloWorldController(appConfig, cc) {}
+
+@Singleton
+class SandboxMicroserviceHelloWorldController @Inject()(
+    appConfig: AppConfig,
+    cc: ControllerComponents)
+    extends MicroserviceHelloWorldController(appConfig, cc) {}
