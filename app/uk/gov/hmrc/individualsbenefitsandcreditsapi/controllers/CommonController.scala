@@ -20,21 +20,23 @@ import javax.inject.Inject
 import play.api.mvc.{ControllerComponents, Result}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+
 import uk.gov.hmrc.auth.core.{
   AuthorisationException,
   AuthorisedFunctions,
-  Enrolment,
-  Enrolments
+  Enrolment
 }
+
 import uk.gov.hmrc.http.{HeaderCarrier, TooManyRequestException}
+
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
   ErrorInvalidRequest,
   ErrorNotFound,
   ErrorTooManyRequests,
   ErrorUnauthorized,
-  MatchNotFoundException,
-  ScopeAuthorisationException
+  MatchNotFoundException
 }
+
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -58,24 +60,33 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
 
   val environment: String
 
-  def predicate(scopes: List[String]): Predicate = {
+  def authPredicate(scopes: List[String]): Predicate = {
+
     scopes.map(Enrolment(_): Predicate).reduce(_ and _)
+
   }
 
-  def requiresPrivilegedAuthenticationOrig(scope: String)(
-      body: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
+  def requiresPrivilegedAuthentication(scope: String)(body: => Future[Result])(
+      implicit hc: HeaderCarrier): Future[Result] = {
+
     if (environment == Environment.SANDBOX) body
     else authorised(Enrolment(scope))(body)
 
-  def requiresPrivilegedAuthentication(endpointScopes: List[String])(
+  }
+
+  def requiresPrivilegedAuthenticationWithScopes(endpointScopes: List[String])(
       implicit hc: HeaderCarrier): Future[List[String]] = {
+
     if (environment == Environment.SANDBOX)
       Future.successful(endpointScopes)
-    else
-      authorised(predicate(endpointScopes)).retrieve(Retrievals.allEnrolments) {
-        case scopes =>
-          Future.successful(scopes.enrolments.map(e => e.key).toList)
-      }
+    else {
+      authorised(authPredicate(endpointScopes))
+        .retrieve(Retrievals.allEnrolments) {
+          case scopes =>
+            Future.successful(scopes.enrolments.map(e => e.key).toList)
+        }
+    }
+
   }
 }
 

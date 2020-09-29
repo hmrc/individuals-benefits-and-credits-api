@@ -17,9 +17,10 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import javax.inject.{Inject, Singleton}
+
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,7 +38,7 @@ abstract class MicroserviceHelloWorldController @Inject()(
     //TODO get these endpoint scopes into config
     val endPointScopes = List("read:hello-scopes-1", "read:hello-scopes-2")
 
-    requiresPrivilegedAuthentication(endPointScopes)
+    requiresPrivilegedAuthenticationWithScopes(endPointScopes)
       .flatMap { scopes =>
         Future.successful(Ok(scopes.toString()))
       }
@@ -48,15 +49,19 @@ abstract class MicroserviceHelloWorldController @Inject()(
 @Singleton
 class LiveMicroserviceHelloWorldController @Inject()(
     val authConnector: AuthConnector,
-    cc: ControllerComponents)
-    extends MicroserviceHelloWorldController(cc) {
+    cc: ControllerComponents
+) extends MicroserviceHelloWorldController(cc) {
+
   override val environment = Environment.PRODUCTION
+
 }
 
 @Singleton
 class SandboxMicroserviceHelloWorldController @Inject()(
     val authConnector: AuthConnector,
-    cc: ControllerComponents)
-    extends MicroserviceHelloWorldController(cc) {
+    cc: ControllerComponents
+) extends MicroserviceHelloWorldController(cc) {
+
   override val environment = Environment.SANDBOX
+
 }

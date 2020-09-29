@@ -37,11 +37,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 class MicroserviceHelloWorldControllerSpec extends SpecBase with MockitoSugar {
+
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
-  val env = "TEST"
-
-  val enrolments = Enrolments(
+  private val enrolments = Enrolments(
     Set(
       Enrolment("read:hello-scopes-1",
                 Seq(EnrolmentIdentifier("FOO", "BAR")),
@@ -49,7 +48,8 @@ class MicroserviceHelloWorldControllerSpec extends SpecBase with MockitoSugar {
       Enrolment("read:hello-scopes-2",
                 Seq(EnrolmentIdentifier("FOO2", "BAR2")),
                 "Activated")
-    ))
+    )
+  )
 
   private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) =
     new AuthConnector {
@@ -74,14 +74,14 @@ class MicroserviceHelloWorldControllerSpec extends SpecBase with MockitoSugar {
       )
   }
 
-  "hello world" when {
+  "hello world controller" when {
 
-    "hello function" should {
+    "hello  function" should {
 
       "return hello world" in new Fixture {
 
         val fakeRequest =
-          FakeRequest("GET", s"/individuals/income/paye")
+          FakeRequest("GET", s"/hello-world/")
 
         val result =
           await(liveMicroserviceHelloWorldController.hello()(fakeRequest))
@@ -92,7 +92,7 @@ class MicroserviceHelloWorldControllerSpec extends SpecBase with MockitoSugar {
 
     "hello Scopes" should {
 
-      "return hello world" in new Fixture {
+      "return scope list" in new Fixture {
 
         val fakeRequest =
           FakeRequest("GET", s"/hello-scopes/")
@@ -100,7 +100,8 @@ class MicroserviceHelloWorldControllerSpec extends SpecBase with MockitoSugar {
         val result =
           await(liveMicroserviceHelloWorldController.helloScopes()(fakeRequest))
         status(result) shouldBe OK
-        bodyOf(result) shouldBe "List(read:hello-scopes-1, read:hello-scopes-2)"
+        bodyOf(result) should include(
+          "read:hello-scopes-1, read:hello-scopes-2")
       }
     }
   }
