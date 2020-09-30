@@ -17,7 +17,7 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.handlers
 
 import javax.inject.Inject
-import play.api.Configuration
+import play.api.{Configuration, Logger}
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{Handler, RequestHeader}
 import play.api.routing.Router
@@ -41,9 +41,12 @@ class VersioningRequestHandler @Inject()(config: Configuration,
 
   override def routeRequest(request: RequestHeader): Option[Handler] = {
     val requestContext = extractUriContext(request)
+    Logger.debug(s"MOJDS3 - $requestContext")
     if (unversionedContexts.contains(requestContext)) {
       super.routeRequest(request)
     } else {
+      val vr = getVersionedRequest(request)
+      Logger.debug(s"MOJDS2 - $vr")
       super.routeRequest(getVersionedRequest(request))
     }
 
