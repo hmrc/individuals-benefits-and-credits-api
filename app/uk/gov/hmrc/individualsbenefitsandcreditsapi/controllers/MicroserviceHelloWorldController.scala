@@ -17,17 +17,17 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class MicroserviceHelloWorldController @Inject()(
-    cc: ControllerComponents)
-    extends CommonController(cc)
+    cc: ControllerComponents,
+    scopeService: ScopesService
+) extends CommonController(cc)
     with PrivilegedAuthentication {
 
   def hello(): Action[AnyContent] = Action.async { implicit request =>
@@ -35,8 +35,9 @@ abstract class MicroserviceHelloWorldController @Inject()(
   }
 
   def helloScopes(): Action[AnyContent] = Action.async { implicit request =>
-    //TODO get these endpoint scopes into config
-    val endPointScopes = List("read:hello-scopes-1", "read:hello-scopes-2")
+    val endPointScopes = scopeService
+      .getEndPointScopes("/individuals/hello-scopes/")
+      .toList
 
     requiresPrivilegedAuthenticationWithScopes(endPointScopes)
       .flatMap { scopes =>
@@ -49,8 +50,9 @@ abstract class MicroserviceHelloWorldController @Inject()(
 @Singleton
 class LiveMicroserviceHelloWorldController @Inject()(
     val authConnector: AuthConnector,
-    cc: ControllerComponents
-) extends MicroserviceHelloWorldController(cc) {
+    cc: ControllerComponents,
+    scopeService: ScopesService
+) extends MicroserviceHelloWorldController(cc, scopeService) {
 
   override val environment = Environment.PRODUCTION
 
@@ -59,8 +61,9 @@ class LiveMicroserviceHelloWorldController @Inject()(
 @Singleton
 class SandboxMicroserviceHelloWorldController @Inject()(
     val authConnector: AuthConnector,
-    cc: ControllerComponents
-) extends MicroserviceHelloWorldController(cc) {
+    cc: ControllerComponents,
+    scopeService: ScopesService
+) extends MicroserviceHelloWorldController(cc, scopeService) {
 
   override val environment = Environment.SANDBOX
 
