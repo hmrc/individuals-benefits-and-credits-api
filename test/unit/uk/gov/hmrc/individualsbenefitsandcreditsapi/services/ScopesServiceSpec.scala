@@ -89,7 +89,7 @@ class ScopesServiceSpec
 
     "get the scopes associated to an endpoint" in {
       val result = scopesService.getEndPointScopes(mockEndpoint2)
-      result shouldBe (Iterable(mockScope4))
+      result shouldBe Iterable(mockScope4, mockScope6)
     }
   }
 }
