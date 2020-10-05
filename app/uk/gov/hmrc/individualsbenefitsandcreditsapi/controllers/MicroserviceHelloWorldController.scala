@@ -34,9 +34,8 @@ abstract class MicroserviceHelloWorldController @Inject()(
 }
 
 @Singleton
-class LiveMicroserviceHelloWorldController @Inject()(
-    appConfig: AppConfig,
-    cc: ControllerComponents)
+class LiveMicroserviceHelloWorldController @Inject()(appConfig: AppConfig,
+                                                     cc: ControllerComponents)
     extends MicroserviceHelloWorldController(appConfig, cc) {}
 
 @Singleton

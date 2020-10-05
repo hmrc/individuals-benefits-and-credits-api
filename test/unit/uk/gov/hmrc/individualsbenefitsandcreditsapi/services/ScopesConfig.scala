@@ -16,10 +16,8 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.{
   ApiConfig,
   EndpointConfig,
