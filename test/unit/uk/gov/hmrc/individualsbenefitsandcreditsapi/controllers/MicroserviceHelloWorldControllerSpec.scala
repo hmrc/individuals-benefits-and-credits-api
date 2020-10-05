@@ -29,8 +29,6 @@ import uk.gov.hmrc.auth.core.{
 }
 
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
 
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
   LiveMicroserviceHelloWorldController,
