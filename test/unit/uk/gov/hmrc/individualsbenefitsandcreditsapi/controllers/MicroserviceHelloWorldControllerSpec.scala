@@ -20,17 +20,23 @@ import akka.stream.Materializer
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.test.FakeRequest
+
 import uk.gov.hmrc.auth.core.{
   AuthConnector,
   Enrolment,
   EnrolmentIdentifier,
   Enrolments
 }
+
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
+
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
   LiveMicroserviceHelloWorldController,
   SandboxMicroserviceHelloWorldController
 }
+
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
