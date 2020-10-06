@@ -73,4 +73,19 @@ class ScopesService @Inject()(configuration: Configuration) {
         apiConfig.getEndpoint(endpoint).map(c => (c.name, c.link)))
       .toMap
 
+  def getEndPointScopes(endpointKey: String): Iterable[String] = {
+    val keys = apiConfig
+      .getEndpoint(endpointKey)
+      .map(endpoint => endpoint.fields.keys.toList.sorted)
+      .getOrElse(List())
+
+    apiConfig.scopes
+      .filter(
+        s => s.fields.toSet.intersect(keys.toSet).nonEmpty
+      )
+      .map(
+        s => s.name
+      )
+      .sorted
+  }
 }

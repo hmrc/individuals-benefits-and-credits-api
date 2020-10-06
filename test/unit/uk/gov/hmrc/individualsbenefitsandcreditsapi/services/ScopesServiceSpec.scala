@@ -86,5 +86,10 @@ class ScopesServiceSpec
       result2 shouldBe Map(
         mockEndpoint2 -> "/a/b/d?matchId=<matchId>{&fromDate,toDate}")
     }
+
+    "get the scopes associated to an endpoint" in {
+      val result = scopesService.getEndPointScopes(mockEndpoint2)
+      result shouldBe Iterable(mockScope4, mockScope6, mockScope7)
+    }
   }
 }

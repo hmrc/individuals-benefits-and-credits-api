@@ -18,28 +18,52 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class MicroserviceHelloWorldController @Inject()(
-    appConfig: AppConfig,
-    cc: ControllerComponents)
-    extends BackendController(cc) {
+    cc: ControllerComponents,
+    scopeService: ScopesService
+) extends CommonController(cc)
+    with PrivilegedAuthentication {
 
   def hello(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok("Hello world"))
   }
+
+  def helloScopes(): Action[AnyContent] = Action.async { implicit request =>
+    val scopes = scopeService.getEndPointScopes("/individuals/hello-scopes/")
+
+    requiresPrivilegedAuthentication(scopes)
+      .flatMap { authScopes =>
+        // API endpoint body here
+        Future.successful(Ok(authScopes.toString()))
+      }
+      .recover(recovery)
+  }
 }
 
 @Singleton
-class LiveMicroserviceHelloWorldController @Inject()(appConfig: AppConfig,
-                                                     cc: ControllerComponents)
-    extends MicroserviceHelloWorldController(appConfig, cc) {}
+class LiveMicroserviceHelloWorldController @Inject()(
+    val authConnector: AuthConnector,
+    cc: ControllerComponents,
+    scopeService: ScopesService
+) extends MicroserviceHelloWorldController(cc, scopeService) {
+
+  override val environment = Environment.PRODUCTION
+
+}
 
 @Singleton
 class SandboxMicroserviceHelloWorldController @Inject()(
-    appConfig: AppConfig,
-    cc: ControllerComponents)
-    extends MicroserviceHelloWorldController(appConfig, cc) {}
+    val authConnector: AuthConnector,
+    cc: ControllerComponents,
+    scopeService: ScopesService
+) extends MicroserviceHelloWorldController(cc, scopeService) {
+
+  override val environment = Environment.SANDBOX
+
+}

@@ -1,1 +1,2 @@
 GET        /hello-world             uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.SandboxMicroserviceHelloWorldController.hello
+GET        /hello-scopes            uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.SandboxMicroserviceHelloWorldController.helloScopes
