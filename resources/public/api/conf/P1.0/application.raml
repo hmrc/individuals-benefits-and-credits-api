@@ -33,3 +33,31 @@ uses:
         body:
           application/json:
             example: "\"Hello World\""
+
+
+/:
+  get:
+    displayName: Benefits and Credits
+    description: A placeholder endpoint for root that will throw an exception
+    is: [headers.acceptHeader]
+    responses:
+      500:
+        description: Throws an exception
+
+/child-tax-credits:
+  get:
+    displayName: Child Tax Credits
+    description: A placeholder endpoint for child tax credits that will throw an exception
+    is: [headers.acceptHeader]
+    responses:
+      500:
+        description: Throws an exception
+
+/working-tax-credits:
+  get:
+    displayName: Working Tax Credits
+    description: A placeholder endpoint for working tax credits that will throw an exception
+    is: [headers.acceptHeader]
+    responses:
+      500:
+        description: Throws an exception

@@ -1,2 +1,5 @@
 GET        /hello-world             uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveMicroserviceHelloWorldController.hello
 GET        /hello-scopes            uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveMicroserviceHelloWorldController.helloScopes
+GET        /working-tax-credits     uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveWorkingTaxCreditController.workingTaxCredit
+GET        /child-tax-credits       uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveChildTaxCreditController.childTaxCredit
+GET        /                        uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveRootController.root

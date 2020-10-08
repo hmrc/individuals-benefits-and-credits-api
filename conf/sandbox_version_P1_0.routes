@@ -1,2 +1,5 @@
 GET        /hello-world             uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.SandboxMicroserviceHelloWorldController.hello
 GET        /hello-scopes            uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.SandboxMicroserviceHelloWorldController.helloScopes
+GET        /working-tax-credits     uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.SandboxWorkingTaxCreditController.workingTaxCredit
+GET        /child-tax-credits       uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.SandboxChildTaxCreditController.childTaxCredit
+GET        /                        uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.SandboxRootController.root
