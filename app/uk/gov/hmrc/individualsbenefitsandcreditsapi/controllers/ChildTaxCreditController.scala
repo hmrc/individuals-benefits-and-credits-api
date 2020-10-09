@@ -31,7 +31,7 @@ abstract class ChildTaxCreditController @Inject()(
 
   def childTaxCredit() = Action.async { implicit request =>
     val scopes =
-      scopeService.getEndPointScopes("/individuals/benefits-and-credits")
+      scopeService.getEndPointScopes("/individuals/benefits-and-credits/child-tax-credit")
 
     requiresPrivilegedAuthentication(scopes)
       .flatMap { authScopes =>
