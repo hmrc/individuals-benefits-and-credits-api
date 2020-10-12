@@ -34,7 +34,6 @@ uses:
           application/json:
             example: "\"Hello World\""
 
-
 /:
   get:
     displayName: Benefits and Credits
@@ -43,6 +42,9 @@ uses:
     responses:
       500:
         description: Throws an exception
+        body:
+          application/json:
+            example: "\"THIS IS NOT IMPLEMENTED\""
 
 /child-tax-credits:
   get:
@@ -52,6 +54,9 @@ uses:
     responses:
       500:
         description: Throws an exception
+        body:
+          application/json:
+            example: "\"THIS IS NOT IMPLEMENTED\""
 
 /working-tax-credits:
   get:
@@ -61,3 +66,6 @@ uses:
     responses:
       500:
         description: Throws an exception
+        body:
+          application/json:
+            example: "\"THIS IS NOT IMPLEMENTED\""
