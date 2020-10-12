@@ -32,7 +32,8 @@ abstract class WorkingTaxCreditController @Inject()(
   def workingTaxCredit(): Action[AnyContent] = Action.async {
     implicit request =>
       val scopes =
-        scopeService.getEndPointScopes("/individuals/benefits-and-credits/working-tax-credit")
+        scopeService.getEndPointScopes(
+          "/individuals/benefits-and-credits/working-tax-credit")
 
       requiresPrivilegedAuthentication(scopes)
         .flatMap { authScopes =>

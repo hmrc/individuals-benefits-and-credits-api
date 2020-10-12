@@ -23,7 +23,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.{
+  AuthConnector,
+  Enrolment,
+  EnrolmentIdentifier,
+  Enrolments
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveRootController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
