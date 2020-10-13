@@ -41,7 +41,7 @@ uses:
       description: A placeholder endpoint for root that will throw an exception
       is: [headers.acceptHeader]
       responses:
-        200:
+        500:
           description: Throws an exception
           body:
             application/json:
@@ -53,7 +53,7 @@ uses:
       description: A placeholder endpoint for child tax credits that will throw an exception
       is: [headers.acceptHeader]
       responses:
-        200:
+        500:
           description: Throws an exception
           body:
             application/json:
@@ -65,7 +65,7 @@ uses:
       description: A placeholder endpoint for working tax credits that will throw an exception
       is: [headers.acceptHeader]
       responses:
-        200:
+        500:
           description: Throws an exception
           body:
             application/json:
