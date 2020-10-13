@@ -22,50 +22,51 @@ uses:
   annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
-/hello-world:
-  get:
-    displayName: Hello World
-    description: An endpoint that returns hello world
-    is: [headers.acceptHeader]
-    responses:
-      200:
-        description: Return hello world
-        body:
-          application/json:
-            example: "\"Hello World\""
+/individuals/benefits-and-credits:
+  /hello-world:
+    get:
+      displayName: Hello World
+      description: An endpoint that returns hello world
+      is: [headers.acceptHeader]
+      responses:
+        200:
+          description: Return hello world
+          body:
+            application/json:
+              example: "\"Hello World\""
 
-/:
-  get:
-    displayName: Benefits and Credits
-    description: A placeholder endpoint for root that will throw an exception
-    is: [headers.acceptHeader]
-    responses:
-      200:
-        description: Throws an exception
-        body:
-          application/json:
-            example: "\"Not yet implemented\""
+  /:
+    get:
+      displayName: Benefits and Credits
+      description: A placeholder endpoint for root that will throw an exception
+      is: [headers.acceptHeader]
+      responses:
+        200:
+          description: Throws an exception
+          body:
+            application/json:
+              example: "\"Not yet implemented\""
 
-/child-tax-credits:
-  get:
-    displayName: Child Tax Credits
-    description: A placeholder endpoint for child tax credits that will throw an exception
-    is: [headers.acceptHeader]
-    responses:
-      200:
-        description: Throws an exception
-        body:
-          application/json:
-            example: "\"Not yet implemented\""
+  /child-tax-credits:
+    get:
+      displayName: Child Tax Credits
+      description: A placeholder endpoint for child tax credits that will throw an exception
+      is: [headers.acceptHeader]
+      responses:
+        200:
+          description: Throws an exception
+          body:
+            application/json:
+              example: "\"Not yet implemented\""
 
-/working-tax-credits:
-  get:
-    displayName: Working Tax Credits
-    description: A placeholder endpoint for working tax credits that will throw an exception
-    is: [headers.acceptHeader]
-    responses:
-      200:
-        description: Throws an exception
-        body:
-          application/json:
-            example: "\"Not yet implemented\""
+  /working-tax-credits:
+    get:
+      displayName: Working Tax Credits
+      description: A placeholder endpoint for working tax credits that will throw an exception
+      is: [headers.acceptHeader]
+      responses:
+        200:
+          description: Throws an exception
+          body:
+            application/json:
+              example: "\"Not yet implemented\""
