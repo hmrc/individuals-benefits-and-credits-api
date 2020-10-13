@@ -109,6 +109,20 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
+
+        "return error when no scopes" in new Fixture {
+          when(scopeService.getEndPointScopes(any())).thenReturn(None)
+
+          val fakeRequest =
+            FakeRequest("GET", s"/working-tax-credits/")
+
+          val result =
+            intercept[Exception] {
+              await(
+                liveWorkingTaxCreditsController.workingTaxCredit()(fakeRequest))
+            }
+          assert(result.getMessage == "No scopes defined")
+        }
       }
     }
 

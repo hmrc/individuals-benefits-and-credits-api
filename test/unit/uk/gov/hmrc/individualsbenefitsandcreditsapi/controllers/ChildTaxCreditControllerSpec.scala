@@ -108,6 +108,19 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
+
+        "return error when no scopes" in new Fixture {
+          when(scopeService.getEndPointScopes(any())).thenReturn(None)
+
+          val fakeRequest =
+            FakeRequest("GET", s"/child-tax-credits/")
+
+          val result =
+            intercept[Exception] {
+              await(liveChildTaxCreditsController.childTaxCredit()(fakeRequest))
+            }
+          assert(result.getMessage == "No scopes defined")
+        }
       }
     }
 
