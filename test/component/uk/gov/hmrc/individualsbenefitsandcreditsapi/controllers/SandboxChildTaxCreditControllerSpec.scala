@@ -34,7 +34,7 @@ class SandboxChildTaxCreditControllerSpec extends BaseSpec {
 
       When("I make a call to child-tax-credit endpoint")
       val response =
-        Http(s"$serviceUrl/sandbox/child-tax-credits")
+        Http(s"$serviceUrl/sandbox/child-tax-credit")
           .headers(requestHeaders(acceptHeaderP1))
           .asString
 

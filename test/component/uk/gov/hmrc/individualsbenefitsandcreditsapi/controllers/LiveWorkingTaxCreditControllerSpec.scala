@@ -34,7 +34,7 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec {
 
       When("I make a call to working-tax-credit endpoint")
       val response =
-        Http(s"$serviceUrl/working-tax-credits")
+        Http(s"$serviceUrl/working-tax-credit")
           .headers(requestHeaders(acceptHeaderP1))
           .asString
 

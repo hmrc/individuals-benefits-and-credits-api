@@ -34,7 +34,7 @@ class LiveChildTaxCreditControllerSpec extends BaseSpec {
 
       When("I make a call to child-tax-credit endpoint")
       val response =
-        Http(s"$serviceUrl/child-tax-credits")
+        Http(s"$serviceUrl/child-tax-credit")
           .headers(requestHeaders(acceptHeaderP1))
           .asString
 
