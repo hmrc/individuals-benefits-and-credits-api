@@ -19,7 +19,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.PathTree
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.util.{UnitSpec}
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.{UnitSpec}
 
 class PathTreeSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 

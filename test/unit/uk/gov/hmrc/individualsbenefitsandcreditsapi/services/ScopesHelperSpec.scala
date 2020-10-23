@@ -22,7 +22,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
   ScopesHelper,
   ScopesService
 }
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.util.{UnitSpec}
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.{UnitSpec}
 
 class ScopesHelperSpec
     extends UnitSpec
