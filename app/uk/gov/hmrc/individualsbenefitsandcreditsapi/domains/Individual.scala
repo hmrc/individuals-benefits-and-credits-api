@@ -30,17 +30,6 @@ case class Individual(matchId: UUID,
                       lastName: String,
                       dateOfBirth: LocalDate)
 
-case class Payment(taxablePayment: Double,
-                   paymentDate: LocalDate,
-                   employerPayeReference: Option[EmpRef] = None,
-                   monthPayNumber: Option[Int] = None,
-                   weekPayNumber: Option[Int] = None) {
-
-  def isPaidWithin(interval: Interval): Boolean =
-    interval.contains(paymentDate.toDateTimeAtStartOfDay)
-
-}
-
 object SandboxBenefitsCreditsData {
 
   def findByMatchId(matchId: UUID) = individuals.find(_.matchId == matchId)
