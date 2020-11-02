@@ -18,7 +18,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.util.UnitSpec
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class ScopesServiceSpec
     extends UnitSpec

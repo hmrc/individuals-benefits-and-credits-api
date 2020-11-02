@@ -27,6 +27,7 @@ import play.api.Application
 import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.mvc.Http.MimeTypes.JSON
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 
 import scala.concurrent.duration.Duration
 
@@ -36,6 +37,7 @@ trait BaseSpec
     with BeforeAndAfterEach
     with Matchers
     with GuiceOneServerPerSuite
+    with ScopesConfig
     with GivenWhenThen {
 
   override lazy val port = 9000

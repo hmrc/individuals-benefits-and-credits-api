@@ -29,7 +29,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
   MatchNotFoundException
 }
 
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 abstract class CommonController @Inject()(
     cc: ControllerComponents

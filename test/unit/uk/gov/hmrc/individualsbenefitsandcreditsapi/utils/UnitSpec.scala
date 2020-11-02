@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.util
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils
 
 import java.nio.charset.Charset
 
@@ -26,10 +26,8 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
-import scala.concurrent.duration.{Duration, FiniteDuration}
+import scala.concurrent.duration.{Duration, FiniteDuration, _}
 import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
 
 trait UnitSpec extends WordSpec with Matchers {
 

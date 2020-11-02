@@ -19,7 +19,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ApiConfig
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.util.UnitSpec
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class ApiConfigTest extends UnitSpec with MockitoSugar {
 
