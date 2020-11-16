@@ -38,7 +38,7 @@ class LiveChildTaxCreditControllerSpec extends BaseSpec {
       val response =
         Http(s"$serviceUrl/child-tax-credit")
           .headers(requestHeaders(acceptHeaderP1))
-          .asString§
+          .asString
 
       Then("The response status should be 500")
       response.code shouldBe INTERNAL_SERVER_ERROR
