@@ -25,7 +25,9 @@ import scalaj.http.Http
 
 class LiveChildTaxCreditControllerSpec extends BaseSpec {
 
-  val rootScope = "read:individuals-benefits-and-credits-child-tax-credit"
+  val rootScope = List(
+    "read:individuals-benefits-and-credits-child-tax-credit-lsani-c1",
+    "read:individuals-benefits-and-credits-child-tax-credit-lsani-c3")
 
   feature("Live Child Tax Credit Controller") {
     scenario("child-tax-credit route") {
@@ -36,10 +38,12 @@ class LiveChildTaxCreditControllerSpec extends BaseSpec {
       val response =
         Http(s"$serviceUrl/child-tax-credit")
           .headers(requestHeaders(acceptHeaderP1))
-          .asString
+          .asString§
 
       Then("The response status should be 500")
       response.code shouldBe INTERNAL_SERVER_ERROR
+
+      response.body shouldBe "NOT_IMPLEMENTED"
 
     }
   }
