@@ -49,7 +49,6 @@ class LiveChildTaxCreditControllerSpec extends BaseSpec {
       Then("The response status should be 500")
       response.code shouldBe INTERNAL_SERVER_ERROR
 
-      println(response.body)
     }
   }
 
