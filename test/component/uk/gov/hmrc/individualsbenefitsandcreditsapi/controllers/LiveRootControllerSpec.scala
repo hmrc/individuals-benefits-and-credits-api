@@ -25,7 +25,15 @@ import play.api.test.Helpers._
 
 class LiveRootControllerSpec extends BaseSpec {
 
-  val rootScope = "read:individuals-benefits-and-credits"
+  val rootScope = List(
+    "read:individuals-benefits-and-credits-hmcts-c2",
+    "read:individuals-benefits-and-credits-hmcts-c3",
+    "read:individuals-benefits-and-credits-laa-c1",
+    "read:individuals-benefits-and-credits-laa-c2",
+    "read:individuals-benefits-and-credits-laa-c3",
+    "read:individuals-benefits-and-credits-lsani-c1",
+    "read:individuals-benefits-and-credits-lsani-c3"
+  )
 
   feature("Live Root Controller") {
     scenario("root route") {
