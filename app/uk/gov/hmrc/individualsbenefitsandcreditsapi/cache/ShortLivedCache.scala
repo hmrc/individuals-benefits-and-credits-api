@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.cache
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
@@ -33,9 +33,13 @@ class ShortLivedCache @Inject()(
     val cacheConfig: CacheConfiguration,
     configuration: Configuration,
     mongo: ReactiveMongoComponent)(implicit ec: ExecutionContext)
-    extends CacheMongoRepository("shortLivedCache", cacheConfig.cacheTtl)(
+    extends CacheMongoRepository(
+      cacheConfig.collName,
+      cacheConfig.cacheTtl
+    )(
       mongo.mongoConnector.db,
-      ec)
+      ec
+    )
     with TimeToLive {
 
   implicit lazy val crypto: CompositeSymmetricCrypto = new ApplicationCrypto(
@@ -43,13 +47,16 @@ class ShortLivedCache @Inject()(
 
   def cache[T](id: String, key: String, value: T)(
       implicit formats: Format[T]): Future[Unit] = {
+
     val jsonEncryptor = new JsonEncryptor[T]()
     val encryptedValue: JsValue = jsonEncryptor.writes(Protected[T](value))
     createOrUpdate(id, key, encryptedValue).map(_ => ())
+
   }
 
   def fetchAndGetEntry[T](id: String, key: String)(
       implicit formats: Format[T]): Future[Option[T]] = {
+
     val decryptor = new JsonDecryptor[T]()
 
     findById(id) map {
@@ -62,12 +69,34 @@ class ShortLivedCache @Inject()(
       case None => None
     }
   }
+
 }
 
 @Singleton
 class CacheConfiguration @Inject()(configuration: Configuration) {
-  lazy val cacheEnabled =
-    configuration.getOptional[Boolean]("cache.enabled").getOrElse(true)
-  lazy val cacheTtl =
-    configuration.getOptional[Int]("cache.ttlInSeconds").getOrElse(60 * 15)
+
+  lazy val cacheEnabled = configuration
+    .getOptional[Boolean](
+      "cache.enabled"
+    )
+    .getOrElse(true)
+
+  lazy val cacheTtl = configuration
+    .getOptional[Int](
+      "cache.ttlInSeconds"
+    )
+    .getOrElse(60 * 15)
+
+  lazy val collName = configuration
+    .getOptional[String](
+      "cache.collName"
+    )
+    .getOrElse("individuals-benefits-and-credits-cache")
+
+  lazy val key = configuration
+    .getOptional[String](
+      "cache.key"
+    )
+    .getOrElse("individuals-benefits-and-credits")
+
 }
