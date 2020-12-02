@@ -21,15 +21,23 @@ import org.joda.time.Interval
 import play.api.Logger
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, NotFoundException, TooManyRequestException, Upstream4xxResponse}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
+import uk.gov.hmrc.http.{
+  HeaderCarrier,
+  HttpClient,
+  NotFoundException,
+  TooManyRequestException,
+  Upstream4xxResponse
+}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
+  IfApplication,
+  IfApplications
+}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IfConnector @Inject()(
-                             servicesConfig: ServicesConfig,
-                             http: HttpClient)(implicit ec: ExecutionContext) {
+class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
+    implicit ec: ExecutionContext) {
 
   private val baseUrl = servicesConfig.baseUrl("integration-framework")
   private val integrationFrameworkBearerToken =
@@ -45,20 +53,23 @@ class IfConnector @Inject()(
   val serviceUrl = servicesConfig.baseUrl("integration-framework")
 
   def fetchTaxCredits(nino: Nino, interval: Interval, filter: Option[String])(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[Seq[IfApplications]] = {
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Seq[IfApplication]] = {
     val startDate = interval.getStart.toLocalDate
     val endDate = interval.getEnd.toLocalDate
     val payeUrl = s"$serviceUrl/individuals/tax-credits/" + s"nino/$nino?startDate=$startDate&endDate=$endDate&fields=$filter"
-    recover[IfApplication](http.GET[IfApplications](payeUrl)(implicitly, header(), ec).map(_.applications))
+    recover[IfApplication](
+      http
+        .GET[IfApplications](payeUrl)(implicitly, header(), ec)
+        .map(_.applications))
   }
 
   private def header(extraHeaders: (String, String)*)(
-    implicit hc: HeaderCarrier) =
-  // The correlationId should be passed in by the caller and will already be present in hc
+      implicit hc: HeaderCarrier) =
+    // The correlationId should be passed in by the caller and will already be present in hc
     hc.copy(
-      authorization =
-        Some(Authorization(s"Bearer $integrationFrameworkBearerToken")))
+        authorization =
+          Some(Authorization(s"Bearer $integrationFrameworkBearerToken")))
       .withExtraHeaders(
         Seq("Environment" -> integrationFrameworkEnvironment) ++ extraHeaders: _*)
 

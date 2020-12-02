@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
+package testUtils
 
-import play.api.libs.json.{Format, JsPath}
+import org.joda.time.LocalDateTime.parse
+import org.joda.time.{Interval, LocalDateTime}
 
-case class IfApplications(applications: Seq[IfApplication])
+trait TestDates {
 
-object IfApplications {
-  implicit val applicationsFormat: Format[IfApplications] = Format(
-    (JsPath \ "applications")
-      .read[Seq[IfApplication]]
-      .map(x => IfApplications(x)),
-    (JsPath \ "applications")
-      .write[Seq[IfApplication]]
-      .contramap(x => x.applications)
-  )
+  protected def toInterval(fromDate: String, toDate: String): Interval =
+    toInterval(parse(fromDate), parse(toDate))
+
+  protected def toInterval(fromDate: LocalDateTime,
+                           toDate: LocalDateTime): Interval =
+    new Interval(fromDate.toDate.getTime, toDate.toDate.getTime)
+
 }

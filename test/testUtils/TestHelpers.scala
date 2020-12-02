@@ -1,22 +1,29 @@
 /*
-  * Copyright 2020 HM Revenue & Customs
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *     http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package testUtils
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications, IfAwards, IfChildTaxCredit, IfPayments, IfWorkTaxCredit}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
+  IfApplication,
+  IfApplications,
+  IfAwards,
+  IfChildTaxCredit,
+  IfPayments,
+  IfWorkTaxCredit
+}
 
 import scala.util.Random
 
@@ -39,10 +46,38 @@ trait TestHelpers {
 
   def createValidIfApplications: IfApplications = {
     val ifWorkTaxCredit = IfWorkTaxCredit(Some(22), Some(22), Some(22))
-    val ifChildTaxCredit = IfChildTaxCredit(Some(22), Some(22), Some(22), Some(22), Some(22), Some(22))
-    val ifPayments = IfPayments(Some("20-12-2020"), Some("20-12-2020"), Some("20-12-2020"), Some("20-12-2020"), Some("A"), Some("20-12-2020"), Some("20-12-2020"), Some(2), Some("ETC"), Some(22), Some("R"))
-    val ifAwards = IfAwards(Some("20-12-2020"), Some("20-12-2020"), Some("20-12-2020"), Some(22), Some(ifWorkTaxCredit), Some(ifChildTaxCredit), Some(22), Some(ifPayments))
-    val application = IfApplication(22, Some("20-20-2020"), Some("20-12-2020"), Some("20-12-2020"), Some(Seq(ifAwards)))
+    val ifChildTaxCredit = IfChildTaxCredit(Some(22),
+                                            Some(22),
+                                            Some(22),
+                                            Some(22),
+                                            Some(22),
+                                            Some(22))
+    val ifPayments = IfPayments(
+      Some("20-12-2020"),
+      Some("20-12-2020"),
+      Some("20-12-2020"),
+      Some("20-12-2020"),
+      Some("A"),
+      Some("20-12-2020"),
+      Some("20-12-2020"),
+      Some(2),
+      Some("ETC"),
+      Some(22),
+      Some("R")
+    )
+    val ifAwards = IfAwards(Some("20-12-2020"),
+                            Some("20-12-2020"),
+                            Some("20-12-2020"),
+                            Some(22),
+                            Some(ifWorkTaxCredit),
+                            Some(ifChildTaxCredit),
+                            Some(22),
+                            Some(ifPayments))
+    val application = IfApplication(22,
+                                    Some("20-20-2020"),
+                                    Some("20-12-2020"),
+                                    Some("20-12-2020"),
+                                    Some(Seq(ifAwards)))
 
     IfApplications(Seq(application))
   }
