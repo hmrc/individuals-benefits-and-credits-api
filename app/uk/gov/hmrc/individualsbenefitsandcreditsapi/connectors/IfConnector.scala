@@ -17,6 +17,7 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
 import javax.inject.Inject
+import org.joda.time.Interval
 import play.api.Logger
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.logging.Authorization
@@ -41,16 +42,15 @@ class IfConnector @Inject()(
   private val emptyResponse =
     IfApplications(Seq(IfApplication(0, None, None, None, None)))
 
-  def fetchDetails(nino: Nino, filter: Option[String])(
+  val serviceUrl = servicesConfig.baseUrl("integration-framework")
+
+  def fetchTaxCredits(nino: Nino, interval: Interval, filter: Option[String])(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext) = {
-
-    val detailsUrl = s"$baseUrl/individuals/details/nino/$nino?fields=$filter"
-
-    recover[IfApplications](
-      http.GET[IfApplications](detailsUrl)(implicitly, header(), ec),
-      emptyResponse)
-
+    ec: ExecutionContext): Future[Seq[IfApplications]] = {
+    val startDate = interval.getStart.toLocalDate
+    val endDate = interval.getEnd.toLocalDate
+    val payeUrl = s"$serviceUrl/individuals/tax-credits/" + s"nino/$nino?startDate=$startDate&endDate=$endDate&fields=$filter"
+    recover[IfApplication](http.GET[IfApplications](payeUrl)(implicitly, header(), ec).map(_.applications))
   }
 
   private def header(extraHeaders: (String, String)*)(
@@ -62,13 +62,12 @@ class IfConnector @Inject()(
       .withExtraHeaders(
         Seq("Environment" -> integrationFrameworkEnvironment) ++ extraHeaders: _*)
 
-  private def recover[A](x: Future[A], emptyResponse: A): Future[A] =
-    x.recoverWith {
-      case _: NotFoundException => Future.successful(emptyResponse)
-      case Upstream4xxResponse(msg, 429, _, _) => {
-        Logger.warn(s"IF Rate limited: $msg")
-        Future.failed(new TooManyRequestException(msg))
-      }
+  def recover[A](x: Future[Seq[A]]): Future[Seq[A]] = x.recoverWith {
+    case _: NotFoundException => Future.successful(Seq.empty)
+    case Upstream4xxResponse(msg, 429, _, _) => {
+      Logger.warn(s"IF Rate limited: $msg")
+      Future.failed(new TooManyRequestException(msg))
     }
+  }
 
 }
