@@ -29,7 +29,10 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{
   CacheConfiguration,
   ShortLivedCache
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.CacheService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
+  CacheIdBase,
+  CacheService
+}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,7 +44,7 @@ class CacheServiceSpec
     with Matchers
     with BeforeAndAfterEach {
 
-  val cacheId = UUID.randomUUID().toString
+  val cacheId = TestCacheId("someid")
   val cachedValue = TestClass("cached value")
   val newValue = TestClass("new value")
 
@@ -65,7 +68,7 @@ class CacheServiceSpec
 
       given(
         mockClient.fetchAndGetEntry[TestClass](
-          eqTo(cacheId),
+          eqTo(cacheId.id),
           eqTo("individuals-benefits-and-credits"))(any()))
         .willReturn(Future.successful(Some(cachedValue)))
       await(cacheService.get[TestClass](cacheId, Future.successful(newValue))) shouldBe cachedValue
@@ -78,13 +81,13 @@ class CacheServiceSpec
 
       given(
         mockClient.fetchAndGetEntry[TestClass](
-          eqTo(cacheId),
+          eqTo(cacheId.id),
           eqTo("individuals-benefits-and-credits"))(any()))
         .willReturn(Future.successful(None))
 
       await(cacheService.get[TestClass](cacheId, Future.successful(newValue))) shouldBe newValue
       verify(mockClient).cache[TestClass](
-        eqTo(cacheId),
+        eqTo(cacheId.id),
         eqTo("individuals-benefits-and-credits"),
         eqTo(newValue))(any())
 
@@ -99,6 +102,8 @@ class CacheServiceSpec
     }
   }
 }
+
+case class TestCacheId(id: String) extends CacheIdBase
 
 case class TestClass(value: String)
 
