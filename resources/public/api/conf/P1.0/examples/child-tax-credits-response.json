@@ -3,6 +3,7 @@
     {
       "awards": [
         {
+          "totalEntitlement": 18765.23,
           "childTaxCredit": {
             "childCareAmount": 930.98,
             "ctcChildAmount": 730.49,
@@ -28,6 +29,7 @@
           ]
         },
         {
+          "totalEntitlement": 18765.23,
           "childTaxCredit": {
             "childCareAmount": 930.98,
             "ctcChildAmount": 730.49,

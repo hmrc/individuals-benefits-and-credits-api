@@ -9,12 +9,24 @@
       "items": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer",
+            "example": 123
+          },
           "awards": {
             "type": "array",
             "description": "The awards that were active for this application during the time period",
             "items": {
               "type": "object",
               "properties": {
+                "payProfCalcDate": {
+                  "type": "string",
+                  "example":"1996-08-01"
+                },
+                "totalEntitlement":{
+                  "type": "number",
+                  "example": 18765.23
+                },
                 "childTaxCredit": {
                   "type": "object",
                   "properties": {
