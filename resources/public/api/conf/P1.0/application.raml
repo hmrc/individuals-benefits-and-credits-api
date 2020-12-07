@@ -35,38 +35,56 @@ uses:
             application/json:
               example: "\"Hello World\""
 
-  /:
+  /{matchId}:
+    uriParameters:
+      matchId:
+        description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+        type: string
+        example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
     get:
       displayName: Benefits and Credits
-      description: A placeholder endpoint for root that will throw an exception
+      description: !include docs/root-description.md
       is: [headers.acceptHeader]
       responses:
         200:
-          description: Throws an exception
+          description: Use this endpoint to get a list of all available endpoints for Individuals Benefits and Credits.
           body:
             application/json:
-              example: "\"Not yet implemented\""
+              example: !include examples/root-response.json
+              type: !include schemas/root-response.json
 
-  /child-tax-credit:
+  /child-tax-credit/{matchId}:
+    uriParameters:
+      matchId:
+        description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+        type: string
+        example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
     get:
       displayName: Child Tax Credits
-      description: A placeholder endpoint for child tax credits that will throw an exception
+      description: !include docs/child-tax-credits-description.md
       is: [headers.acceptHeader]
       responses:
         200:
           description: Throws an exception
           body:
             application/json:
-              example: "\"Not yet implemented\""
+              example: !include examples/child-tax-credits-response.json
+              type: !include schemas/child-tax-credits-response.json
 
-  /working-tax-credit:
+  /working-tax-credit/{matchId}:
+    uriParameters:
+      matchId:
+        description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+        type: string
+        example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
     get:
       displayName: Working Tax Credits
-      description: A placeholder endpoint for working tax credits that will throw an exception
+      description: !include docs/working-tax-credits-description.md
       is: [headers.acceptHeader]
       responses:
         200:
           description: Throws an exception
           body:
             application/json:
-              example: "\"Not yet implemented\""
+              example: !include examples/working-tax-credits-response.json
+              type: !include schemas/working-tax-credits-response.json

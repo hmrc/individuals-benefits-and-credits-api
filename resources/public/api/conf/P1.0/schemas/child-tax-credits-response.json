@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Individual matching request",
+  "type": "object",
+  "properties": {
+    "applications": {
+      "description": "The applications that are active during the date range requested",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "awards": {
+            "type": "array",
+            "description": "The awards that were active for this application during the time period",
+            "items": {
+              "type": "object",
+              "properties": {
+                "childTaxCredit": {
+                  "type": "object",
+                  "properties": {
+                    "childCareAmount": {
+                      "type": "number",
+                      "example": 930.98
+                    },
+                    "ctcChildAmount": {
+                      "type": "number",
+                      "example": 730.49
+                    },
+                    "familyAmount": {
+                      "type": "number",
+                      "example": 100.49
+                    },
+                    "babyAmount": {
+                      "type": "number",
+                      "example": 100.01
+                    },
+                    "paidYTD": {
+                      "type": "number",
+                      "example": 8976.34
+                    },
+                    "payments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "startDate": {
+                            "type": "string",
+                            "example": "1996-08-01"
+                          },
+                          "endDate": {
+                            "type": "string",
+                            "example": "1996-08-07"
+                          },
+                          "frequency": {
+                            "type": "integer",
+                            "example": 7,
+                          },
+                          "tcType": {
+                            "type": "string",
+                            "example": "ETC"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 76.34
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "self": {
+      "type": "object",
+      "description": "The URI for this endpoint.",
+      "properties": {
+        "href": {
+          "type": "string",
+          "example": "/individuals/benefits-and-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430"
+        }
+      }
+    },
+    "required": ["self"]
+  }
+}
