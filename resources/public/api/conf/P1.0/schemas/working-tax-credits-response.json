@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Individual matching request",
+  "type": "object",
+  "properties": {
+    "applications": {
+      "description": "The applications that are active during the date range requested",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 123
+          },
+          "awards": {
+            "type": "array",
+            "description": "The awards that were active for this application during the time period",
+            "items": {
+              "type": "object",
+              "properties": {
+                "payProfCalcDate": {
+                  "type": "string",
+                  "example": "1996-08-01"
+                },
+                "totalEntitlement": {
+                  "type": "number",
+                  "example": 18765.23
+                },
+                "workingTaxCredit": {
+                  "type": "object",
+                  "properties": {
+                    "amount": {
+                      "type": "number",
+                      "example": 930.98
+                    },
+                    "paidYTD": {
+                      "type": "number",
+                      "example": 8976.34
+                    }
+                  }
+                },
+                "childTaxCredit": {
+                  "type": "object",
+                  "properties": {
+                    "childCareAmount": {
+                      "type": "number",
+                      "example": 930.98
+                    }
+                  }
+                },
+                "payments": {
+                  "type": "array",
+                  "items": {
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "startDate": {
+                          "type": "string",
+                          "example": "1996-08-01"
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "example": "1996-08-07"
+                        },
+                        "frequency": {
+                          "type": "integer",
+                          "example": 7
+                        },
+                        "tcType": {
+                          "type": "string",
+                          "example": "ETC"
+                        },
+                        "amount": {
+                          "type": "number",
+                          "example": 76.34
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

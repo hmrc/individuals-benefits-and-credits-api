@@ -9,7 +9,7 @@
       "properties": {
         "childTaxCredit": {
           "type": "object",
-          "description": "The Uniform Resource Identifier (URI) for the endpoint to get Child Tax Credit details for the requested match ID and time period. ",
+          "description": "The Uniform Resource Identifier (URI) for the endpoint to get Child Tax Credit details for the requested match ID and time period.",
           "properties": {
             "href" : {
               "type": "string",
@@ -18,6 +18,10 @@
             "title": {
               "type": "string",
               "example": "Get Child Tax credit details"
+            },
+            "name": {
+              "type": "string",
+              "example": "GET"
             }
           }
         },
@@ -32,6 +36,10 @@
             "title": {
               "type": "string",
               "example": "Get Child Tax credit details"
+            },
+            "name": {
+              "type": "string",
+              "example": "GET"
             }
           }
         }

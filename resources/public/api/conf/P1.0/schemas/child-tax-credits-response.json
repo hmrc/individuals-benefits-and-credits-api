@@ -65,11 +65,11 @@
                           },
                           "frequency": {
                             "type": "integer",
-                            "example": 7,
+                            "example": 7
                           },
                           "tcType": {
                             "type": "string",
-                            "example": "ETC"
+                            "example": "ICC"
                           },
                           "amount": {
                             "type": "number",
@@ -96,6 +96,6 @@
         }
       }
     },
-    "required": ["self"]
+    "required": ["applications", "self"]
   }
 }
