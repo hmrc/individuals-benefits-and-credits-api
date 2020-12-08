@@ -2,16 +2,16 @@
   "_links": {
     "childTaxCredit": {
       "href": "/individuals/benefits-and-credits/child-tax-credit/57072660-1df9-4aeb-b4ea-cd2d7f96e430",
-      "name": "GET",
-      "title": "Child Tax Credits"
+      "title": "Child Tax Credits",
+      "name": "GET"
     },
-    "workingTaxCredits": {
+    "workingTaxCredit": {
       "href": "/individuals/benefits-and-credits/working-tax-credit/57072660-1df9-4aeb-b4ea-cd2d7f96e430",
-      "name": "GET",
-      "title": "Working Tax Credits"
+      "title": "Working Tax Credits",
+      "name": "GET"
+    },
+    "self": {
+      "href": "/individuals/benefits-and-credits/57072660-1df9-4aeb-b4ea-cd2d7f96e430"
     }
-  },
-  "self": {
-    "href": "/individuals/benefits-and-credits/57072660-1df9-4aeb-b4ea-cd2d7f96e430"
   }
 }

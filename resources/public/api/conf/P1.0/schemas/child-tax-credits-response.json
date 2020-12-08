@@ -21,9 +21,9 @@
               "properties": {
                 "payProfCalcDate": {
                   "type": "string",
-                  "example":"1996-08-01"
+                  "example": "1996-08-01"
                 },
-                "totalEntitlement":{
+                "totalEntitlement": {
                   "type": "number",
                   "example": 18765.23
                 },
@@ -86,16 +86,23 @@
         }
       }
     },
-    "self": {
-      "type": "object",
-      "description": "The URI for this endpoint.",
+    "_links": {
       "properties": {
-        "href": {
-          "type": "string",
-          "example": "/individuals/benefits-and-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430"
+        "self": {
+          "type": "object",
+          "description": "The URI for this endpoint.",
+          "properties": {
+            "href": {
+              "type": "string",
+              "example": "/individuals/benefits-and-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430"
+            }
+          }
         }
       }
     },
-    "required": ["applications", "self"]
+    "required": [
+      "applications",
+      "_links"
+    ]
   }
 }
