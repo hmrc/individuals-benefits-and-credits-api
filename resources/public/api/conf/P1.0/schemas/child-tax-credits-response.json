@@ -94,15 +94,12 @@
           "properties": {
             "href": {
               "type": "string",
-              "example": "/individuals/benefits-and-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430"
+              "example": "/individuals/child-tax-credit/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430"
             }
           }
         }
       }
-    },
-    "required": [
-      "applications",
-      "_links"
-    ]
-  }
+    }
+  },
+  "required": ["_links", "applications"]
 }

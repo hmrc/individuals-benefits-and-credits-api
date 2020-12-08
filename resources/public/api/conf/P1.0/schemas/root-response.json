@@ -54,7 +54,7 @@
           }
         }
       }
-    },
-    "required": ["self", "workingTaxCredit", "childTaxCredit"]
-  }
+    }
+  },
+  "required": ["_links"]
 }

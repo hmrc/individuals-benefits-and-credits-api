@@ -84,6 +84,21 @@
           }
         }
       }
+    },
+    "_links": {
+      "properties": {
+        "self": {
+          "type": "object",
+          "description": "The URI for this endpoint.",
+          "properties": {
+            "href": {
+              "type": "string",
+              "example": "/individuals/working-tax-credit/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430"
+            }
+          }
+        }
+      }
     }
-  }
+  },
+  "required": ["_links", "applications"]
 }
