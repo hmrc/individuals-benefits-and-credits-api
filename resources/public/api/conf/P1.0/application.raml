@@ -45,7 +45,6 @@ uses:
       displayName: Benefits and Credits
       description: !include docs/root-description.md
       is: [headers.acceptHeader]
-      (annotations.scope): "The scopes you have been assigned"
       (annotations.sandboxData): !include sandbox/root-response.md
       responses:
         200:
@@ -65,7 +64,6 @@ uses:
       displayName: Child Tax Credits
       description: !include docs/child-tax-credits-description.md
       is: [headers.acceptHeader]
-      (annotations.scope): "The scopes you have been assigned"
       (annotations.sandboxData): !include sandbox/child-tax-credits-response.md
       responses:
         200:
@@ -103,7 +101,6 @@ uses:
       displayName: Working Tax Credits
       description: !include docs/working-tax-credits-description.md
       is: [headers.acceptHeader]
-      (annotations.scope): "The scopes you have been assigned"
       responses:
         200:
           description: Throws an exception
