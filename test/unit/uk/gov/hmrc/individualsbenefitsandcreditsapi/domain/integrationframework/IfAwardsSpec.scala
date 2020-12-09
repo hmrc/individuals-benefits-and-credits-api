@@ -50,7 +50,7 @@ class IfAwardsSpec extends UnitSpec {
                                       |  "startDate" : "2020-08-18",
                                       |  "endDate" : "2020-08-18",
                                       |  "totalEntitlement" : 20,
-                                      |  "grossYearTaxAmount" : 20
+                                      |  "grossTaxYearAmount" : 20
                                       |}"""".stripMargin)
 
       result shouldBe expectedJson

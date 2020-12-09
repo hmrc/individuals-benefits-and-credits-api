@@ -24,17 +24,7 @@ case class IfWorkTaxCredit(amount: Option[Double],
                            entitlementYTD: Option[Double],
                            paidYTD: Option[Double])
 
-object IfWorkTaxCredit {
-
-  val minPaymentValue = 0.0
-  val maxPaymentValue = 1000000000000000.0
-
-  def isMultipleOfPointZeroOne(value: Double): Boolean =
-    (value * 100.0) % 1 == 0
-
-  def paymentAmountValidator: Reads[Double] =
-    min[Double](minPaymentValue) andKeep max[Double](maxPaymentValue) andKeep verifying[
-      Double](isMultipleOfPointZeroOne)
+object IfWorkTaxCredit extends PatternsAndValidators {
 
   implicit val workTaxCreditFormat: Format[IfWorkTaxCredit] = Format(
     (

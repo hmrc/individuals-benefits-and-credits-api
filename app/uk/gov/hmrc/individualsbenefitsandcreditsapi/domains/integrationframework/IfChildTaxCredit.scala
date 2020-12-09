@@ -29,17 +29,7 @@ case class IfChildTaxCredit(
     paidYTD: Option[Double]
 )
 
-object IfChildTaxCredit {
-
-  val minPaymentValue = 0.0
-  val maxPaymentValue = 1000000000000000.0
-
-  def isMultipleOfPointZeroOne(value: Double): Boolean =
-    (value * 100.0) % 1 == 0
-
-  def paymentAmountValidator: Reads[Double] =
-    min[Double](minPaymentValue) andKeep max[Double](maxPaymentValue) andKeep verifying[
-      Double](isMultipleOfPointZeroOne)
+object IfChildTaxCredit extends PatternsAndValidators {
 
   implicit val childTaxCreditFormat: Format[IfChildTaxCredit] = Format(
     (

@@ -46,13 +46,12 @@ trait TestHelpers {
 
   def createValidIfApplications: IfApplications = {
     val ifWorkTaxCredit = IfWorkTaxCredit(Some(22), Some(22), Some(22))
-    val ifChildTaxCredit = IfChildTaxCredit(
-      Some(22),
-      Some(22),
-      Some(22),
-      Some(22),
-      Some(22),
-      Some(22))
+    val ifChildTaxCredit = IfChildTaxCredit(Some(22),
+                                            Some(22),
+                                            Some(22),
+                                            Some(22),
+                                            Some(22),
+                                            Some(22))
     val ifPayments = IfPayments(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -66,22 +65,20 @@ trait TestHelpers {
       Some(22),
       Some("R")
     )
-    val ifAwards = IfAwards(
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some(22),
-      Some(ifWorkTaxCredit),
-      Some(ifChildTaxCredit),
-      Some(22),
-      Some(ifPayments))
+    val ifAwards = IfAwards(Some("2020-08-18"),
+                            Some("2020-08-18"),
+                            Some("2020-08-18"),
+                            Some(22),
+                            Some(ifWorkTaxCredit),
+                            Some(ifChildTaxCredit),
+                            Some(22),
+                            Some(ifPayments))
 
-    val application = IfApplication(
-      22,
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some(Seq(ifAwards)))
+    val application = IfApplication(22,
+                                    Some("2020-08-18"),
+                                    Some("2020-08-18"),
+                                    Some("2020-08-18"),
+                                    Some(Seq(ifAwards)))
 
     IfApplications(Seq(application))
   }
