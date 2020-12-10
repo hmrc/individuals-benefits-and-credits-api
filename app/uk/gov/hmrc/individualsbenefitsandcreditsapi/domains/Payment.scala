@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
 
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
 case class Payment(
@@ -29,12 +31,28 @@ case class Payment(
 object Payment {
   def create(ifPayment: IfPayment) = {
     Payment(
-      Some(""),
-      Some(""),
-      Some(0),
-      Some(""),
-      Some(0.0)
+      ifPayment.startDate,
+      ifPayment.endDate,
+      ifPayment.frequency,
+      ifPayment.tcType,
+      ifPayment.amount
     )
   }
-  // TODO ADD FORMATS
+
+  implicit val paymentFormat: Format[Payment] = Format(
+    (
+      (JsPath \ "startDate").readNullable[String] and
+        (JsPath \ "endDate").readNullable[String] and
+        (JsPath \ "frequency").readNullable[Int] and
+        (JsPath \ "tcType").readNullable[String] and
+        (JsPath \ "amount").readNullable[Double]
+    )(Payment.apply _),
+    (
+      (JsPath \ "startDate").writeNullable[String] and
+        (JsPath \ "endDate").writeNullable[String] and
+        (JsPath \ "frequency").writeNullable[Int] and
+        (JsPath \ "tcType").writeNullable[String] and
+        (JsPath \ "amount").writeNullable[Double]
+    )(unlift(Payment.unapply))
+  )
 }

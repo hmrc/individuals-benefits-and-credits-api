@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
 
-import play.api.libs.json.{Format, JsPath}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.ChildTaxCredit
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-case class ChildTaxCredit(childCareAmount: Option[Double])
+class ChildTaxCreditSpec extends UnitSpec {
+  "Creates correctly from IF Child Tax Credit" in {
+    val ifChildTaxCredit: IfChildTaxCredit = IfChildTaxCredit(
+      Some(10.0),
+      Some(20.0),
+      Some(30.0),
+      Some(40.0),
+      Some(50.0),
+      Some(60.0)
+    )
 
-object ChildTaxCredit {
-
-  def create(ifChildTaxTaxCredit: IfChildTaxCredit): ChildTaxCredit = {
-    ChildTaxCredit(ifChildTaxTaxCredit.childCareAmount)
+    val result = ChildTaxCredit.create(ifChildTaxCredit)
+    result.childCareAmount shouldBe Some(10.0)
   }
-
-  implicit val childTaxCreditFormat: Format[ChildTaxCredit] = Format(
-    (JsPath \ "childCareAmount").readNullable[Double].map(ChildTaxCredit(_)),
-    (JsPath \ "childCareAmount")
-      .writeNullable[Double]
-      .contramap(_.childCareAmount)
-  )
 }

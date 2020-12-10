@@ -18,18 +18,27 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 
-case class Applications(id: Int, awards: Seq[Award])
+case class Application(id: Double, awards: Seq[Award])
 
-object Applications {
-  implicit val applicationFormat : Format[Applications] = Format(
+object Application {
+
+  def create(ifApplication: IfApplication) = {
+    Application(
+      ifApplication.id,
+      ifApplication.awards.map(x => x.map(Award.create)).getOrElse(Seq.empty)
+    )
+  }
+
+  implicit val applicationFormat: Format[Application] = Format(
     (
-      (JsPath \ "id").read[Int] and
+      (JsPath \ "id").read[Double] and
         (JsPath \ "awards").read[Seq[Award]]
-      )(Applications.apply _),
+    )(Application.apply _),
     (
-      (JsPath \ "id").write[Int] and
+      (JsPath \ "id").write[Double] and
         (JsPath \ "awards").write[Seq[Award]]
-      )(unlift(Applications.unapply))
+    )(unlift(Application.unapply))
   )
 }

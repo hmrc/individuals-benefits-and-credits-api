@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAwards
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 
@@ -30,16 +30,16 @@ case class Award(
 )
 
 object Award {
-  def create(ifAward: IfAwards) = {
+  def create(ifAward: IfAward) = {
 
-    val wtc: WorkingTaxCredit = WorkingTaxCredit.create(ifAward.childTaxCredit)
-    val ctc: ChildTaxCredit = ChildTaxCredit.create(ifAward.childTaxCredit)
+    val wtc = ifAward.workTaxCredit.map(WorkingTaxCredit.create)
+    val ctc = ifAward.childTaxCredit.map(ChildTaxCredit.create)
 
     Award(
       ifAward.payProfCalcDate,
       ifAward.totalEntitlement,
-      Some(wtc),
-      Some(ctc),
+      wtc,
+      ctc,
       ifAward.grossTaxYearAmount,
       ifAward.payments.map(x => x.map(Payment.create))
     )
@@ -53,7 +53,7 @@ object Award {
         (JsPath \ "childTaxCredit").readNullable[ChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount").readNullable[Double] and
         (JsPath \ "payments").readNullable[Seq[Payment]]
-      )(Award.apply _),
+    )(Award.apply _),
     (
       (JsPath \ "payProfCalcDate").writeNullable[String] and
         (JsPath \ "totalEntitlement").writeNullable[Double] and
@@ -61,6 +61,6 @@ object Award {
         (JsPath \ "childTaxCredit").writeNullable[ChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount").writeNullable[Double] and
         (JsPath \ "payments").writeNullable[Seq[Payment]]
-      )(unlift(Award.unapply))
+    )(unlift(Award.unapply))
   )
 }

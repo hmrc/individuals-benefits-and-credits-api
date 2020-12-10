@@ -19,7 +19,7 @@ package testUtils
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
   IfApplication,
   IfApplications,
-  IfAwards,
+  IfAward,
   IfChildTaxCredit,
   IfPayment,
   IfWorkTaxCredit
@@ -67,14 +67,14 @@ trait TestHelpers {
         Some("R")
       )
     )
-    val ifAwards = IfAwards(Some("2020-08-18"),
-                            Some("2020-08-18"),
-                            Some("2020-08-18"),
-                            Some(22),
-                            Some(ifWorkTaxCredit),
-                            Some(ifChildTaxCredit),
-                            Some(22),
-                            Some(ifPayments))
+    val ifAwards = IfAward(Some("2020-08-18"),
+                           Some("2020-08-18"),
+                           Some("2020-08-18"),
+                           Some(22),
+                           Some(ifWorkTaxCredit),
+                           Some(ifChildTaxCredit),
+                           Some(22),
+                           Some(ifPayments))
 
     val application = IfApplication(22,
                                     Some("2020-08-18"),

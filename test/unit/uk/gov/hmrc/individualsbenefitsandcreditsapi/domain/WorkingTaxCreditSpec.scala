@@ -16,28 +16,15 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Award
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.WorkingTaxCredit
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class AwardSpec extends UnitSpec with DomainHelpers {
-  "Creates correctly from IfAward" in {
-    val ifAward = IfAward(
-      Some("test1"),
-      Some("test2"),
-      Some("test3"),
-      Some(10.0),
-      Some(createValidIfWorkingTaxCredit),
-      Some(createValidIfChildTaxCredit()),
-      Some(20.0),
-      Some(Seq(createValidIfPayment()))
-    )
-
-    val result = Award.create(ifAward)
-
-    result.grossTaxYearAmount shouldBe Some(20.0)
-    result.payProfCalcDate shouldBe Some("test1")
-    result.totalEntitlement shouldBe Some(10.0)
-    result.grossTaxYearAmount shouldBe Some(20.0)
+class WorkingTaxCreditSpec extends UnitSpec {
+  "Creates Successfully from IfWorkTaxCredit" in {
+    val ifWorkingTaxCredit = IfWorkTaxCredit(Some(10.0), Some(20.0), Some(30.0))
+    val result = WorkingTaxCredit.create(ifWorkingTaxCredit)
+    result.amount shouldBe Some(10.0)
+    result.paidYTD shouldBe Some(30.0)
   }
 }

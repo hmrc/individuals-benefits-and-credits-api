@@ -24,19 +24,18 @@ case class WorkingTaxCredit(amount: Option[Double], paidYTD: Option[Double])
 
 object WorkingTaxCredit {
 
-  def create(ifWorkTaxCredit: IfWorkTaxCredit) : WorkingTaxCredit = {
-    //TODO IMPLEMENT!!!
-    WorkingTaxCredit(Some(0.0),Some(0.0))
+  def create(ifWorkTaxCredit: IfWorkTaxCredit): WorkingTaxCredit = {
+    WorkingTaxCredit(ifWorkTaxCredit.amount, ifWorkTaxCredit.paidYTD)
   }
 
-  implicit val workingTaxCreditFormat : Format[WorkingTaxCredit] = Format(
+  implicit val workingTaxCreditFormat: Format[WorkingTaxCredit] = Format(
     (
       (JsPath \ "amount").readNullable[Double] and
         (JsPath \ "paidYTD").readNullable[Double]
-      )(WorkingTaxCredit.apply _),
+    )(WorkingTaxCredit.apply _),
     (
       (JsPath \ "amount").writeNullable[Double] and
         (JsPath \ "paidYTD").writeNullable[Double]
-      )(unlift(WorkingTaxCredit.unapply))
+    )(unlift(WorkingTaxCredit.unapply))
   )
 }

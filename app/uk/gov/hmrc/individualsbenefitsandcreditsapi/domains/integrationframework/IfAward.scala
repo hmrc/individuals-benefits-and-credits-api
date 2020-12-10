@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Reads}
 import play.api.libs.json.Reads.{max, min, pattern, verifying}
 
-case class IfAwards(
+case class IfAward(
     payProfCalcDate: Option[String],
     startDate: Option[String],
     endDate: Option[String],
@@ -31,9 +31,9 @@ case class IfAwards(
     payments: Option[Seq[IfPayment]]
 )
 
-object IfAwards extends PatternsAndValidators {
+object IfAward extends PatternsAndValidators {
 
-  implicit val awardsFormat: Format[IfAwards] = Format(
+  implicit val awardsFormat: Format[IfAward] = Format(
     (
       (JsPath \ "payProfCalcDate")
         .readNullable[String](pattern(datePattern, "invalid date")) and
@@ -48,7 +48,7 @@ object IfAwards extends PatternsAndValidators {
         (JsPath \ "grossTaxYearAmount")
           .readNullable[Double](paymentAmountValidator) and
         (JsPath \ "payments").readNullable[Seq[IfPayment]]
-    )(IfAwards.apply _),
+    )(IfAward.apply _),
     (
       (JsPath \ "payProfCalcDate").writeNullable[String] and
         (JsPath \ "startDate").writeNullable[String] and
@@ -58,6 +58,6 @@ object IfAwards extends PatternsAndValidators {
         (JsPath \ "childTaxCredit").writeNullable[IfChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount").writeNullable[Double] and
         (JsPath \ "payments").writeNullable[Seq[IfPayment]]
-    )(unlift(IfAwards.unapply))
+    )(unlift(IfAward.unapply))
   )
 }

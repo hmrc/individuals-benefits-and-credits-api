@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.services
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IfConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Application
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.CacheService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-import javax.inject.Inject
+class ApplicationSpec extends UnitSpec with DomainHelpers {
+  "Creates correctly from IfApplication" in {
+    val ifApplication = IfApplication(
+      123,
+      Some("test1"),
+      Some("test2"),
+      Some("test2"),
+      Some(Seq(createValidIfAward()))
+    )
 
-class TaxCreditsService @Inject()(cacheService: CacheService,
-                                  ifConnector: IfConnector) {
-  def getWorkingTaxCredits(): Application = {
-    Application(0, Seq.empty)
+    val result = Application.create(ifApplication)
+    result.id shouldBe 123
   }
 }

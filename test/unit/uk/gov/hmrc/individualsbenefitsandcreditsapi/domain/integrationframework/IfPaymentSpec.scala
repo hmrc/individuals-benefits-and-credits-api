@@ -18,7 +18,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.integrationfram
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
-  IfAwards,
+  IfAward,
   IfPayment
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
