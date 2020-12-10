@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 
-case class IfPayments(
+case class IfPayment(
                       periodStartDate: Option[String],
                       periodEndDate: Option[String],
                       startDate: Option[String],
@@ -34,9 +34,9 @@ case class IfPayments(
                       method: Option[String]
                      )
 
-object IfPayments extends PatternsAndValidators {
+object IfPayment extends PatternsAndValidators {
 
-  implicit val paymentsFormat: Format[IfPayments] = Format(
+  implicit val paymentsFormat: Format[IfPayment] = Format(
     (
       (JsPath \ "periodStartDate").readNullable[String](pattern(datePattern, "invalid date")) and
         (JsPath \ "periodEndDate").readNullable[String](pattern(datePattern, "invalid date")) and
@@ -49,7 +49,7 @@ object IfPayments extends PatternsAndValidators {
         (JsPath \ "tcType").readNullable[String](pattern(tcTypePattern, "invalid tc type")) and
         (JsPath \ "amount").readNullable[Double](paymentAmountValidator) and
         (JsPath \ "method").readNullable[String](pattern(methodPattern, "invalid method"))
-      )(IfPayments.apply _),
+      )(IfPayment.apply _),
     (
       (JsPath \ "periodStartDate").writeNullable[String] and
         (JsPath \ "periodEndDate").writeNullable[String] and
@@ -62,6 +62,6 @@ object IfPayments extends PatternsAndValidators {
         (JsPath \ "tcType").writeNullable[String] and
         (JsPath \ "amount").writeNullable[Double] and
         (JsPath \ "method").writeNullable[String]
-      )(unlift(IfPayments.unapply))
+      )(unlift(IfPayment.unapply))
   )
 }

@@ -28,7 +28,7 @@ case class IfAwards(
     workTaxCredit: Option[IfWorkTaxCredit],
     childTaxCredit: Option[IfChildTaxCredit],
     grossTaxYearAmount: Option[Double],
-    payments: Option[IfPayments]
+    payments: Option[Seq[IfPayment]]
 )
 
 object IfAwards extends PatternsAndValidators {
@@ -47,7 +47,7 @@ object IfAwards extends PatternsAndValidators {
         (JsPath \ "childTaxCredit").readNullable[IfChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount")
           .readNullable[Double](paymentAmountValidator) and
-        (JsPath \ "payments").readNullable[IfPayments]
+        (JsPath \ "payments").readNullable[Seq[IfPayment]]
     )(IfAwards.apply _),
     (
       (JsPath \ "payProfCalcDate").writeNullable[String] and
@@ -57,7 +57,7 @@ object IfAwards extends PatternsAndValidators {
         (JsPath \ "workTaxCredit").writeNullable[IfWorkTaxCredit] and
         (JsPath \ "childTaxCredit").writeNullable[IfChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount").writeNullable[Double] and
-        (JsPath \ "payments").writeNullable[IfPayments]
+        (JsPath \ "payments").writeNullable[Seq[IfPayment]]
     )(unlift(IfAwards.unapply))
   )
 }

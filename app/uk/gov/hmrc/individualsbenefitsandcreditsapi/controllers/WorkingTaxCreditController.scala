@@ -20,12 +20,14 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class WorkingTaxCreditController @Inject()(
     cc: ControllerComponents,
-    scopeService: ScopesService
+    scopeService: ScopesService,
+    //taxCreditsService: TaxCreditsService
 ) extends CommonController(cc)
     with PrivilegedAuthentication {
 
@@ -36,7 +38,7 @@ abstract class WorkingTaxCreditController @Inject()(
 
       requiresPrivilegedAuthentication(scopes)
         .flatMap { authScopes =>
-          //TODO:- add actual scopes
+          //taxCreditsService.getWorkingTaxCredits()
           throw new Exception("NOT_IMPLEMENTED")
         }
         .recover(recovery)

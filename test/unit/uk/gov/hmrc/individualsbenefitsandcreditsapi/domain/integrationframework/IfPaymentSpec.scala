@@ -19,13 +19,13 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.integrationfram
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
   IfAwards,
-  IfPayments
+  IfPayment
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class IfPaymentsSpec extends UnitSpec {
+class IfPaymentSpec extends UnitSpec {
 
-  val payments = IfPayments(
+  val payments = IfPayment(
     Some("2020-08-18"),
     Some("2020-08-18"),
     Some("2020-08-18"),
@@ -39,7 +39,7 @@ class IfPaymentsSpec extends UnitSpec {
     Some("R")
   )
 
-  val invalidPayments = IfPayments(
+  val invalidPayments = IfPayment(
     Some("asd"),
     Some("abcdefghijklmnopqrstuvwxyz0123456789"),
     Some("a"),
@@ -75,12 +75,12 @@ class IfPaymentsSpec extends UnitSpec {
     }
 
     "Validate successfully when reading valid contact details" in {
-      val result = Json.toJson(payments).validate[IfPayments]
+      val result = Json.toJson(payments).validate[IfPayment]
       result.isSuccess shouldBe true
     }
 
     "Validate unsuccessfully when reading invalid contact details" in {
-      val result = Json.toJson(invalidPayments).validate[IfPayments]
+      val result = Json.toJson(invalidPayments).validate[IfPayment]
       result.isError shouldBe true
     }
   }
