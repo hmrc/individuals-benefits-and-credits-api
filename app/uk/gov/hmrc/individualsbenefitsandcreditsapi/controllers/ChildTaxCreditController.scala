@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import org.joda.time.Interval
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class ChildTaxCreditController @Inject()(
@@ -29,16 +32,17 @@ abstract class ChildTaxCreditController @Inject()(
 ) extends CommonController(cc)
     with PrivilegedAuthentication {
 
-  def childTaxCredit() = Action.async { implicit request =>
-    val scopes =
-      scopeService.getEndPointScopes("child-tax-credit")
+  def childTaxCredit(matchId: UUID, interval: Interval) = Action.async {
+    implicit request =>
+      val scopes =
+        scopeService.getEndPointScopes("child-tax-credit")
 
-    requiresPrivilegedAuthentication(scopes)
-      .flatMap { authScopes =>
-        //TODO:- add actual scopes
-        throw new Exception("NOT_IMPLEMENTED")
-      }
-      .recover(recovery)
+      requiresPrivilegedAuthentication(scopes)
+        .flatMap { authScopes =>
+          //TODO:- add actual scopes
+          throw new Exception("NOT_IMPLEMENTED")
+        }
+        .recover(recovery)
   }
 
 }

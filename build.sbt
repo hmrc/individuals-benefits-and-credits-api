@@ -13,11 +13,11 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 val appName = "individuals-benefits-and-credits-api"
 
 //TODO - Implement at a later date
-//lazy val playSettings: Seq[Setting[_]] = Seq(
-//  routesImport ++= Seq(
-//    "uk.gov.hmrc.domain._",
-//    "uk.gov.hmrc.individualsbenefitsandcreditsapi.domain._",
-//    "uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._"))
+lazy val playSettings: Seq[Setting[_]] = Seq(
+  routesImport ++= Seq(
+    "uk.gov.hmrc.domain._",
+    "uk.gov.hmrc.individualsbenefitsandcreditsapi.domain._",
+    "uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._"))
 
 lazy val plugins: Seq[Plugins] = Seq.empty
 lazy val externalServices =

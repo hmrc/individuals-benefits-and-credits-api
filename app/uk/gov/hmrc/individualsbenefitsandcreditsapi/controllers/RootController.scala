@@ -21,6 +21,7 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class RootController @Inject()(
@@ -29,16 +30,17 @@ abstract class RootController @Inject()(
 ) extends CommonController(cc)
     with PrivilegedAuthentication {
 
-  def root(): Action[AnyContent] = Action.async { implicit request =>
-    val scopes =
-      scopeService.getEndPointScopes("benefits-and-credits")
+  def root(matchId: UUID): Action[AnyContent] = Action.async {
+    implicit request =>
+      val scopes =
+        scopeService.getEndPointScopes("benefits-and-credits")
 
-    requiresPrivilegedAuthentication(scopes)
-      .flatMap { authScopes =>
-        //TODO:- add actual scopes
-        throw new Exception("NOT_IMPLEMENTED")
-      }
-      .recover(recovery)
+      requiresPrivilegedAuthentication(scopes)
+        .flatMap { authScopes =>
+          //TODO:- add actual scopes
+          throw new Exception("NOT_IMPLEMENTED")
+        }
+        .recover(recovery)
 
   }
 

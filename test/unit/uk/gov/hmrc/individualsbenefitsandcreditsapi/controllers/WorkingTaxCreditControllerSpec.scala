@@ -17,30 +17,30 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import akka.stream.Materializer
+import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.{
-  AuthConnector,
-  Enrolment,
-  EnrolmentIdentifier,
-  Enrolments
-}
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
-  LiveWorkingTaxCreditController,
-  SandboxWorkingTaxCreditController
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveWorkingTaxCreditController, SandboxWorkingTaxCreditController}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService, TaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
+  private val testUUID = UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
+  private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
+  private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
+  private val testInterval = new Interval(fromDate, toDate)
+
 
   private val enrolments = Enrolments(
     Set(
@@ -73,6 +73,8 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
   trait Fixture {
 
     val scopeService = mock[ScopesService]
+    val liveTaxCreditsService = mock[LiveTaxCreditsService]
+    val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
 
     val scopes: Iterable[String] =
       Iterable("read:hello-scopes-1", "read:hello-scopes-2")
@@ -81,14 +83,16 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
       new LiveWorkingTaxCreditController(
         fakeAuthConnector(myRetrievals),
         cc,
-        scopeService
+        scopeService,
+        liveTaxCreditsService
       )
 
     val sandboxWorkingTaxCreditsController =
       new SandboxWorkingTaxCreditController(
         fakeAuthConnector(myRetrievals),
         cc,
-        scopeService
+        scopeService,
+        sandboxTaxCreditsService
       )
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
@@ -105,7 +109,7 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val result =
             intercept[Exception] {
               await(
-                liveWorkingTaxCreditsController.workingTaxCredit()(fakeRequest))
+                liveWorkingTaxCreditsController.workingTaxCredit(testUUID, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
@@ -119,7 +123,7 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val result =
             intercept[Exception] {
               await(
-                liveWorkingTaxCreditsController.workingTaxCredit()(fakeRequest))
+                liveWorkingTaxCreditsController.workingTaxCredit(testUUID, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
         }
@@ -136,7 +140,7 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val result =
             intercept[Exception] {
               await(
-                sandboxWorkingTaxCreditsController.workingTaxCredit()(
+                sandboxWorkingTaxCreditsController.workingTaxCredit(testUUID, testInterval)(
                   fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")

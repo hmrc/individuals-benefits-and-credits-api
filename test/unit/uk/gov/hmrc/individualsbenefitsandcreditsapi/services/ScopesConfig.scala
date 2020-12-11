@@ -16,14 +16,13 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.{
   ApiConfig,
   EndpointConfig,
   ScopeConfig
 }
-trait ScopesConfig extends MockitoSugar {
+trait ScopesConfig {
 
   val mockScope1 = "test1"
   val mockScope2 = "test2"
