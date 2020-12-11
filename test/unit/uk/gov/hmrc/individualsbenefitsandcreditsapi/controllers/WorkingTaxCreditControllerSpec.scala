@@ -24,11 +24,23 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.{
+  AuthConnector,
+  Enrolment,
+  EnrolmentIdentifier,
+  Enrolments
+}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveWorkingTaxCreditController, SandboxWorkingTaxCreditController}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
+  LiveWorkingTaxCreditController,
+  SandboxWorkingTaxCreditController
+}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService, TaxCreditsService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
+  LiveTaxCreditsService,
+  SandboxTaxCreditsService,
+  TaxCreditsService
+}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import java.util.UUID
@@ -40,7 +52,6 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
   private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
   private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
   private val testInterval = new Interval(fromDate, toDate)
-
 
   private val enrolments = Enrolments(
     Set(
@@ -109,7 +120,8 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val result =
             intercept[Exception] {
               await(
-                liveWorkingTaxCreditsController.workingTaxCredit(testUUID, testInterval)(fakeRequest))
+                liveWorkingTaxCreditsController
+                  .workingTaxCredit(testUUID, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
@@ -123,7 +135,8 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val result =
             intercept[Exception] {
               await(
-                liveWorkingTaxCreditsController.workingTaxCredit(testUUID, testInterval)(fakeRequest))
+                liveWorkingTaxCreditsController
+                  .workingTaxCredit(testUUID, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
         }
@@ -140,8 +153,8 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val result =
             intercept[Exception] {
               await(
-                sandboxWorkingTaxCreditsController.workingTaxCredit(testUUID, testInterval)(
-                  fakeRequest))
+                sandboxWorkingTaxCreditsController
+                  .workingTaxCredit(testUUID, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }

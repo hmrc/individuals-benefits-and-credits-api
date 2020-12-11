@@ -1,4 +1,3 @@
-import play.core.PlayVersion
 import sbt.Keys.compile
 import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.{
@@ -12,11 +11,10 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "individuals-benefits-and-credits-api"
 
-//TODO - Implement at a later date
 lazy val playSettings: Seq[Setting[_]] = Seq(
   routesImport ++= Seq(
     "uk.gov.hmrc.domain._",
-    "uk.gov.hmrc.individualsbenefitsandcreditsapi.domain._",
+    "uk.gov.hmrc.individualsbenefitsandcreditsapi.domains._",
     "uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._"))
 
 lazy val plugins: Seq[Plugins] = Seq.empty
@@ -31,12 +29,12 @@ def componentFilter(name: String): Boolean = name startsWith "component"
 
 lazy val microservice =
   Project(appName, file("."))
-    .enablePlugins(
-      Seq(play.sbt.PlayScala,
-          SbtAutoBuildPlugin,
-          SbtGitVersioning,
-          SbtDistributablesPlugin,
-          SbtArtifactory) ++ plugins: _*)
+    .enablePlugins(Seq(play.sbt.PlayScala,
+                       SbtAutoBuildPlugin,
+                       SbtGitVersioning,
+                       SbtDistributablesPlugin,
+                       SbtArtifactory) ++ plugins: _*)
+    .settings(playSettings: _*)
     .settings(scalaSettings: _*)
     .settings(useSuperShell in ThisBuild := false)
     .settings(publishingSettings: _*)
