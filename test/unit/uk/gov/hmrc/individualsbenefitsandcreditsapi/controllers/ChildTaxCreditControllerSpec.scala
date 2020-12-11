@@ -17,6 +17,7 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import akka.stream.Materializer
+import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,10 +38,17 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
+
+  private val testMatchId =
+    UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
+  private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
+  private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
+  private val testInterval = new Interval(fromDate, toDate)
 
   private val enrolments = Enrolments(
     Set(
@@ -104,7 +112,9 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
 
           val result =
             intercept[Exception] {
-              await(liveChildTaxCreditsController.childTaxCredit()(fakeRequest))
+              await(
+                liveChildTaxCreditsController
+                  .childTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
@@ -117,7 +127,9 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
 
           val result =
             intercept[Exception] {
-              await(liveChildTaxCreditsController.childTaxCredit()(fakeRequest))
+              await(
+                liveChildTaxCreditsController
+                  .childTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
         }
@@ -134,7 +146,8 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val result =
             intercept[Exception] {
               await(
-                sandboxChildTaxCreditsController.childTaxCredit()(fakeRequest))
+                sandboxChildTaxCreditsController
+                  .childTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }

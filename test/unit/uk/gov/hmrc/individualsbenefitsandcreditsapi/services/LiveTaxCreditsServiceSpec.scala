@@ -29,11 +29,11 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.CacheService
 class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar {
   "Live Tax Credits Service" should {
     "return an empty list when no applications received from IF" in {
-      val cacheService = mock[CacheService]()
-      val ifConnector = mock[IfConnector]()
-      val scopeService = mock[ScopesService]()
-      val scopesHelper = mock[ScopesHelper]()
-      val matchingConnector = mock[IndividualsMatchingApiConnector]()
+      val cacheService = mock[CacheService]
+      val ifConnector = mock[IfConnector]
+      val scopeService = mock[ScopesService]
+      val scopesHelper = mock[ScopesHelper]
+      val matchingConnector = mock[IndividualsMatchingApiConnector]
 
       val taxCreditsService =
         new LiveTaxCreditsService(

@@ -38,8 +38,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
   LiveTaxCreditsService,
-  SandboxTaxCreditsService,
-  TaxCreditsService
+  SandboxTaxCreditsService
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
@@ -48,7 +47,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
-  private val testUUID = UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
+  private val testMatchId =
+    UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
   private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
   private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
   private val testInterval = new Interval(fromDate, toDate)
@@ -121,7 +121,7 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
             intercept[Exception] {
               await(
                 liveWorkingTaxCreditsController
-                  .workingTaxCredit(testUUID, testInterval)(fakeRequest))
+                  .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
@@ -136,7 +136,7 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
             intercept[Exception] {
               await(
                 liveWorkingTaxCreditsController
-                  .workingTaxCredit(testUUID, testInterval)(fakeRequest))
+                  .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
         }
@@ -150,12 +150,13 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
           val fakeRequest =
             FakeRequest("GET", s"/sandbox/working-tax-credits/")
 
-          val result =
+          val result = {
             intercept[Exception] {
               await(
                 sandboxWorkingTaxCreditsController
-                  .workingTaxCredit(testUUID, testInterval)(fakeRequest))
+                  .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
+          }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
       }

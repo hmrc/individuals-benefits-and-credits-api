@@ -34,10 +34,14 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveRootControll
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class RootControllerSpec extends SpecBase with MockitoSugar {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
+
+  private val testMatchId =
+    UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
 
   private val enrolments = Enrolments(
     Set(
@@ -101,7 +105,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
           val result =
             intercept[Exception] {
-              await(liveRootController.root()(fakeRequest))
+              await(liveRootController.root(testMatchId)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
@@ -114,7 +118,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
           val result =
             intercept[Exception] {
-              await(liveRootController.root()(fakeRequest))
+              await(liveRootController.root(testMatchId)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
         }
@@ -131,7 +135,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
           val result =
             intercept[Exception] {
-              await(sandboxRootController.root()(fakeRequest))
+              await(sandboxRootController.root(testMatchId)(fakeRequest))
             }
           assert(result.getMessage == "NOT_IMPLEMENTED")
         }
