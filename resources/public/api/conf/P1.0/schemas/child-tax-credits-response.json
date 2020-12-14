@@ -102,6 +102,7 @@
       }
     },
     "_links": {
+      "type": "object",
       "properties": {
         "self": {
           "type": "object",
@@ -114,7 +115,8 @@
             }
           }
         }
-      }
+      },
+      "required": ["self"]
     }
   },
   "required": ["_links", "applications"]
