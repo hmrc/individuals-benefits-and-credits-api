@@ -16,6 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import akka.http.scaladsl.model.StatusCodes.OK
 import akka.stream.Materializer
 import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.any
@@ -40,18 +41,23 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
   LiveTaxCreditsService,
   SandboxTaxCreditsService
 }
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
+class WorkingTaxCreditControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with DomainHelpers {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
   private val testMatchId =
     UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
   private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
   private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
   private val testInterval = new Interval(fromDate, toDate)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val enrolments = Enrolments(
     Set(
@@ -107,23 +113,33 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar {
       )
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
+
+    implicit val executionContext =
+      fakeApplication.injector.instanceOf[ExecutionContext]
   }
 
   "working tax credits controller" when {
     "the live controller" should {
       "the working tax credit function" should {
-        "throw an exception" in new Fixture {
+        "Return Applications when successful" in new Fixture {
 
           val fakeRequest =
             FakeRequest("GET", s"/working-tax-credits/")
 
+          when(
+            liveTaxCreditsService.getWorkingTaxCredits(testMatchId,
+                                                       testInterval,
+                                                       "working-tax-credit",
+                                                       Seq.empty))
+            .thenReturn(
+              Future.successful(
+                Seq(createValidApplication(), createValidApplication()))
+            )
+
           val result =
-            intercept[Exception] {
-              await(
-                liveWorkingTaxCreditsController
-                  .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
-            }
-          assert(result.getMessage == "NOT_IMPLEMENTED")
+            liveWorkingTaxCreditsController
+              .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
+          status(result) shouldBe OK
         }
 
         "return error when no scopes" in new Fixture {

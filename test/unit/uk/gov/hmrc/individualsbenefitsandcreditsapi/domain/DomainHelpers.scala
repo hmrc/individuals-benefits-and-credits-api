@@ -16,6 +16,13 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
 
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
+  Application,
+  Award,
+  ChildTaxCredit,
+  Payment,
+  WorkingTaxCredit
+}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
   IfAward,
   IfChildTaxCredit,
@@ -66,6 +73,31 @@ trait DomainHelpers {
       Some(20.0),
       Some(Seq(createValidIfPayment()))
     )
+  }
+
+  def createValidPayment(): Payment = {
+    Payment(
+      Some("2016-05-01"),
+      Some("2016-06-01"),
+      Some(7),
+      Some("ETC"),
+      Some(80.0)
+    )
+  }
+
+  def createValidAward(): Award = {
+    new Award(
+      Some("2016-05-01"),
+      Some(10.0),
+      Some(WorkingTaxCredit(Some(20.0), Some(30.0))),
+      Some(ChildTaxCredit(Some(40.0))),
+      Some(50.0),
+      Some(Seq(createValidPayment()))
+    )
+  }
+
+  def createValidApplication(): Application = {
+    new Application(123, Seq(createValidAward()))
   }
 
 }

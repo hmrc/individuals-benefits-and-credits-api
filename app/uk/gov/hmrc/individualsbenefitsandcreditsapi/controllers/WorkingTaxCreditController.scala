@@ -48,6 +48,8 @@ abstract class WorkingTaxCreditController @Inject()(
 
       requiresPrivilegedAuthentication(scopes)
         .flatMap { authScopes =>
+          println("AUTH SCOPES " + authScopes)
+
           taxCreditsService
             .getWorkingTaxCredits(matchId,
                                   interval,
@@ -55,7 +57,6 @@ abstract class WorkingTaxCreditController @Inject()(
                                   authScopes)
             .map(
               applications => {
-                throw new Exception("NOT_IMPLEMENTED")
                 val selfLink =
                   HalLink("self",
                           urlWithInterval(
