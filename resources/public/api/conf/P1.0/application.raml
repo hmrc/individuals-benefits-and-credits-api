@@ -75,11 +75,11 @@ uses:
           description: The start date for Child Tax Credit data requested.
           type: string
           required: true
-          example: "2016-01-01"
+          example: 2016-01-01
         toDate:
          description: The end date for Child Tax Credit data requested. If missing, it defaults to today's date.
          type: string
-         example: "2017-03-01"
+         example: 2017-03-01
       headers:
         Authorization:
           description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
@@ -107,7 +107,7 @@ uses:
             application/json:
               type: types.errorResponse
               examples:
-                BadRequest:
+                NotFound:
                   description: Not Found
                   value:
                     code: NOT_FOUND
@@ -128,11 +128,11 @@ uses:
           description: The start date for Working Tax Credit data requested.
           type: string
           required: true
-          example: "2016-01-01"
+          example: 2016-01-01
         toDate:
          description: The end date for Working Tax Credit data requested. If missing, it defaults to today's date.
          type: string
-         example: "2017-03-01"
+         example: 2017-03-01
       headers:
         Authorization:
           description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
@@ -160,7 +160,7 @@ uses:
             application/json:
               type: types.errorResponse
               examples:
-                BadRequest:
+                NotFound:
                   description: Not Found
                   value:
                     code: NOT_FOUND
