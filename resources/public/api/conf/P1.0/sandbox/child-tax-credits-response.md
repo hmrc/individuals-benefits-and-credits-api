@@ -59,7 +59,6 @@
           <td>Any date that is not ISO 8601 extended format. For example, 20170101</td>
           <td><p>400 (Bad Request)</p>
           <p>{ &quot;code&quot; : &quot;INVALID_REQUEST&quot;,<br/>&quot;message&quot; : &quot;fromDate invalid date format" }</p></td>
-          <p>{ &quot;code&quot; : &quot;INVALID_REQUEST&quot;,<br/>&quot;message&quot; : &quot;toDate invalid date format" }</p>
     </tr>
     <tr>
           <td>Incorrect matchId</td>
