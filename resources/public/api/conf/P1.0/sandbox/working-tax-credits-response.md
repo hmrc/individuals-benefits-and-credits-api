@@ -11,10 +11,10 @@
     </thead>
     <tbody>
     <tr>
-        <td><p>Child Tax Credit data found</p>
+        <td><p>Working Tax Credit data found</p>
         <td>
             <p>matchId=&lt;obtained from Individuals Matching API example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430&gt;</p>
-            <p>fromDate=2016-01-01<br>toDate= 2017-03-01</p>
+            <p>startDate=2016-01-01<br>endDate= 2017-03-01</p>
         </td>
         <td><p>200 (OK)</p><p>Payload as response example above</p></td>
     </tr>
@@ -52,7 +52,7 @@
             <p>For example, fromDate=2015-02-28</p>
           </td>
           <td><p>400 (Bad Request)</p>
-          <p>{ &quot;code&quot; : &quot;INVALID_REQUEST&quot;,<br/>&quot;message&quot; : &quot;fromDate earlier than 31 March 2015" }</p></td>
+          <p>{ &quot;code&quot; : &quot;INVALID_REQUEST&quot;,<br/>&quot;message&quot; : &quot;startDate earlier than 31 March 2015" }</p></td>
     </tr>
     <tr>
           <td>Invalid date format</td>
