@@ -82,11 +82,11 @@ uses:
   /child-tax-credit:
     get:
       displayName: Child Tax Credits
-      description: "test"
+      description: !include docs/child-tax-credits-description.md
       is: [headers.acceptHeader]
       (annotations.scope): "read:the-scopes-you-have-been-assigned"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
-      (annotations.sandboxData): "test"
+      (annotations.sandboxData): !include sandbox/child-tax-credits-response.md
       headers:
         Authorization:
           description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
@@ -112,7 +112,8 @@ uses:
           description: Use this endpoint to get an individual’s Child Tax Credit details for the requested time period. Data is not available before 2015.
           body:
             application/json:
-              example: "test"
+              example: !include examples/child-tax-credits-response.json
+              type: !include schemas/child-tax-credits-response.json
         400:
           body:
             application/json:
