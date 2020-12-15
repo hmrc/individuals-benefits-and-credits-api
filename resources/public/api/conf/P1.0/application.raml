@@ -38,11 +38,11 @@ uses:
   /:
     get:
       displayName: Benefits and Credits
-      description: "test"
+      description: !include docs/root-description.md
       is: [headers.acceptHeader]
       (annotations.scope): "read:the-scopes-you-have-been-assigned"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
-      (annotations.sandboxData): "test"
+      (annotations.sandboxData): !include sandbox/root-response.md
       headers:
         Authorization:
           description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
@@ -59,7 +59,8 @@ uses:
           description: Use this endpoint to get a list of all available endpoints for Individuals Benefits and Credits.
           body:
             application/json:
-              example: "test"
+              example: !include examples/root-response.json
+              type: !include schemas/root-response.json
         400:
           body:
             application/json:
