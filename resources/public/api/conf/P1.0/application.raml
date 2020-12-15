@@ -38,14 +38,28 @@ uses:
   /:
     get:
       displayName: Benefits and Credits
-      description: A placeholder endpoint for root that will throw an exception
+      description: "test"
       is: [headers.acceptHeader]
+      (annotations.scope): "read:the-scopes-you-have-been-assigned"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
+      (annotations.sandboxData): "test"
+      headers:
+        Authorization:
+          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
+          type: string
+          required: true
+          example: Bearer <BEARER_TOKEN>
+      queryParameters:
+        matchId:
+          description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+          type: string
+          example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
       responses:
         200:
-          description: Throws an exception
+          description: Use this endpoint to get a list of all available endpoints for Individuals Benefits and Credits.
           body:
             application/json:
-              example: "\"Not yet implemented\""
+              example: "test"
 
   /child-tax-credit:
     get:
