@@ -31,7 +31,7 @@
           "id": {
             "type": "integer",
             "description": "The identifier for the household application that the individual is active on. Multiple individuals can be active on the same application id.",
-            "example": 123
+            "example": "123"
           },
           "awards": {
             "type": "array",
@@ -47,7 +47,7 @@
                 "totalEntitlement": {
                   "type": "number",
                   "description": "The sum of all the award entitlements for an award version; the net amount the entitlement unit will receive",
-                  "example": 18765.23
+                  "example": "18765.23"
                 },
                 "childTaxCredit": {
                   "type": "object",
@@ -56,27 +56,27 @@
                     "childCareAmount": {
                       "type": "number",
                       "description": "Amount for childcare",
-                      "example": 930.98
+                      "example": "930.98"
                     },
                     "ctcChildAmount": {
                       "type": "number",
                       "description": "CTC Child Entitlements",
-                      "example": 730.49
+                      "example": "730.49"
                     },
                     "familyAmount": {
                       "type": "number",
                       "description": "Family Entitlement",
-                      "example": 100.49
+                      "example": "100.49"
                     },
                     "babyAmount": {
                       "type": "number",
                       "description": "Baby Entitlement (no longer available after 2017)",
-                      "example": 100.01
+                      "example": "100.01"
                     },
                     "paidYTD": {
                       "type": "number",
                       "description": "The actual amount of payment out both PVE and direct, from the start of the tax credit period up to the calculated date of the payment profile",
-                      "example": 8976.34
+                      "example": "8976.34"
                     }
                   }
                 },
@@ -99,7 +99,7 @@
                       "frequency": {
                         "type": "integer",
                         "description": "The number of days between payments. Currently supported values are 1, 7, 14, and 28",
-                        "example": 7
+                        "example": "7"
                       },
                       "tcType": {
                         "type": "string",
@@ -109,7 +109,7 @@
                       "amount": {
                         "type": "number",
                         "description": "The amount to be paid to recipient",
-                        "example": 76.34
+                        "example": "76.34"
                       }
                     }
                   }
