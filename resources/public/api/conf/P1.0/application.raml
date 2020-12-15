@@ -23,35 +23,23 @@ uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
 /individuals/benefits-and-credits:
-  /hello-world:
-    get:
-      displayName: Hello World
-      description: An endpoint that returns hello world
-      is: [headers.acceptHeader]
-      responses:
-        200:
-          description: Return hello world
-          body:
-            application/json:
-              example: "\"Hello World\""
-
   /:
     get:
       displayName: Benefits and Credits
       description: !include docs/root-description.md
       is: [headers.acceptHeader]
       (annotations.sandboxData): !include sandbox/root-response.md
+      headers:
+        Authorization:
+        description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
+        type: string
+        required: true
+        example: Bearer <BEARER_TOKEN>
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
           type: string
           example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
-      headers:
-        Authorization:
-          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
-          type: string
-          required: true
-          example: Bearer <BEARER_TOKEN>
       responses:
         200:
           description: Use this endpoint to get a list of all available endpoints for Individuals Benefits and Credits.
@@ -59,13 +47,18 @@ uses:
             application/json:
               example: !include examples/root-response.json
               type: !include schemas/root-response.json
-
   /child-tax-credit:
     get:
       displayName: Child Tax Credits
       description: !include docs/child-tax-credits-description.md
       is: [headers.acceptHeader]
       (annotations.sandboxData): !include sandbox/child-tax-credits-response.md
+      headers:
+        Authorization:
+        description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
+        type: string
+        required: true
+        example: Bearer <BEARER_TOKEN>
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
@@ -80,12 +73,6 @@ uses:
          description: The end date for Child Tax Credit data requested. If missing, it defaults to today's date.
          type: string
          example: 2017-03-01
-      headers:
-        Authorization:
-          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
-          type: string
-          required: true
-          example: Bearer <BEARER_TOKEN>
       responses:
         200:
           description: Use this endpoint to get an individual’s Child Tax Credit details for the requested time period. Data is not available before 2015.
@@ -111,13 +98,18 @@ uses:
                   description: Not Found
                   value:
                     code: NOT_FOUND
-
   /working-tax-credit:
     get:
       displayName: Working Tax Credits
       description: !include docs/working-tax-credits-description.md
       is: [headers.acceptHeader]
       (annotations.sandboxData): !include sandbox/working-tax-credits-response.md
+      headers:
+        Authorization:
+        description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
+        type: string
+        required: true
+        example: Bearer <BEARER_TOKEN>
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
@@ -133,12 +125,6 @@ uses:
          description: The end date for Working Tax Credit data requested. If missing, it defaults to today's date.
          type: string
          example: 2017-03-01
-      headers:
-        Authorization:
-          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
-          type: string
-          required: true
-          example: Bearer <BEARER_TOKEN>
       responses:
         200:
           description: Use this endpoint to get an individual’s Working Tax Credit details for the requested time period. Data is not available before 2015.
