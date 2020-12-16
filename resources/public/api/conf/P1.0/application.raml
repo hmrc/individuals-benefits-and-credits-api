@@ -40,15 +40,9 @@ uses:
       displayName: Benefits and Credits
       description: !include docs/root-description.md
       is: [headers.acceptHeader]
-      (annotations.scope): "read:the-scopes-you-have-been-assigned"
-      securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
+      (annotations.scope): "assigned:scopes"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "assigned:scopes" ] } ]
       (annotations.sandboxData): !include sandbox/root-response.md
-      headers:
-        Authorization:
-          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
-          type: string
-          required: true
-          example: Bearer <BEARER_TOKEN>
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
@@ -84,15 +78,9 @@ uses:
       displayName: Child Tax Credits
       description: !include docs/child-tax-credits-description.md
       is: [headers.acceptHeader]
-      (annotations.scope): "read:the-scopes-you-have-been-assigned"
-      securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
+      (annotations.scope): "assigned:scopes"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "assigned:scopes" ] } ]
       (annotations.sandboxData): !include sandbox/child-tax-credits-response.md
-      headers:
-        Authorization:
-          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
-          type: string
-          required: true
-          example: Bearer <BEARER_TOKEN>
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
@@ -137,15 +125,9 @@ uses:
       displayName: Working Tax Credits
       description: !include docs/working-tax-credits-description.md
       is: [headers.acceptHeader]
-      (annotations.scope): "read:the-scopes-you-have-been-assigned"
-      securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
+      (annotations.scope): "assigned:scopes"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "assigned:scopes" ] } ]
       (annotations.sandboxData): !include sandbox/working-tax-credits-response.md
-      headers:
-        Authorization:
-          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
-          type: string
-          required: true
-          example: Bearer <BEARER_TOKEN>
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
