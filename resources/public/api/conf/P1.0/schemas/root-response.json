@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "Individual matching request",
+  "description": "Individual Benefits and Credits",
   "type": "object",
   "properties": {
     "_links": {

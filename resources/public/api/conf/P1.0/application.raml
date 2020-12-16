@@ -35,17 +35,25 @@ uses:
             application/json:
               example: "\"Hello World\""
 
-  /{matchId}:
-    uriParameters:
-      matchId:
-        description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
-        type: string
-        example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+  /:
     get:
       displayName: Benefits and Credits
       description: !include docs/root-description.md
       is: [headers.acceptHeader]
+      (annotations.scope): "read:the-scopes-you-have-been-assigned"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
       (annotations.sandboxData): !include sandbox/root-response.md
+      headers:
+        Authorization:
+          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
+          type: string
+          required: true
+          example: Bearer <BEARER_TOKEN>
+      queryParameters:
+        matchId:
+          description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+          type: string
+          example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
       responses:
         200:
           description: Use this endpoint to get a list of all available endpoints for Individuals Benefits and Credits.
@@ -53,21 +61,55 @@ uses:
             application/json:
               example: !include examples/root-response.json
               type: !include schemas/root-response.json
-
-  /child-tax-credit/{matchId}:
-    uriParameters:
-      matchId:
-        description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
-        type: string
-        example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                BadRequest:
+                  description: Invalid request
+                  value:
+                    code: INVALID_REQUEST
+        404:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                NotFound:
+                  description: Not Found
+                  value:
+                    code: NOT_FOUND
+  /child-tax-credit:
     get:
       displayName: Child Tax Credits
       description: !include docs/child-tax-credits-description.md
       is: [headers.acceptHeader]
+      (annotations.scope): "read:the-scopes-you-have-been-assigned"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
       (annotations.sandboxData): !include sandbox/child-tax-credits-response.md
+      headers:
+        Authorization:
+          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
+          type: string
+          required: true
+          example: Bearer <BEARER_TOKEN>
+      queryParameters:
+        matchId:
+          description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+          type: string
+          example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+        fromDate:
+          description: The start date for Child Tax Credit data requested.
+          type: string
+          required: true
+          example: 2016-01-01
+        toDate:
+         description: The end date for Child Tax Credit data requested. If missing, it defaults to today's date.
+         type: string
+         example: 2017-03-01
       responses:
         200:
-          description: Throws an exception
+          description: Use this endpoint to get an individual’s Child Tax Credit details for the requested time period. Data is not available before 2015.
           body:
             application/json:
               example: !include examples/child-tax-credits-response.json
@@ -86,25 +128,61 @@ uses:
             application/json:
               type: types.errorResponse
               examples:
-                BadRequest:
+                NotFound:
                   description: Not Found
                   value:
                     code: NOT_FOUND
-
-  /working-tax-credit/{matchId}:
-    uriParameters:
-      matchId:
-        description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
-        type: string
-        example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+  /working-tax-credit:
     get:
       displayName: Working Tax Credits
       description: !include docs/working-tax-credits-description.md
       is: [headers.acceptHeader]
+      (annotations.scope): "read:the-scopes-you-have-been-assigned"
+      securedBy: [ sec.oauth_2_0: { scopes: [ "read:the-scopes-you-have-been-assigned" ] } ]
+      (annotations.sandboxData): !include sandbox/working-tax-credits-response.md
+      headers:
+        Authorization:
+          description: An OAuth 2.0 Bearer Token with the scopes you have been assigned.
+          type: string
+          required: true
+          example: Bearer <BEARER_TOKEN>
+      queryParameters:
+        matchId:
+          description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+          type: string
+          required: true
+          example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+        fromDate:
+          description: The start date for Working Tax Credit data requested.
+          type: string
+          required: true
+          example: 2016-01-01
+        toDate:
+         description: The end date for Working Tax Credit data requested. If missing, it defaults to today's date.
+         type: string
+         example: 2017-03-01
       responses:
         200:
-          description: Throws an exception
+          description: Use this endpoint to get an individual’s Working Tax Credit details for the requested time period. Data is not available before 2015.
           body:
             application/json:
               example: !include examples/working-tax-credits-response.json
               type: !include schemas/working-tax-credits-response.json
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                BadRequest:
+                  description: Invalid request
+                  value:
+                    code: INVALID_REQUEST
+        404:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                NotFound:
+                  description: Not Found
+                  value:
+                    code: NOT_FOUND
