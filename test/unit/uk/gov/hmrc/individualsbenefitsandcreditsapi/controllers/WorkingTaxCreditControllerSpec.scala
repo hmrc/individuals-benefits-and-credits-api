@@ -19,12 +19,11 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.stream.Materializer
 import org.joda.time.{Interval, LocalDate}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{
   AuthConnector,
   Enrolment,
@@ -59,46 +58,20 @@ class WorkingTaxCreditControllerSpec
   private val testInterval = new Interval(fromDate, toDate)
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val enrolments = Enrolments(
-    Set(
-      Enrolment("read:hello-scopes-1",
-                Seq(EnrolmentIdentifier("FOO", "BAR")),
-                "Activated"),
-      Enrolment("read:hello-scopes-2",
-                Seq(EnrolmentIdentifier("FOO2", "BAR2")),
-                "Activated"),
-      Enrolment("read:hello-scopes-3",
-                Seq(EnrolmentIdentifier("FOO3", "BAR3")),
-                "Activated")
-    )
-  )
-
-  private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) =
-    new AuthConnector {
-
-      def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
-          implicit hc: HeaderCarrier,
-          ec: ExecutionContext): Future[A] = {
-        stubbedRetrievalResult.map(_.asInstanceOf[A])
-      }
-    }
-
-  private def myRetrievals = Future.successful(
-    enrolments
-  )
 
   trait Fixture {
 
     val scopeService = mock[ScopesService]
     val liveTaxCreditsService = mock[LiveTaxCreditsService]
     val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
+    val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
     val scopes: Iterable[String] =
       Iterable("read:hello-scopes-1", "read:hello-scopes-2")
 
     val liveWorkingTaxCreditsController =
       new LiveWorkingTaxCreditController(
-        fakeAuthConnector(myRetrievals),
+        mockAuthConnector,
         cc,
         scopeService,
         liveTaxCreditsService
@@ -106,13 +79,19 @@ class WorkingTaxCreditControllerSpec
 
     val sandboxWorkingTaxCreditsController =
       new SandboxWorkingTaxCreditController(
-        fakeAuthConnector(myRetrievals),
+        mockAuthConnector,
         cc,
         scopeService,
         sandboxTaxCreditsService
       )
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
+
+    when(
+      mockAuthConnector.authorise(
+        eqTo(Enrolment("test-scope")),
+        refEq(Retrievals.allEnrolments))(any(), any()))
+      .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
     implicit val executionContext =
       fakeApplication.injector.instanceOf[ExecutionContext]
