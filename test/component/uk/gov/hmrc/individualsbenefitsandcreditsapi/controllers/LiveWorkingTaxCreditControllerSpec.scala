@@ -116,7 +116,6 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
     }
 
     scenario("invalid token") {
-
       Given("an invalid token")
       AuthStub.willNotAuthorizePrivilegedAuthToken(authToken, rootScope)
 
@@ -134,6 +133,46 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
         "message" -> "Bearer token is missing or not authorized"
       )
     }
+
+    scenario("toDate earlier than fromDate") {
+      Given("a valid privileged Auth bearer token")
+      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
+
+      When(
+        "the working tax credits endpoint is invoked with an toDate earlier than fromDate")
+      val response =
+        Http(
+          s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=$toDate&toDate=$fromDate")
+          .headers(requestHeaders(acceptHeaderP1))
+          .asString
+
+      Then("the response status should be 400 (invalid request)")
+      response.code shouldBe BAD_REQUEST
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "INVALID_REQUEST",
+        "message" -> "Invalid time period requested"
+      )
+    }
+
+    scenario("From date requested is earlier than 31st March 2013") {
+      Given("a valid privileged Auth bearer token")
+      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
+
+      When(
+        "the workign tax credits endpoint is invoked with toDate before 31st March 2013")
+      val response = Http(
+        s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=2012-01-01&toDate=$toDate")
+        .headers(requestHeaders(acceptHeaderP1))
+        .asString
+
+      Then("the response status should be 400 (invalid request)")
+      response.code shouldBe BAD_REQUEST
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "INVALID_REQUEST",
+        "message" -> "fromDate earlier than 31st March 2013"
+      )
+    }
+
   }
 
 }
