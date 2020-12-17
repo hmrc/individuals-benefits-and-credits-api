@@ -57,8 +57,10 @@ class ScopesService @Inject()(configuration: Configuration) {
     getFieldNames(authorizedDataItemsOnEndpoint)
   }
 
-  def getValidFieldsForCacheKey(scopes: List[String]): String =
+  def getValidFieldsForCacheKey(scopes: List[String]): String = {
+    println(scopes)
     scopes.flatMap(getScopeItemsKeys).distinct.reduce(_ + _)
+  }
 
   def getAccessibleEndpoints(scopes: List[String]): Iterable[String] = {
     val scopeKeys = scopes.flatMap(s => getScopeItemsKeys(s))

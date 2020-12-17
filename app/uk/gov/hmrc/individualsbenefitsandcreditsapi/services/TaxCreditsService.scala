@@ -62,23 +62,22 @@ class LiveTaxCreditsService @Inject()(
       matchId,
       interval,
       scopesService.getValidFieldsForCacheKey(scopes.toList))
-    cacheService.get(
-      cacheid, {
-        individualsMatchingApiConnector
-          .resolve(matchId)
-          .flatMap(ninoMatch => {
-            val scopesFields =
-              scopesHelper.getQueryStringFor(scopes.toList, endpoint)
-            val scopesFieldsOption =
-              if (scopesFields.length == 0) None else Some(scopesFields)
-            ifConnector
-              .fetchTaxCredits(ninoMatch.nino, interval, scopesFieldsOption)
-              .map(
-                applications => applications.map(Application.create)
-              )
-          })
-      }
-    )
+    cacheService
+      .get(
+        cacheid, {
+          individualsMatchingApiConnector
+            .resolve(matchId)
+            .flatMap(ninoMatch => {
+              val scopesFields =
+                scopesHelper.getQueryStringFor(scopes.toList, endpoint)
+              val scopesFieldsOption =
+                if (scopesFields.length == 0) None else Some(scopesFields)
+              ifConnector
+                .fetchTaxCredits(ninoMatch.nino, interval, scopesFieldsOption)
+            })
+        }
+      )
+      .map(applications => applications.map(Application.create))
   }
 }
 

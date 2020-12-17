@@ -39,16 +39,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
     implicit ec: ExecutionContext) {
 
-  private val baseUrl = servicesConfig.baseUrl("integration-framework")
   private val integrationFrameworkBearerToken =
     servicesConfig.getString(
       "microservice.services.integration-framework.authorization-token")
   private val integrationFrameworkEnvironment =
     servicesConfig.getString(
       "microservice.services.integration-framework.environment")
-
-  private val emptyResponse =
-    IfApplications(Seq(IfApplication(0, None, None, None, None)))
 
   val serviceUrl = servicesConfig.baseUrl("integration-framework")
 

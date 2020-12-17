@@ -18,12 +18,18 @@ package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
   AuthStub,
-  BaseSpec
+  BaseSpec,
+  IfStub,
+  IndividualsMatchingApiStub
 }
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
+import testUtils.TestHelpers
 
-class LiveWorkingTaxCreditControllerSpec extends BaseSpec {
+import java.util.UUID
+
+class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
 
   val rootScope = List(
     "read:individuals-benefits-and-credits-hmcts-c2",
@@ -35,20 +41,76 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec {
     "read:individuals-benefits-and-credits-lsani-c3"
   )
 
-  feature("Live Working Tax Credit Controller") {
-    scenario("working-tax-credit route") {
+  private val matchId = UUID.randomUUID()
+  private val nino = "AB123456C"
+  private val fromDate = "2017-01-01"
+  private val toDate = "2017-09-25"
+
+  private val applications = createValidIfApplicationsMultiple
+
+  feature("Live working tax credit route") {
+    scenario("valid request") {
       Given("A valid auth token ")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
 
+      And("a valid record in the matching API")
+      IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
+
+      And("IF will return benefits and credits applications")
+      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
+
       When("I make a call to working-tax-credit endpoint")
       val response =
-        Http(s"$serviceUrl/working-tax-credit")
+        Http(
+          s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeaderP1))
           .asString
 
-      Then("The response status should be 500")
-      response.code shouldBe INTERNAL_SERVER_ERROR
+      Then("The response status should be 200")
+      response.code shouldBe OK
+    }
 
+    scenario("missing match Id") {
+
+      Given("A valid auth token ")
+      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
+
+      And("IF will return benefits and credits applications")
+      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
+
+      When("I make a call to working-tax-credit endpoint")
+      val response =
+        Http(
+          s"$serviceUrl/working-tax-credit/?fromDate=$fromDate&toDate=$toDate")
+          .headers(requestHeaders(acceptHeaderP1))
+          .asString
+
+      Then("The response status should be 400")
+      response.code shouldBe BAD_REQUEST
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "INVALID_REQUEST",
+        "message" -> "matchId is required"
+      )
+    }
+
+    scenario("invalid token") {
+
+      Given("an invalid token")
+      AuthStub.willNotAuthorizePrivilegedAuthToken(authToken, rootScope)
+
+      When("I make a call to working-tax-credit endpoint")
+      val response =
+        Http(
+          s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+          .headers(requestHeaders(acceptHeaderP1))
+          .asString
+
+      Then("the response status should be 401 (unauthorized)")
+      response.code shouldBe UNAUTHORIZED
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "UNAUTHORIZED",
+        "message" -> "Bearer token is missing or not authorized"
+      )
     }
   }
 

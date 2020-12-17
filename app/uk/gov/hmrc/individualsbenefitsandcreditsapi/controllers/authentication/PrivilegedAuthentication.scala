@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -33,17 +34,15 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
   }
 
   def requiresPrivilegedAuthentication(endpointScopes: Iterable[String])(
-      implicit hc: HeaderCarrier): Future[List[String]] = {
-
+      f: Iterable[String] => Future[Result])(
+      implicit hc: HeaderCarrier): Future[Result] = {
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
-
     if (environment == Environment.SANDBOX)
-      Future.successful(endpointScopes.toList)
+      f(endpointScopes.toList)
     else {
       authorised(authPredicate(endpointScopes))
         .retrieve(Retrievals.allEnrolments) {
-          case scopes =>
-            Future.successful(scopes.enrolments.map(e => e.key).toList)
+          case scopes => f(scopes.enrolments.map(e => e.key).toList)
         }
     }
   }

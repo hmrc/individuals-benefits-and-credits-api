@@ -35,12 +35,10 @@ abstract class RootController @Inject()(
       val scopes =
         scopeService.getEndPointScopes("benefits-and-credits")
 
-      requiresPrivilegedAuthentication(scopes)
-        .flatMap { authScopes =>
-          //TODO:- add actual scopes
-          throw new Exception("NOT_IMPLEMENTED")
-        }
-        .recover(recovery)
+      requiresPrivilegedAuthentication(scopes) { authScopes =>
+        //TODO:- add actual scopes
+        throw new Exception("NOT_IMPLEMENTED")
+      }.recover(recovery)
 
   }
 

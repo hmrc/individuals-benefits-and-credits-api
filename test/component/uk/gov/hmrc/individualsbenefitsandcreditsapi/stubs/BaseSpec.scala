@@ -46,13 +46,15 @@ trait BaseSpec
       "auditing.enabled" -> false,
       "auditing.traceRequests" -> false,
       "microservice.services.auth.port" -> AuthStub.port,
+      "microservice.services.individuals-matching-api.port" -> IndividualsMatchingApiStub.port,
+      "microservice.services.integration-framework.port" -> IfStub.port,
       "run.mode" -> "It"
     )
     .build()
 
   val timeout = Duration(5, TimeUnit.SECONDS)
   val serviceUrl = s"http://localhost:$port"
-  val mocks = Seq(AuthStub)
+  val mocks = Seq(AuthStub, IndividualsMatchingApiStub, IfStub)
   val authToken = "Bearer AUTH_TOKEN"
   val clientId = "CLIENT_ID"
   val acceptHeaderP1 = ACCEPT -> "application/vnd.hmrc.P1.0+json"

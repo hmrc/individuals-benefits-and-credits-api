@@ -46,28 +46,26 @@ abstract class WorkingTaxCreditController @Inject()(
       val scopes =
         scopeService.getEndPointScopes("working-tax-credit")
 
-      requiresPrivilegedAuthentication(scopes)
-        .flatMap { authScopes =>
-          println("AUTH SCOPES " + authScopes)
-
-          taxCreditsService
-            .getWorkingTaxCredits(matchId,
-                                  interval,
-                                  "working-tax-credit",
-                                  authScopes)
-            .map(
-              applications => {
-                val selfLink =
-                  HalLink("self",
-                          urlWithInterval(
-                            s"/individuals/employments/paye?matchId=$matchId",
-                            interval.getStart))
-                val wtcJsonObj = Json.obj("applications" -> applications)
-                Ok(state(wtcJsonObj) ++ selfLink)
-              }
-            )
-        }
-        .recover(recovery)
+      requiresPrivilegedAuthentication(scopes) { authScopes =>
+        taxCreditsService
+          .getWorkingTaxCredits(matchId,
+                                interval,
+                                "working-tax-credit",
+                                authScopes)
+          .map(
+            applications => {
+              val selfLink =
+                HalLink(
+                  "self",
+                  urlWithInterval(
+                    s"/individuals/benefits-and-credits/working-tax-credits?matchId=$matchId",
+                    interval.getStart))
+              val wtcJsonObj =
+                Json.obj("applications" -> Json.toJson(applications))
+              Ok(state(wtcJsonObj) ++ selfLink)
+            }
+          )
+      }.recover(recovery)
     }
 
 }

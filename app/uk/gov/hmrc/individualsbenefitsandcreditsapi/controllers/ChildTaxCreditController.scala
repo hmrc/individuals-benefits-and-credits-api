@@ -37,12 +37,10 @@ abstract class ChildTaxCreditController @Inject()(
       val scopes =
         scopeService.getEndPointScopes("child-tax-credit")
 
-      requiresPrivilegedAuthentication(scopes)
-        .flatMap { authScopes =>
-          //TODO:- add actual scopes
-          throw new Exception("NOT_IMPLEMENTED")
-        }
-        .recover(recovery)
+      requiresPrivilegedAuthentication(scopes) { authScopes =>
+        //TODO:- add actual scopes
+        throw new Exception("NOT_IMPLEMENTED")
+      }.recover(recovery)
   }
 
 }
