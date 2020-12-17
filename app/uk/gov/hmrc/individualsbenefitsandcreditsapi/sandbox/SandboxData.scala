@@ -17,14 +17,8 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox
 
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  Application,
-  Award,
-  ChildTaxCredit,
-  Individual,
-  Payment,
-  WorkingTaxCredit
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Individual
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{WtcApplication, WtcAward, WtcChildTaxCredit, WtcPayment, WtcWorkingTaxCredit}
 
 import java.util.UUID
 
@@ -38,25 +32,25 @@ object SandboxData {
   object BenefitsAndCredits {
 
     object Applications {
-      val firstApplication = Application(
+      val firstApplication = WtcApplication(
         123,
         Seq(
-          Award(
+          WtcAward(
             Some("2016-10-10"),
             Some(100.12),
-            Some(WorkingTaxCredit(Some(200.34), Some(300.56))),
-            Some(ChildTaxCredit(Some(400.78))),
+            Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
+            Some(WtcChildTaxCredit(Some(400.78))),
             Some(500.90),
             Some(
               Seq(
-                Payment(
+                WtcPayment(
                   Some("2016-10-10"),
                   Some("2016-11-11"),
                   Some(7),
                   Some("ETC"),
                   Some(123.45)
                 ),
-                Payment(
+                WtcPayment(
                   Some("2016-12-12"),
                   Some("2017-01-01"),
                   Some(7),
@@ -68,25 +62,25 @@ object SandboxData {
         )
       )
 
-      val secondApplication = Application(
+      val secondApplication = WtcApplication(
         456,
         Seq(
-          Award(
+          WtcAward(
             Some("2016-10-10"),
             Some(100.12),
-            Some(WorkingTaxCredit(Some(200.34), Some(300.56))),
-            Some(ChildTaxCredit(Some(400.78))),
+            Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
+            Some(WtcChildTaxCredit(Some(400.78))),
             Some(500.90),
             Some(
               Seq(
-                Payment(
+                WtcPayment(
                   Some("2017-10-10"),
                   Some("2017-11-11"),
                   Some(7),
                   Some("ETC"),
                   Some(123.45)
                 ),
-                Payment(
+                WtcPayment(
                   Some("2017-12-12"),
                   Some("2018-01-01"),
                   Some(7),
@@ -95,22 +89,22 @@ object SandboxData {
                 )
               ))
           ),
-          Award(
+          WtcAward(
             Some("2016-10-10"),
             Some(100.12),
-            Some(WorkingTaxCredit(Some(200.34), Some(300.56))),
-            Some(ChildTaxCredit(Some(400.78))),
+            Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
+            Some(WtcChildTaxCredit(Some(400.78))),
             Some(500.90),
             Some(
               Seq(
-                Payment(
+                WtcPayment(
                   Some("2018-10-10"),
                   Some("2018-11-11"),
                   Some(7),
                   Some("ETC"),
                   Some(123.45)
                 ),
-                Payment(
+                WtcPayment(
                   Some("2018-12-12"),
                   Some("2019-01-01"),
                   Some(7),

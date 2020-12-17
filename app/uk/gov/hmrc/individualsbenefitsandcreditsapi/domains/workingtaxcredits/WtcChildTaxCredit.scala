@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
 
-case class ChildTaxCredit(childCareAmount: Option[Double])
+case class WtcChildTaxCredit(childCareAmount: Option[Double])
 
-object ChildTaxCredit {
+object WtcChildTaxCredit {
 
-  def create(ifChildTaxTaxCredit: IfChildTaxCredit): ChildTaxCredit = {
-    ChildTaxCredit(ifChildTaxTaxCredit.childCareAmount)
+  def create(ifChildTaxTaxCredit: IfChildTaxCredit): WtcChildTaxCredit = {
+    WtcChildTaxCredit(ifChildTaxTaxCredit.childCareAmount)
   }
 
-  implicit val childTaxCreditFormat: Format[ChildTaxCredit] = Format(
-    (JsPath \ "childCareAmount").readNullable[Double].map(ChildTaxCredit(_)),
+  implicit val childTaxCreditFormat: Format[WtcChildTaxCredit] = Format(
+    (JsPath \ "childCareAmount").readNullable[Double].map(WtcChildTaxCredit(_)),
     (JsPath \ "childCareAmount")
       .writeNullable[Double]
       .contramap(_.childCareAmount)

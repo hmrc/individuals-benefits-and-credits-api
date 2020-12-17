@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 
-case class Application(id: Double, awards: Seq[Award])
+case class WtcApplication(id: Double, awards: Seq[WtcAward])
 
-object Application {
+object WtcApplication {
 
   def create(ifApplication: IfApplication) = {
-    Application(
+    WtcApplication(
       ifApplication.id,
-      ifApplication.awards.map(x => x.map(Award.create)).getOrElse(Seq.empty)
+      ifApplication.awards.map(x => x.map(WtcAward.create)).getOrElse(Seq.empty)
     )
   }
 
-  implicit val applicationFormat: Format[Application] = Format(
+  implicit val applicationFormat: Format[WtcApplication] = Format(
     (
       (JsPath \ "id").read[Double] and
-        (JsPath \ "awards").read[Seq[Award]]
-    )(Application.apply _),
+        (JsPath \ "awards").read[Seq[WtcAward]]
+    )(WtcApplication.apply _),
     (
       (JsPath \ "id").write[Double] and
-        (JsPath \ "awards").write[Seq[Award]]
-    )(unlift(Application.unapply))
+        (JsPath \ "awards").write[Seq[WtcAward]]
+    )(unlift(WtcApplication.unapply))
   )
 }

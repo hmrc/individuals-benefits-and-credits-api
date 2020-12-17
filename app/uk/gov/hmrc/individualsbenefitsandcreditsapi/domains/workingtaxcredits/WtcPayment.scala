@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
-case class Payment(
+case class WtcPayment(
     startDate: Option[String],
     endDate: Option[String],
     frequency: Option[Int],
@@ -28,9 +28,9 @@ case class Payment(
     amount: Option[Double]
 )
 
-object Payment {
+object WtcPayment {
   def create(ifPayment: IfPayment) = {
-    Payment(
+    WtcPayment(
       ifPayment.startDate,
       ifPayment.endDate,
       ifPayment.frequency,
@@ -39,20 +39,20 @@ object Payment {
     )
   }
 
-  implicit val paymentFormat: Format[Payment] = Format(
+  implicit val paymentFormat: Format[WtcPayment] = Format(
     (
       (JsPath \ "startDate").readNullable[String] and
         (JsPath \ "endDate").readNullable[String] and
         (JsPath \ "frequency").readNullable[Int] and
         (JsPath \ "tcType").readNullable[String] and
         (JsPath \ "amount").readNullable[Double]
-    )(Payment.apply _),
+    )(WtcPayment.apply _),
     (
       (JsPath \ "startDate").writeNullable[String] and
         (JsPath \ "endDate").writeNullable[String] and
         (JsPath \ "frequency").writeNullable[Int] and
         (JsPath \ "tcType").writeNullable[String] and
         (JsPath \ "amount").writeNullable[Double]
-    )(unlift(Payment.unapply))
+    )(unlift(WtcPayment.unapply))
   )
 }

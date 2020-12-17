@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Application
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class ApplicationSpec extends UnitSpec with DomainHelpers {
+class WtcApplicationSpec extends UnitSpec with DomainHelpers {
   "Creates correctly from IfApplication" in {
     val ifApplication = IfApplication(
       123,
@@ -30,7 +31,7 @@ class ApplicationSpec extends UnitSpec with DomainHelpers {
       Some(Seq(createValidIfAward()))
     )
 
-    val result = Application.create(ifApplication)
+    val result = WtcApplication.create(ifApplication)
     result.id shouldBe 123
   }
 }

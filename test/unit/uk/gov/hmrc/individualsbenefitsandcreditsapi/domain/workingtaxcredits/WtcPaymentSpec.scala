@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Payment
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcPayment
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class PaymentSpec extends UnitSpec {
+class WtcPaymentSpec extends UnitSpec {
   "Create correctly from If Payment" in {
     val ifPaymemnt = IfPayment(
       Some("test1"),
@@ -36,7 +36,7 @@ class PaymentSpec extends UnitSpec {
       Some("test9")
     )
 
-    val result = Payment.create(ifPaymemnt)
+    val result = WtcPayment.create(ifPaymemnt)
 
     result.startDate shouldBe Some("test3")
     result.endDate shouldBe Some("test4")

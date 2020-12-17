@@ -16,19 +16,9 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  Application,
-  Award,
-  ChildTaxCredit,
-  Payment,
-  WorkingTaxCredit
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
-  IfAward,
-  IfChildTaxCredit,
-  IfPayment,
-  IfWorkTaxCredit
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.WorkingTaxCredit
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfAward, IfChildTaxCredit, IfPayment, IfWorkTaxCredit}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{WtcApplication, WtcAward, WtcChildTaxCredit, WtcPayment, WtcWorkingTaxCredit}
 
 trait DomainHelpers {
   def createValidIfChildTaxCredit() = {
@@ -75,8 +65,8 @@ trait DomainHelpers {
     )
   }
 
-  def createValidPayment(): Payment = {
-    Payment(
+  def createValidPayment(): WtcPayment = {
+    WtcPayment(
       Some("2016-05-01"),
       Some("2016-06-01"),
       Some(7),
@@ -85,19 +75,19 @@ trait DomainHelpers {
     )
   }
 
-  def createValidAward(): Award = {
-    new Award(
+  def createValidAward(): WtcAward = {
+    new WtcAward(
       Some("2016-05-01"),
       Some(10.0),
-      Some(WorkingTaxCredit(Some(20.0), Some(30.0))),
-      Some(ChildTaxCredit(Some(40.0))),
+      Some(WtcWorkingTaxCredit(Some(20.0), Some(30.0))),
+      Some(WtcChildTaxCredit(Some(40.0))),
       Some(50.0),
       Some(Seq(createValidPayment()))
     )
   }
 
-  def createValidApplication(): Application = {
-    new Application(123, Seq(createValidAward()))
+  def createValidApplication(): WtcApplication = {
+    new WtcApplication(123, Seq(createValidAward()))
   }
 
 }

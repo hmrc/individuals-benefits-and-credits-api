@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Award
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcAward
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class AwardSpec extends UnitSpec with DomainHelpers {
+class WtcAwardSpec extends UnitSpec with DomainHelpers {
   "Creates correctly from IfAward" in {
     val ifAward = IfAward(
       Some("test1"),
@@ -33,7 +34,7 @@ class AwardSpec extends UnitSpec with DomainHelpers {
       Some(Seq(createValidIfPayment()))
     )
 
-    val result = Award.create(ifAward)
+    val result = WtcAward.create(ifAward)
 
     result.grossTaxYearAmount shouldBe Some(20.0)
     result.payProfCalcDate shouldBe Some("test1")

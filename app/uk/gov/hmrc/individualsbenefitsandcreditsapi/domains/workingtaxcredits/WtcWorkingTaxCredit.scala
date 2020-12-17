@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import play.api.libs.json.{Format, JsPath}
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
 
-case class WorkingTaxCredit(amount: Option[Double], paidYTD: Option[Double])
+case class WtcWorkingTaxCredit(amount: Option[Double], paidYTD: Option[Double])
 
-object WorkingTaxCredit {
+object WtcWorkingTaxCredit {
 
-  def create(ifWorkTaxCredit: IfWorkTaxCredit): WorkingTaxCredit = {
-    WorkingTaxCredit(ifWorkTaxCredit.amount, ifWorkTaxCredit.paidYTD)
+  def create(ifWorkTaxCredit: IfWorkTaxCredit): WtcWorkingTaxCredit = {
+    WtcWorkingTaxCredit(ifWorkTaxCredit.amount, ifWorkTaxCredit.paidYTD)
   }
 
-  implicit val workingTaxCreditFormat: Format[WorkingTaxCredit] = Format(
+  implicit val workingTaxCreditFormat: Format[WtcWorkingTaxCredit] = Format(
     (
       (JsPath \ "amount").readNullable[Double] and
         (JsPath \ "paidYTD").readNullable[Double]
-    )(WorkingTaxCredit.apply _),
+    )(WtcWorkingTaxCredit.apply _),
     (
       (JsPath \ "amount").writeNullable[Double] and
         (JsPath \ "paidYTD").writeNullable[Double]
-    )(unlift(WorkingTaxCredit.unapply))
+    )(unlift(WtcWorkingTaxCredit.unapply))
   )
 }

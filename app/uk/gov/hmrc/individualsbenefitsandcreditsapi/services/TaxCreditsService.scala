@@ -18,25 +18,13 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
 import org.joda.time.Interval
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
-  IfConnector,
-  IndividualsMatchingApiConnector
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  Application,
-  MatchNotFoundException,
-  MatchedCitizen
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
-  ScopesHelper,
-  ScopesService
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
-  CacheId,
-  CacheService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheId, CacheService}
 
 import java.util.UUID
 import javax.inject.Inject
@@ -52,7 +40,7 @@ trait TaxCreditsService {
                            endpoint: String,
                            scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
-      ec: ExecutionContext): Future[Seq[Application]]
+      ec: ExecutionContext): Future[Seq[WtcApplication]]
 }
 
 class LiveTaxCreditsService @Inject()(
@@ -67,7 +55,7 @@ class LiveTaxCreditsService @Inject()(
                                     endpoint: String,
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
-      ec: ExecutionContext): Future[Seq[Application]] = {
+      ec: ExecutionContext): Future[Seq[WtcApplication]] = {
     val cacheid = CacheId(
       matchId,
       interval,
@@ -86,7 +74,7 @@ class LiveTaxCreditsService @Inject()(
             })
         }
       )
-      .map(applications => applications.map(Application.create))
+      .map(applications => applications.map(WtcApplication.create))
   }
 
   override def resolve(matchId: UUID)(
@@ -107,7 +95,7 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
                                     endpoint: String,
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
-      ec: ExecutionContext): Future[Seq[Application]] = {
+      ec: ExecutionContext): Future[Seq[WtcApplication]] = {
     Future.successful(
       BenefitsAndCredits.Applications.applications
     )
