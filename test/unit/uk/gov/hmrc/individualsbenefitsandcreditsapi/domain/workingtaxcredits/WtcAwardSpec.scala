@@ -36,9 +36,7 @@ class WtcAwardSpec extends UnitSpec with DomainHelpers {
 
     val result = WtcAward.create(ifAward)
 
-    result.grossTaxYearAmount shouldBe Some(20.0)
     result.payProfCalcDate shouldBe Some("test1")
     result.totalEntitlement shouldBe Some(10.0)
-    result.grossTaxYearAmount shouldBe Some(20.0)
   }
 }

@@ -18,7 +18,13 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox
 
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Individual
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{WtcApplication, WtcAward, WtcChildTaxCredit, WtcPayment, WtcWorkingTaxCredit}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{
+  WtcApplication,
+  WtcAward,
+  WtcChildTaxCredit,
+  WtcPayment,
+  WtcWorkingTaxCredit
+}
 
 import java.util.UUID
 
@@ -40,7 +46,6 @@ object SandboxData {
             Some(100.12),
             Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
             Some(WtcChildTaxCredit(Some(400.78))),
-            Some(500.90),
             Some(
               Seq(
                 WtcPayment(
@@ -70,7 +75,6 @@ object SandboxData {
             Some(100.12),
             Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
             Some(WtcChildTaxCredit(Some(400.78))),
-            Some(500.90),
             Some(
               Seq(
                 WtcPayment(
@@ -94,7 +98,6 @@ object SandboxData {
             Some(100.12),
             Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
             Some(WtcChildTaxCredit(Some(400.78))),
-            Some(500.90),
             Some(
               Seq(
                 WtcPayment(

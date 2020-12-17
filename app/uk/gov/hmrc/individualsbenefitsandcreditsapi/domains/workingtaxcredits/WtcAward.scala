@@ -21,12 +21,11 @@ import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class WtcAward(
-                  payProfCalcDate: Option[String],
-                  totalEntitlement: Option[Double],
-                  workingTaxCredit: Option[WtcWorkingTaxCredit],
-                  childTaxCredit: Option[WtcChildTaxCredit],
-                  grossTaxYearAmount: Option[Double],
-                  payments: Option[Seq[WtcPayment]]
+    payProfCalcDate: Option[String],
+    totalEntitlement: Option[Double],
+    workingTaxCredit: Option[WtcWorkingTaxCredit],
+    childTaxCredit: Option[WtcChildTaxCredit],
+    payments: Option[Seq[WtcPayment]]
 )
 
 object WtcAward {
@@ -40,7 +39,6 @@ object WtcAward {
       ifAward.totalEntitlement,
       wtc,
       ctc,
-      ifAward.grossTaxYearAmount,
       ifAward.payments.map(x => x.map(WtcPayment.create))
     )
   }
@@ -51,7 +49,6 @@ object WtcAward {
         (JsPath \ "totalEntitlement").readNullable[Double] and
         (JsPath \ "workingTaxCredit").readNullable[WtcWorkingTaxCredit] and
         (JsPath \ "childTaxCredit").readNullable[WtcChildTaxCredit] and
-        (JsPath \ "grossTaxYearAmount").readNullable[Double] and
         (JsPath \ "payments").readNullable[Seq[WtcPayment]]
     )(WtcAward.apply _),
     (
@@ -59,7 +56,6 @@ object WtcAward {
         (JsPath \ "totalEntitlement").writeNullable[Double] and
         (JsPath \ "workingTaxCredit").writeNullable[WtcWorkingTaxCredit] and
         (JsPath \ "childTaxCredit").writeNullable[WtcChildTaxCredit] and
-        (JsPath \ "grossTaxYearAmount").writeNullable[Double] and
         (JsPath \ "payments").writeNullable[Seq[WtcPayment]]
     )(unlift(WtcAward.unapply))
   )

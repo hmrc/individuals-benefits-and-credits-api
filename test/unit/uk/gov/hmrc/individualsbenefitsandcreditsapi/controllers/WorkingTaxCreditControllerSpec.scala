@@ -115,7 +115,7 @@ class WorkingTaxCreditControllerSpec
               eqTo(List("test-scope")))(any(), any()))
             .thenReturn(
               Future.successful(
-                Seq(createValidApplication(), createValidApplication()))
+                Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
           val result =
@@ -178,25 +178,6 @@ class WorkingTaxCreditControllerSpec
                   .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
-        }
-      }
-    }
-
-    "the sandbox controller" should {
-      "the working tax credit function" should {
-        "throw an exception" in new Fixture {
-
-          val fakeRequest =
-            FakeRequest("GET", s"/sandbox/working-tax-credits/")
-
-          val result = {
-            intercept[Exception] {
-              await(
-                sandboxWorkingTaxCreditsController
-                  .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
-            }
-          }
-          assert(result.getMessage == "NOT_IMPLEMENTED")
         }
       }
     }
