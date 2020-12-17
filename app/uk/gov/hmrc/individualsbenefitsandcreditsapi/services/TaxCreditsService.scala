@@ -22,7 +22,13 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
   IfConnector,
   IndividualsMatchingApiConnector
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Application
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
+  Application,
+  MatchNotFoundException,
+  MatchedCitizen
+}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
   ScopesHelper,
   ScopesService
@@ -34,9 +40,13 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
 
 import java.util.UUID
 import javax.inject.Inject
+import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 
 trait TaxCreditsService {
+
+  def resolve(matchId: UUID)(implicit hc: HeaderCarrier): Future[MatchedCitizen]
+
   def getWorkingTaxCredits(matchId: UUID,
                            interval: Interval,
                            endpoint: String,
@@ -65,8 +75,7 @@ class LiveTaxCreditsService @Inject()(
     cacheService
       .get(
         cacheid, {
-          individualsMatchingApiConnector
-            .resolve(matchId)
+          resolve(matchId)
             .flatMap(ninoMatch => {
               val scopesFields =
                 scopesHelper.getQueryStringFor(scopes.toList, endpoint)
@@ -79,16 +88,28 @@ class LiveTaxCreditsService @Inject()(
       )
       .map(applications => applications.map(Application.create))
   }
+
+  override def resolve(matchId: UUID)(
+      implicit hc: HeaderCarrier): Future[MatchedCitizen] =
+    individualsMatchingApiConnector.resolve(matchId)
 }
 
 class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
+
+  override def resolve(matchId: UUID)(
+      implicit hc: HeaderCarrier): Future[MatchedCitizen] =
+    if (matchId.equals(sandboxMatchId))
+      successful(MatchedCitizen(sandboxMatchId, sandboxNino))
+    else failed(new MatchNotFoundException)
+
   override def getWorkingTaxCredits(matchId: UUID,
                                     interval: Interval,
                                     endpoint: String,
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[Application]] = {
-    //TODO FIX ME
-    Future.successful(Seq.empty)
+    Future.successful(
+      BenefitsAndCredits.Applications.applications
+    )
   }
 }

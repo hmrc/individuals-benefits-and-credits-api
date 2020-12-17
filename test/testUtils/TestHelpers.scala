@@ -125,4 +125,8 @@ trait TestHelpers {
 
     IfApplications(Seq(application, application))
   }
+
+  def createEmpyIfApplications: IfApplications = {
+    IfApplications(Seq.empty)
+  }
 }

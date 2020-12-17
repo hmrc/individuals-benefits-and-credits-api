@@ -93,6 +93,28 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
       )
     }
 
+    scenario("missing from date") {
+
+      Given("A valid auth token ")
+      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
+
+      And("IF will return benefits and credits applications")
+      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
+
+      When("I make a call to working-tax-credit endpoint")
+      val response =
+        Http(s"$serviceUrl/working-tax-credit/?matchId=$matchId&toDate=$toDate")
+          .headers(requestHeaders(acceptHeaderP1))
+          .asString
+
+      Then("The response status should be 400")
+      response.code shouldBe BAD_REQUEST
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "INVALID_REQUEST",
+        "message" -> "fromDate is required"
+      )
+    }
+
     scenario("invalid token") {
 
       Given("an invalid token")
