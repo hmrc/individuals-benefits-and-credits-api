@@ -46,13 +46,13 @@ object CtcChildTaxCredit {
         (JsPath \ "familyAmount").readNullable[Double] and
         (JsPath \ "babyAmount").readNullable[Double] and
         (JsPath \ "paidYTD").readNullable[Double]
-      )(CtcChildTaxCredit.apply _),
+    )(CtcChildTaxCredit.apply _),
     (
       (JsPath \ "childCareAmount").writeNullable[Double] and
         (JsPath \ "ctcChildAmount").writeNullable[Double] and
         (JsPath \ "familyAmount").writeNullable[Double] and
         (JsPath \ "babyAmount").writeNullable[Double] and
         (JsPath \ "paidYTD").writeNullable[Double]
-      )(unlift(CtcChildTaxCredit.unapply))
+    )(unlift(CtcChildTaxCredit.unapply))
   )
 }

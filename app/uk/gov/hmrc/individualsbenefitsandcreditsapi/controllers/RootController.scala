@@ -23,11 +23,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
-  LiveTaxCreditsService,
-  SandboxTaxCreditsService,
-  TaxCreditsService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesHelper
 
 import java.util.UUID

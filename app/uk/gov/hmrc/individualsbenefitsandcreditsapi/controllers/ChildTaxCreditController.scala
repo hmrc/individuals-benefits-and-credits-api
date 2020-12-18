@@ -26,11 +26,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
-  LiveTaxCreditsService,
-  SandboxTaxCreditsService,
-  TaxCreditsService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext
@@ -50,10 +46,7 @@ abstract class ChildTaxCreditController @Inject()(
 
       requiresPrivilegedAuthentication(scopes) { authScopes =>
         taxCreditsService
-          .getChildTaxCredits(matchId,
-                                interval,
-                                "child-tax-credit",
-                                authScopes)
+          .getChildTaxCredits(matchId, interval, "child-tax-credit", authScopes)
           .map(
             applications => {
               val selfLink =

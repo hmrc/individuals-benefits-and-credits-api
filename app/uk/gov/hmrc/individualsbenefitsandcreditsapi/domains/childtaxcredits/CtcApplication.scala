@@ -34,10 +34,10 @@ object CtcApplication {
     (
       (JsPath \ "id").read[Double] and
         (JsPath \ "awards").readNullable[Seq[CtcAward]]
-      )(CtcApplication.apply _),
+    )(CtcApplication.apply _),
     (
       (JsPath \ "id").write[Double] and
         (JsPath \ "awards").writeNullable[Seq[CtcAward]]
-      )(unlift(CtcApplication.unapply))
+    )(unlift(CtcApplication.unapply))
   )
 }

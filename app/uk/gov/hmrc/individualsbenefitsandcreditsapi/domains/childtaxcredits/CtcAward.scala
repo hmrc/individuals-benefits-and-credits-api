@@ -47,12 +47,12 @@ object CtcAward {
         (JsPath \ "totalEntitlement").readNullable[Double] and
         (JsPath \ "childTaxCredit").readNullable[CtcChildTaxCredit] and
         (JsPath \ "payments").readNullable[Seq[CtcPayment]]
-      )(CtcAward.apply _),
+    )(CtcAward.apply _),
     (
       (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
         (JsPath \ "totalEntitlement").writeNullable[Double] and
         (JsPath \ "childTaxCredit").writeNullable[CtcChildTaxCredit] and
         (JsPath \ "payments").writeNullable[Seq[CtcPayment]]
-      )(unlift(CtcAward.unapply))
+    )(unlift(CtcAward.unapply))
   )
 }
