@@ -16,12 +16,15 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
+import org.joda.time.{LocalDate}
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class WtcAward(
-    payProfCalcDate: Option[String],
+    payProfCalcDate: Option[LocalDate],
     totalEntitlement: Option[Double],
     workingTaxCredit: Option[WtcWorkingTaxCredit],
     childTaxCredit: Option[WtcChildTaxCredit],
@@ -35,7 +38,7 @@ object WtcAward {
     val ctc = ifAward.childTaxCredit.map(WtcChildTaxCredit.create)
 
     WtcAward(
-      ifAward.payProfCalcDate,
+      ifAward.payProfCalcDate.map(LocalDate.parse),
       ifAward.totalEntitlement,
       wtc,
       ctc,
@@ -45,14 +48,14 @@ object WtcAward {
 
   implicit val awardFormat: Format[WtcAward] = Format(
     (
-      (JsPath \ "payProfCalcDate").readNullable[String] and
+      (JsPath \ "payProfCalcDate").readNullable[LocalDate] and
         (JsPath \ "totalEntitlement").readNullable[Double] and
         (JsPath \ "workingTaxCredit").readNullable[WtcWorkingTaxCredit] and
         (JsPath \ "childTaxCredit").readNullable[WtcChildTaxCredit] and
         (JsPath \ "payments").readNullable[Seq[WtcPayment]]
     )(WtcAward.apply _),
     (
-      (JsPath \ "payProfCalcDate").writeNullable[String] and
+      (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
         (JsPath \ "totalEntitlement").writeNullable[Double] and
         (JsPath \ "workingTaxCredit").writeNullable[WtcWorkingTaxCredit] and
         (JsPath \ "childTaxCredit").writeNullable[WtcChildTaxCredit] and

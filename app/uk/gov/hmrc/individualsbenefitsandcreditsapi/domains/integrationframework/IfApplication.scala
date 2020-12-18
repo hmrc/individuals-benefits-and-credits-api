@@ -17,8 +17,8 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath, Reads}
-import play.api.libs.json.Reads.{max, min, pattern, verifying}
+import play.api.libs.json.Reads.pattern
+import play.api.libs.json.{Format, JsPath}
 
 case class IfApplication(id: Double,
                          ceasedDate: Option[String],

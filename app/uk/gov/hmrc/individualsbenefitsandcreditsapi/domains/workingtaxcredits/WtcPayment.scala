@@ -16,13 +16,16 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
+import org.joda.time.LocalDate
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
 case class WtcPayment(
-    startDate: Option[String],
-    endDate: Option[String],
+    startDate: Option[LocalDate],
+    endDate: Option[LocalDate],
     frequency: Option[Int],
     tcType: Option[String],
     amount: Option[Double]
@@ -31,8 +34,8 @@ case class WtcPayment(
 object WtcPayment {
   def create(ifPayment: IfPayment) = {
     WtcPayment(
-      ifPayment.startDate,
-      ifPayment.endDate,
+      ifPayment.startDate.map(LocalDate.parse),
+      ifPayment.endDate.map(LocalDate.parse),
       ifPayment.frequency,
       ifPayment.tcType,
       ifPayment.amount
@@ -41,15 +44,15 @@ object WtcPayment {
 
   implicit val paymentFormat: Format[WtcPayment] = Format(
     (
-      (JsPath \ "startDate").readNullable[String] and
-        (JsPath \ "endDate").readNullable[String] and
+      (JsPath \ "startDate").readNullable[LocalDate] and
+        (JsPath \ "endDate").readNullable[LocalDate] and
         (JsPath \ "frequency").readNullable[Int] and
         (JsPath \ "tcType").readNullable[String] and
         (JsPath \ "amount").readNullable[Double]
     )(WtcPayment.apply _),
     (
-      (JsPath \ "startDate").writeNullable[String] and
-        (JsPath \ "endDate").writeNullable[String] and
+      (JsPath \ "startDate").writeNullable[LocalDate] and
+        (JsPath \ "endDate").writeNullable[LocalDate] and
         (JsPath \ "frequency").writeNullable[Int] and
         (JsPath \ "tcType").writeNullable[String] and
         (JsPath \ "amount").writeNullable[Double]

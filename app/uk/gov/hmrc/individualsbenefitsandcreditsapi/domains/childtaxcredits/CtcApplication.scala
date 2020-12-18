@@ -16,4 +16,15 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
-case class CtcApplication(id: Int, awards: Seq[CtcAward])
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
+
+case class CtcApplication(id: Double, awards: Option[Seq[CtcAward]])
+
+object CtcApplication {
+  def create(ifApplication: IfApplication): CtcApplication = {
+    CtcApplication(
+      ifApplication.id,
+      ifApplication.awards.map(x => x.map(CtcAward.create))
+    )
+  }
+}

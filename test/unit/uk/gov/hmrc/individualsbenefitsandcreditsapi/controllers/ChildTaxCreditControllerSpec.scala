@@ -18,31 +18,44 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import akka.stream.Materializer
 import org.joda.time.{Interval, LocalDate}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
+import org.mockito.Mockito.{verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{
   AuthConnector,
   Enrolment,
-  EnrolmentIdentifier,
-  Enrolments
+  Enrolments,
+  InsufficientEnrolments
 }
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
   LiveChildTaxCreditController,
   SandboxChildTaxCreditController
 }
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
+  LiveTaxCreditsService,
+  SandboxTaxCreditsService
+}
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
+import play.api.test.Helpers._
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
+class ChildTaxCreditControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with DomainHelpers {
+
   implicit lazy val materializer: Materializer = fakeApplication.materializer
+
+  implicit val ec: ExecutionContext =
+    fakeApplication.injector.instanceOf[ExecutionContext]
 
   private val testMatchId =
     UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
@@ -50,53 +63,36 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
   private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
   private val testInterval = new Interval(fromDate, toDate)
 
-  private val enrolments = Enrolments(
-    Set(
-      Enrolment("read:hello-scopes-1",
-                Seq(EnrolmentIdentifier("FOO", "BAR")),
-                "Activated"),
-      Enrolment("read:hello-scopes-2",
-                Seq(EnrolmentIdentifier("FOO2", "BAR2")),
-                "Activated"),
-      Enrolment("read:hello-scopes-3",
-                Seq(EnrolmentIdentifier("FOO3", "BAR3")),
-                "Activated")
-    )
-  )
-
-  private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) =
-    new AuthConnector {
-
-      def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
-          implicit hc: HeaderCarrier,
-          ec: ExecutionContext): Future[A] = {
-        stubbedRetrievalResult.map(_.asInstanceOf[A])
-      }
-    }
-
-  private def myRetrievals = Future.successful(
-    enrolments
-  )
-
   trait Fixture {
 
     val scopeService = mock[ScopesService]
+    val liveTaxCreditsService = mock[LiveTaxCreditsService]
+    val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
+    val mockAuthConnector: AuthConnector = mock[AuthConnector]
+
+    when(
+      mockAuthConnector.authorise(
+        eqTo(Enrolment("test-scope")),
+        refEq(Retrievals.allEnrolments))(any(), any()))
+      .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
     val scopes: Iterable[String] =
-      Iterable("read:hello-scopes-1", "read:hello-scopes-2")
+      Iterable("test-scope")
 
     val liveChildTaxCreditsController =
       new LiveChildTaxCreditController(
-        fakeAuthConnector(myRetrievals),
+        mockAuthConnector,
         cc,
-        scopeService
+        scopeService,
+        liveTaxCreditsService
       )
 
     val sandboxChildTaxCreditsController =
       new SandboxChildTaxCreditController(
-        fakeAuthConnector(myRetrievals),
+        mockAuthConnector,
         cc,
-        scopeService
+        scopeService,
+        sandboxTaxCreditsService
       )
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
@@ -105,18 +101,66 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
   "child tax credits controller" when {
     "the live controller" should {
       "the child tax credit function" should {
-        "throw an exception" in new Fixture {
+        "Return Applications when successful" in new Fixture {
 
-          val fakeRequest =
-            FakeRequest("GET", s"/child-tax-credits/")
+          val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+
+          when(
+            liveTaxCreditsService.getChildTaxCredits(
+              eqTo(testMatchId),
+              eqTo(testInterval),
+              eqTo("child-tax-credit"),
+              eqTo(List("test-scope")))(any(), any()))
+            .thenReturn(
+              Future.successful(
+                Seq(createValidCtcApplication(), createValidCtcApplication()))
+            )
 
           val result =
-            intercept[Exception] {
-              await(
-                liveChildTaxCreditsController
-                  .childTaxCredit(testMatchId, testInterval)(fakeRequest))
-            }
-          assert(result.getMessage == "NOT_IMPLEMENTED")
+            liveChildTaxCreditsController
+              .childTaxCredit(testMatchId, testInterval)(fakeRequest)
+
+          status(result) shouldBe OK
+        }
+
+        "return 404 (not found) for an invalid matchId" in new Fixture {
+          when(
+            liveTaxCreditsService.getChildTaxCredits(
+              eqTo(testMatchId),
+              eqTo(testInterval),
+              eqTo("child-tax-credit"),
+              eqTo(List("test-scope")))(any(), any()))
+            .thenReturn(
+              Future.failed(new MatchNotFoundException)
+            )
+
+          val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+
+          val result = liveChildTaxCreditsController.childTaxCredit(
+            testMatchId,
+            testInterval)(fakeRequest)
+
+          status(result) shouldBe NOT_FOUND
+
+          contentAsJson(result) shouldBe Json.obj(
+            "code" -> "NOT_FOUND",
+            "message" -> "The resource can not be found"
+          )
+        }
+
+        "return 401 when the bearer token does not have enrolment test-scope" in new Fixture {
+
+          when(mockAuthConnector.authorise(any(), any())(any(), any()))
+            .thenReturn(Future.failed(InsufficientEnrolments()))
+
+          val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+
+          val result = liveChildTaxCreditsController.childTaxCredit(
+            testMatchId,
+            testInterval)(fakeRequest)
+
+          status(result) shouldBe UNAUTHORIZED
+          verifyNoInteractions(liveTaxCreditsService)
         }
 
         "return error when no scopes" in new Fixture {
@@ -132,24 +176,6 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar {
                   .childTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
-        }
-      }
-    }
-
-    "the sandbox controller" should {
-      "the child tax credit function" should {
-        "throw an exception" in new Fixture {
-
-          val fakeRequest =
-            FakeRequest("GET", s"/sandbox/child-tax-credits/")
-
-          val result =
-            intercept[Exception] {
-              await(
-                sandboxChildTaxCreditsController
-                  .childTaxCredit(testMatchId, testInterval)(fakeRequest))
-            }
-          assert(result.getMessage == "NOT_IMPLEMENTED")
         }
       }
     }

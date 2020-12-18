@@ -16,17 +16,15 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
-import java.util.UUID
-
-import javax.inject.Inject
 import org.joda.time.Interval
 import play.api.libs.json.Format
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{
   CacheConfiguration,
   ShortLivedCache
 }
 
+import java.util.UUID
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CacheService @Inject()(
@@ -35,8 +33,8 @@ class CacheService @Inject()(
 
   lazy val cacheEnabled: Boolean = conf.cacheEnabled
 
-  def get[T: Format](cacheId: CacheIdBase, fallbackFunction: => Future[T])(
-      implicit hc: HeaderCarrier): Future[T] = {
+  def get[T: Format](cacheId: CacheIdBase,
+                     fallbackFunction: => Future[T]): Future[T] = {
 
     if (cacheEnabled)
       cachingClient.fetchAndGetEntry[T](cacheId.id, conf.key) flatMap {

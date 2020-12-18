@@ -20,13 +20,14 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcAward
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
+import org.joda.time.LocalDate
 
 class WtcAwardSpec extends UnitSpec with DomainHelpers {
   "Creates correctly from IfAward" in {
     val ifAward = IfAward(
-      Some("test1"),
-      Some("test2"),
-      Some("test3"),
+      Some("2017-08-08"),
+      Some("2017-09-09"),
+      Some("2017-10-10"),
       Some(10.0),
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),
@@ -36,7 +37,7 @@ class WtcAwardSpec extends UnitSpec with DomainHelpers {
 
     val result = WtcAward.create(ifAward)
 
-    result.payProfCalcDate shouldBe Some("test1")
+    result.payProfCalcDate shouldBe Some(LocalDate.parse("2017-08-08"))
     result.totalEntitlement shouldBe Some(10.0)
   }
 }

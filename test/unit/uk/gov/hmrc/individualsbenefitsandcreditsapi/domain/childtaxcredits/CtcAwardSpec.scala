@@ -14,24 +14,30 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.childtaxcredits
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
+import org.joda.time.LocalDate
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcAward
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class WtcApplicationSpec extends UnitSpec with DomainHelpers {
-  "Creates correctly from IfApplication" in {
-    val ifApplication = IfApplication(
-      123,
+class CtcAwardSpec extends UnitSpec with DomainHelpers {
+  "Creates correctly from IfAward" in {
+    val ifAward = IfAward(
       Some("2017-08-08"),
       Some("2017-09-09"),
       Some("2017-10-10"),
-      Some(Seq(createValidIfAward()))
+      Some(10.0),
+      Some(createValidIfWorkingTaxCredit),
+      Some(createValidIfChildTaxCredit()),
+      Some(20.0),
+      Some(Seq(createValidIfPayment()))
     )
 
-    val result = WtcApplication.create(ifApplication)
-    result.id shouldBe 123
+    val result = CtcAward.create(ifAward)
+
+    result.payProfCalcDate shouldBe Some(LocalDate.parse("2017-08-08"))
+    result.totalEntitlement shouldBe Some(10.0)
   }
 }

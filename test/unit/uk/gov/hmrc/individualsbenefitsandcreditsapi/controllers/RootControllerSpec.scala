@@ -17,21 +17,20 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import akka.stream.Materializer
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
+import org.mockito.Mockito.{verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.{
-  AuthConnector,
-  Enrolment,
-  EnrolmentIdentifier,
-  Enrolments
-}
+import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveRootController
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveRootController, SandboxRootController}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import java.util.UUID
@@ -40,106 +39,109 @@ import scala.concurrent.{ExecutionContext, Future}
 class RootControllerSpec extends SpecBase with MockitoSugar {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
-  private val testMatchId =
-    UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
-
-  private val enrolments = Enrolments(
-    Set(
-      Enrolment("read:hello-scopes-1",
-                Seq(EnrolmentIdentifier("FOO", "BAR")),
-                "Activated"),
-      Enrolment("read:hello-scopes-2",
-                Seq(EnrolmentIdentifier("FOO2", "BAR2")),
-                "Activated"),
-      Enrolment("read:hello-scopes-3",
-                Seq(EnrolmentIdentifier("FOO3", "BAR3")),
-                "Activated")
-    )
-  )
-
-  private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) =
-    new AuthConnector {
-
-      def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
-          implicit hc: HeaderCarrier,
-          ec: ExecutionContext): Future[A] = {
-        stubbedRetrievalResult.map(_.asInstanceOf[A])
-      }
-    }
-
-  private def myRetrievals = Future.successful(
-    enrolments
-  )
+  private val testMatchId = UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
 
   trait Fixture {
 
+    implicit val ec: ExecutionContext = fakeApplication.injector.instanceOf[ExecutionContext]
+
     val scopeService = mock[ScopesService]
+    val scopeHelper = mock[ScopesHelper]
+    val liveTaxCreditsService = mock[LiveTaxCreditsService]
+    val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
+    val mockAuthConnector: AuthConnector = mock[AuthConnector]
+
+    val testNino = Nino("AB123456C")
+
+    when(mockAuthConnector.authorise(eqTo(Enrolment("test-scope")), refEq(Retrievals.allEnrolments))(any(), any()))
+      .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
     val scopes: Iterable[String] =
-      Iterable("read:hello-scopes-1", "read:hello-scopes-2")
+      Iterable("test-scope")
 
     val liveRootController =
       new LiveRootController(
-        fakeAuthConnector(myRetrievals),
+        mockAuthConnector,
         cc,
-        scopeService
+        scopeService,
+        scopeHelper,
+        liveTaxCreditsService
       )
 
     val sandboxRootController =
-      new LiveRootController(
-        fakeAuthConnector(myRetrievals),
+      new SandboxRootController(
+        mockAuthConnector,
         cc,
-        scopeService
+        scopeService,
+        scopeHelper,
+        sandboxTaxCreditsService
       )
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
   }
 
-  "root controller" when {
-    "the live controller" should {
-      "the root function" should {
-        "throw an exception" in new Fixture {
+  "Root" should {
+    "return a 404 (not found) when a match id does not match live data" in new Fixture {
 
-          val fakeRequest =
-            FakeRequest("GET", s"/")
+      when(liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+        .thenReturn(Future.failed(new MatchNotFoundException))
 
-          val result =
-            intercept[Exception] {
-              await(liveRootController.root(testMatchId)(fakeRequest))
-            }
-          assert(result.getMessage == "NOT_IMPLEMENTED")
-        }
+      val eventualResult = liveRootController.root(testMatchId)(FakeRequest())
 
-        "return error when no scopes" in new Fixture {
-          when(scopeService.getEndPointScopes(any())).thenReturn(None)
-
-          val fakeRequest =
-            FakeRequest("GET", s"/contact-details/")
-
-          val result =
-            intercept[Exception] {
-              await(liveRootController.root(testMatchId)(fakeRequest))
-            }
-          assert(result.getMessage == "No scopes defined")
-        }
-
-      }
+      status(eventualResult) shouldBe NOT_FOUND
+      contentAsJson(eventualResult) shouldBe Json.obj(
+        "code" -> "NOT_FOUND",
+        "message" -> "The resource can not be found"
+      )
     }
 
-    "the sandbox controller" should {
-      "the root function" should {
-        "throw an exception" in new Fixture {
+    "return a 200 (ok) when a match id matches live data" in new Fixture {
 
-          val fakeRequest =
-            FakeRequest("GET", s"/sandbox")
+      when(
+        liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-          val result =
-            intercept[Exception] {
-              await(sandboxRootController.root(testMatchId)(fakeRequest))
-            }
-          assert(result.getMessage == "NOT_IMPLEMENTED")
-        }
-      }
+      val eventualResult = liveRootController.root(testMatchId)(FakeRequest())
+
+      status(eventualResult) shouldBe OK
+      contentAsJson(eventualResult) shouldBe Json.obj(
+        "_links" -> Json.obj(
+          "childTaxCredits" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/child-tax-credits?matchId=$testMatchId{&startDate,endDate}",
+            "title" -> "Get an individual's child tax credits data"
+          ),
+          "workingTaxCredits" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/working-tax-credits?matchId=$testMatchId{&startDate,endDate}",
+            "title" -> "Get an individual's working tax credits data"
+          ),
+          "self" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/?matchId=$testMatchId"
+          )
+        )
+      )
+    }
+
+    "fail with status 401 when the bearer token does not have enrolment test-scope" in new Fixture {
+
+      when(mockAuthConnector.authorise(any(), any())(any(), any()))
+        .thenReturn(Future.failed(InsufficientEnrolments()))
+
+      val result = liveRootController.root(testMatchId)(FakeRequest())
+
+      status(result) shouldBe UNAUTHORIZED
+      verifyNoInteractions(liveTaxCreditsService)
+    }
+
+    "not require bearer token authentication for sandbox" in new Fixture {
+
+      when(sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
+
+      val result = sandboxRootController.root(testMatchId)(FakeRequest())
+
+      status(result) shouldBe OK
+      verifyNoInteractions(mockAuthConnector)
     }
   }
 }

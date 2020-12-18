@@ -17,22 +17,24 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
-case class CtcAward(
-    payProfCalcDate: Option[LocalDate],
-    totalEntitlement: Option[Double],
-    childTaxCredit: Option[CtcChildTaxCredit],
-    payments: Option[Seq[CtcPayment]]
+case class CtcPayment(
+    startDate: Option[LocalDate],
+    endDate: Option[LocalDate],
+    frequency: Option[Int],
+    tcType: Option[String],
+    amount: Option[Double]
 )
 
-object CtcAward {
-  def create(ifAward: IfAward): CtcAward = {
-    CtcAward(
-      ifAward.payProfCalcDate.map(LocalDate.parse),
-      ifAward.totalEntitlement,
-      ifAward.childTaxCredit.map(CtcChildTaxCredit.create),
-      ifAward.payments.map(x => x.map(CtcPayment.create))
+object CtcPayment {
+  def create(ifPayment: IfPayment): CtcPayment = {
+    CtcPayment(
+      ifPayment.startDate.map(LocalDate.parse),
+      ifPayment.endDate.map(LocalDate.parse),
+      ifPayment.frequency,
+      ifPayment.tcType,
+      ifPayment.amount
     )
   }
 }

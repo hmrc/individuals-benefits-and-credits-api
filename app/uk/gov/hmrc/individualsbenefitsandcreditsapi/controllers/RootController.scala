@@ -16,30 +16,45 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import play.api.mvc.hal._
+import play.api.hal.HalLink
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
+  LiveTaxCreditsService,
+  SandboxTaxCreditsService,
+  TaxCreditsService
+}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesHelper
 
 import java.util.UUID
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 abstract class RootController @Inject()(
     cc: ControllerComponents,
-    scopeService: ScopesService
-) extends CommonController(cc)
+    scopeService: ScopesService,
+    scopesHelper: ScopesHelper,
+    taxCreditsService: TaxCreditsService
+)(implicit val ec: ExecutionContext)
+    extends CommonController(cc)
     with PrivilegedAuthentication {
 
   def root(matchId: UUID): Action[AnyContent] = Action.async {
     implicit request =>
-      val scopes =
-        scopeService.getEndPointScopes("benefits-and-credits")
-
-      requiresPrivilegedAuthentication(scopes) { authScopes =>
-        //TODO:- add actual scopes
-        throw new Exception("NOT_IMPLEMENTED")
-      }.recover(recovery)
-
+      {
+        requiresPrivilegedAuthentication(scopeService.getAllScopes) {
+          authScopes =>
+            taxCreditsService.resolve(matchId) map { _ =>
+              val selfLink =
+                HalLink("self",
+                        s"/individuals/benefits-and-credits/?matchId=$matchId")
+              Ok(scopesHelper.getHalLinks(matchId, authScopes) ++ selfLink)
+            }
+        } recover recovery
+      }
   }
 
 }
@@ -47,8 +62,14 @@ abstract class RootController @Inject()(
 class LiveRootController @Inject()(
     val authConnector: AuthConnector,
     cc: ControllerComponents,
-    scopeService: ScopesService
-) extends RootController(cc, scopeService) {
+    scopeService: ScopesService,
+    scopesHelper: ScopesHelper,
+    liveTaxCreditsService: LiveTaxCreditsService
+)(implicit override val ec: ExecutionContext)
+    extends RootController(cc,
+                           scopeService,
+                           scopesHelper,
+                           liveTaxCreditsService) {
   override val environment = Environment.PRODUCTION
 }
 
@@ -56,7 +77,13 @@ class LiveRootController @Inject()(
 class SandboxRootController @Inject()(
     val authConnector: AuthConnector,
     cc: ControllerComponents,
-    scopeService: ScopesService
-) extends RootController(cc, scopeService) {
+    scopeService: ScopesService,
+    scopesHelper: ScopesHelper,
+    sandboxTaxCreditsService: SandboxTaxCreditsService
+)(implicit override val ec: ExecutionContext)
+    extends RootController(cc,
+                           scopeService,
+                           scopesHelper,
+                           sandboxTaxCreditsService) {
   override val environment = Environment.SANDBOX
 }

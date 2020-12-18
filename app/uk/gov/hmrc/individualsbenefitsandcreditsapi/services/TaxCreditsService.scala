@@ -22,12 +22,12 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
   IfConnector,
   IndividualsMatchingApiConnector
 }
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
   MatchNotFoundException,
   MatchedCitizen
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
   ScopesHelper,
@@ -53,6 +53,13 @@ trait TaxCreditsService {
                            scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[WtcApplication]]
+
+  def getChildTaxCredits(matchId: UUID,
+                         interval: Interval,
+                         endpoint: String,
+                         scopes: Iterable[String])(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Seq[CtcApplication]]
 }
 
 class LiveTaxCreditsService @Inject()(
@@ -92,6 +99,33 @@ class LiveTaxCreditsService @Inject()(
   override def resolve(matchId: UUID)(
       implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     individualsMatchingApiConnector.resolve(matchId)
+
+  override def getChildTaxCredits(matchId: UUID,
+                                  interval: Interval,
+                                  endpoint: String,
+                                  scopes: Iterable[String])(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Seq[CtcApplication]] = {
+    val cacheid = CacheId(
+      matchId,
+      interval,
+      scopesService.getValidFieldsForCacheKey(scopes.toList))
+    cacheService
+      .get(
+        cacheid, {
+          resolve(matchId)
+            .flatMap(ninoMatch => {
+              val scopesFields =
+                scopesHelper.getQueryStringFor(scopes.toList, endpoint)
+              val scopesFieldsOption =
+                if (scopesFields.length == 0) None else Some(scopesFields)
+              ifConnector
+                .fetchTaxCredits(ninoMatch.nino, interval, scopesFieldsOption)
+            })
+        }
+      )
+      .map(applications => applications.map(CtcApplication.create))
+  }
 }
 
 class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
@@ -109,7 +143,18 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[WtcApplication]] = {
     Future.successful(
-      BenefitsAndCredits.Applications.applications
+      WorkingTaxCredits.Applications.applications
+    )
+  }
+
+  override def getChildTaxCredits(matchId: UUID,
+                                  interval: Interval,
+                                  endpoint: String,
+                                  scopes: Iterable[String])(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Seq[CtcApplication]] = {
+    Future.successful(
+      ChildTaxCredits.Applications.applications
     )
   }
 }

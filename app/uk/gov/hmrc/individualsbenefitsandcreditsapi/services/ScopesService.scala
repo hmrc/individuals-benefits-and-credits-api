@@ -18,12 +18,17 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
 import javax.inject.Inject
 import play.api.Configuration
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ApiConfig
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.{
+  ApiConfig,
+  EndpointConfig
+}
 
 class ScopesService @Inject()(configuration: Configuration) {
 
   private[service] lazy val apiConfig =
     configuration.get[ApiConfig]("api-config")
+
+  def getAllScopes: List[String] = apiConfig.scopes.map(_.name).sorted
 
   def getScopeItemsKeys(scope: String): List[String] =
     apiConfig
@@ -62,10 +67,11 @@ class ScopesService @Inject()(configuration: Configuration) {
     scopes.flatMap(getScopeItemsKeys).distinct.reduce(_ + _)
   }
 
-  def getAccessibleEndpoints(scopes: List[String]): Iterable[String] = {
+  def getAccessibleEndpoints(scopes: Iterable[String]): Iterable[String] = {
     val scopeKeys = scopes.flatMap(s => getScopeItemsKeys(s))
     apiConfig.endpoints
-      .filter(endpoint => endpoint.fields.keySet.exists(scopeKeys.contains))
+      .filter(endpoint =>
+        endpoint.fields.keySet.exists(scopeKeys.toList.contains))
       .map(endpoint => endpoint.name)
   }
 
@@ -77,6 +83,10 @@ class ScopesService @Inject()(configuration: Configuration) {
       .flatMap(endpoint =>
         apiConfig.getEndpoint(endpoint).map(c => (c.name, c.link)))
       .toMap
+
+  def getEndpoints(scopes: Iterable[String]): Iterable[EndpointConfig] =
+    getAccessibleEndpoints(scopes)
+      .flatMap(endpoint => apiConfig.getEndpoint(endpoint))
 
   def getEndPointScopes(endpointKey: String): Iterable[String] = {
     val keys = apiConfig

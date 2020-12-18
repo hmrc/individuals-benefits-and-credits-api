@@ -16,10 +16,13 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import javax.inject.Inject
 import play.api.hal.Hal.{linksSeq, state}
 import play.api.hal.{HalLink, HalResource}
+import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.JsValue
+
+import java.util.UUID
+import javax.inject.Inject
 
 class ScopesHelper @Inject()(scopesService: ScopesService) {
 
@@ -48,4 +51,16 @@ class ScopesHelper @Inject()(scopesService: ScopesService) {
 
     state(data) ++ linksSeq(hateoasLinks)
   }
+
+  def getHalLinks(matchId: UUID, scopes: Iterable[String]): HalResource =
+    linksSeq(
+      scopesService
+        .getEndpoints(scopes)
+        .map(
+          endpoint =>
+            HalLink(rel = endpoint.name,
+                    href = endpoint.link.replaceAllLiterally("<matchId>",
+                                                             s"$matchId"),
+                    title = Some(endpoint.title)))
+        .toSeq)
 }

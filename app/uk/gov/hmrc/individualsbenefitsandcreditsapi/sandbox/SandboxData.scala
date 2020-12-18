@@ -16,8 +16,14 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox
 
+import org.joda.time.LocalDate
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.Individual
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.{
+  CtcApplication,
+  CtcAward,
+  CtcChildTaxCredit,
+  CtcPayment
+}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{
   WtcApplication,
   WtcAward,
@@ -35,29 +41,29 @@ object SandboxData {
   val sandboxNinoString = "NA000799C"
   val sandboxNino = Nino(sandboxNinoString)
 
-  object BenefitsAndCredits {
+  object WorkingTaxCredits {
 
     object Applications {
       val firstApplication = WtcApplication(
         123,
         Seq(
           WtcAward(
-            Some("2016-10-10"),
+            Some(LocalDate.parse("2016-10-10")),
             Some(100.12),
             Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
             Some(WtcChildTaxCredit(Some(400.78))),
             Some(
               Seq(
                 WtcPayment(
-                  Some("2016-10-10"),
-                  Some("2016-11-11"),
+                  Some(LocalDate.parse("2016-10-10")),
+                  Some(LocalDate.parse("2016-11-11")),
                   Some(7),
                   Some("ETC"),
                   Some(123.45)
                 ),
                 WtcPayment(
-                  Some("2016-12-12"),
-                  Some("2017-01-01"),
+                  Some(LocalDate.parse("2016-12-12")),
+                  Some(LocalDate.parse("2017-01-01")),
                   Some(7),
                   Some("EEC"),
                   Some(123.45)
@@ -71,22 +77,22 @@ object SandboxData {
         456,
         Seq(
           WtcAward(
-            Some("2016-10-10"),
+            Some(LocalDate.parse("2016-10-10")),
             Some(100.12),
             Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
             Some(WtcChildTaxCredit(Some(400.78))),
             Some(
               Seq(
                 WtcPayment(
-                  Some("2017-10-10"),
-                  Some("2017-11-11"),
+                  Some(LocalDate.parse("2017-10-10")),
+                  Some(LocalDate.parse("2017-11-11")),
                   Some(7),
                   Some("ETC"),
                   Some(123.45)
                 ),
                 WtcPayment(
-                  Some("2017-12-12"),
-                  Some("2018-01-01"),
+                  Some(LocalDate.parse("2017-12-12")),
+                  Some(LocalDate.parse("2018-01-01")),
                   Some(7),
                   Some("EEC"),
                   Some(123.45)
@@ -94,22 +100,22 @@ object SandboxData {
               ))
           ),
           WtcAward(
-            Some("2016-10-10"),
+            Some(LocalDate.parse("2016-10-10")),
             Some(100.12),
             Some(WtcWorkingTaxCredit(Some(200.34), Some(300.56))),
             Some(WtcChildTaxCredit(Some(400.78))),
             Some(
               Seq(
                 WtcPayment(
-                  Some("2018-10-10"),
-                  Some("2018-11-11"),
+                  Some(LocalDate.parse("2018-10-10")),
+                  Some(LocalDate.parse("2018-11-11")),
                   Some(7),
                   Some("ETC"),
                   Some(123.45)
                 ),
                 WtcPayment(
-                  Some("2018-12-12"),
-                  Some("2019-01-01"),
+                  Some(LocalDate.parse("2018-12-12")),
+                  Some(LocalDate.parse("2019-01-01")),
                   Some(7),
                   Some("EEC"),
                   Some(123.45)
@@ -123,4 +129,102 @@ object SandboxData {
     }
   }
 
+  object ChildTaxCredits {
+
+    object Applications {
+      val firstApplication = CtcApplication(
+        123,
+        Some(
+          Seq(
+            CtcAward(
+              Some(LocalDate.parse("2016-10-10")),
+              Some(100.12),
+              Some(
+                CtcChildTaxCredit(Some(400.78),
+                                  Some(500.12),
+                                  Some(600.34),
+                                  Some(700.67),
+                                  Some(800.89))),
+              Some(Seq(
+                CtcPayment(
+                  Some(LocalDate.parse("2016-10-10")),
+                  Some(LocalDate.parse("2016-11-11")),
+                  Some(7),
+                  Some("ETC"),
+                  Some(123.45)
+                ),
+                CtcPayment(
+                  Some(LocalDate.parse("2016-12-12")),
+                  Some(LocalDate.parse("2017-01-01")),
+                  Some(7),
+                  Some("EEC"),
+                  Some(123.45)
+                )
+              ))
+            )
+          ))
+      )
+
+      val secondApplication = CtcApplication(
+        456,
+        Some(
+          Seq(
+            CtcAward(
+              Some(LocalDate.parse("2016-10-10")),
+              Some(100.12),
+              Some(
+                CtcChildTaxCredit(Some(400.78),
+                                  Some(500.12),
+                                  Some(600.34),
+                                  Some(700.67),
+                                  Some(800.89))),
+              Some(Seq(
+                CtcPayment(
+                  Some(LocalDate.parse("2016-10-10")),
+                  Some(LocalDate.parse("2016-11-11")),
+                  Some(7),
+                  Some("ETC"),
+                  Some(123.45)
+                ),
+                CtcPayment(
+                  Some(LocalDate.parse("2016-12-12")),
+                  Some(LocalDate.parse("2017-01-01")),
+                  Some(7),
+                  Some("EEC"),
+                  Some(123.45)
+                )
+              ))
+            ),
+            CtcAward(
+              Some(LocalDate.parse("2016-10-10")),
+              Some(100.12),
+              Some(
+                CtcChildTaxCredit(Some(400.78),
+                                  Some(500.12),
+                                  Some(600.34),
+                                  Some(700.67),
+                                  Some(800.89))),
+              Some(Seq(
+                CtcPayment(
+                  Some(LocalDate.parse("2016-10-10")),
+                  Some(LocalDate.parse("2016-11-11")),
+                  Some(7),
+                  Some("ETC"),
+                  Some(123.45)
+                ),
+                CtcPayment(
+                  Some(LocalDate.parse("2016-12-12")),
+                  Some(LocalDate.parse("2017-01-01")),
+                  Some(7),
+                  Some("EEC"),
+                  Some(123.45)
+                )
+              ))
+            )
+          ))
+      )
+
+      val applications = Seq(firstApplication, secondApplication)
+    }
+  }
 }

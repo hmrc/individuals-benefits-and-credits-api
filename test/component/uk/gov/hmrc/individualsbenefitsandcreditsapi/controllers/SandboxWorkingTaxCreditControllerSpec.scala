@@ -30,7 +30,6 @@ class SandboxWorkingTaxCreditControllerSpec extends BaseSpec {
 
   val rootScope = "read:individuals-benefits-and-credits-working-tax-credit"
   private val matchId = UUID.randomUUID()
-  private val nino = "AB123456C"
   private val fromDate = "2017-01-01"
   private val toDate = "2017-09-25"
 
