@@ -24,13 +24,30 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
+import uk.gov.hmrc.auth.core.{
+  AuthConnector,
+  Enrolment,
+  Enrolments,
+  InsufficientEnrolments
+}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveRootController, SandboxRootController}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
+  LiveRootController,
+  SandboxRootController
+}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
+  MatchNotFoundException,
+  MatchedCitizen
+}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
+  ScopesHelper,
+  ScopesService
+}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
+  LiveTaxCreditsService,
+  SandboxTaxCreditsService
+}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import java.util.UUID
@@ -39,11 +56,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class RootControllerSpec extends SpecBase with MockitoSugar {
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
-  private val testMatchId = UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
+  private val testMatchId =
+    UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
 
   trait Fixture {
 
-    implicit val ec: ExecutionContext = fakeApplication.injector.instanceOf[ExecutionContext]
+    implicit val ec: ExecutionContext =
+      fakeApplication.injector.instanceOf[ExecutionContext]
 
     val scopeService = mock[ScopesService]
     val scopeHelper = mock[ScopesHelper]
@@ -53,7 +72,10 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
     val testNino = Nino("AB123456C")
 
-    when(mockAuthConnector.authorise(eqTo(Enrolment("test-scope")), refEq(Retrievals.allEnrolments))(any(), any()))
+    when(
+      mockAuthConnector.authorise(
+        eqTo(Enrolment("test-scope")),
+        refEq(Retrievals.allEnrolments))(any(), any()))
       .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
     val scopes: Iterable[String] =
@@ -97,10 +119,8 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
     "return a 200 (ok) when a match id matches live data" in new Fixture {
 
-      when(
-        liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(MatchedCitizen(testMatchId, testNino)))
+      when(liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
       val eventualResult = liveRootController.root(testMatchId)(FakeRequest())
 
@@ -135,7 +155,8 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
     "not require bearer token authentication for sandbox" in new Fixture {
 
-      when(sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+      when(
+        sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
       val result = sandboxRootController.root(testMatchId)(FakeRequest())

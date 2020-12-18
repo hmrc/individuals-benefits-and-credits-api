@@ -50,9 +50,9 @@ abstract class ChildTaxCreditController @Inject()(
 
       requiresPrivilegedAuthentication(scopes) { authScopes =>
         taxCreditsService
-          .getWorkingTaxCredits(matchId,
+          .getChildTaxCredits(matchId,
                                 interval,
-                                "working-tax-credit",
+                                "child-tax-credit",
                                 authScopes)
           .map(
             applications => {

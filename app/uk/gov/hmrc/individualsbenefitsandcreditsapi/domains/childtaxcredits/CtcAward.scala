@@ -17,6 +17,11 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import org.joda.time.LocalDate
+
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
+import play.api.libs.json.{Format, JsPath}
+import play.api.libs.functional.syntax._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class CtcAward(
@@ -35,4 +40,19 @@ object CtcAward {
       ifAward.payments.map(x => x.map(CtcPayment.create))
     )
   }
+
+  implicit val awardFormat: Format[CtcAward] = Format(
+    (
+      (JsPath \ "payProfCalcDate").readNullable[LocalDate] and
+        (JsPath \ "totalEntitlement").readNullable[Double] and
+        (JsPath \ "childTaxCredit").readNullable[CtcChildTaxCredit] and
+        (JsPath \ "payments").readNullable[Seq[CtcPayment]]
+      )(CtcAward.apply _),
+    (
+      (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
+        (JsPath \ "totalEntitlement").writeNullable[Double] and
+        (JsPath \ "childTaxCredit").writeNullable[CtcChildTaxCredit] and
+        (JsPath \ "payments").writeNullable[Seq[CtcPayment]]
+      )(unlift(CtcAward.unapply))
+  )
 }

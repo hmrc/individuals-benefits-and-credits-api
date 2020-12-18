@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
+import play.api.libs.json.{Format, JsPath}
+import play.api.libs.functional.syntax._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 
 case class CtcApplication(id: Double, awards: Option[Seq[CtcAward]])
@@ -27,4 +29,15 @@ object CtcApplication {
       ifApplication.awards.map(x => x.map(CtcAward.create))
     )
   }
+
+  implicit val applicationFormat: Format[CtcApplication] = Format(
+    (
+      (JsPath \ "id").read[Double] and
+        (JsPath \ "awards").readNullable[Seq[CtcAward]]
+      )(CtcApplication.apply _),
+    (
+      (JsPath \ "id").write[Double] and
+        (JsPath \ "awards").writeNullable[Seq[CtcAward]]
+      )(unlift(CtcApplication.unapply))
+  )
 }
