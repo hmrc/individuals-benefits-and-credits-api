@@ -73,6 +73,7 @@ trait ScopesConfig {
     (s"api-config.endpoints.$mockEndpoint3.endpoint",
      "/a/b/e?matchId=<matchId>{&fromDate,toDate}"),
     (s"api-config.endpoints.$mockEndpoint3.fields.O", "field3"),
+    (s"api-config.endpoints.$mockEndpoint3.fields.P", "field4"),
     (s"api-config.endpoints.$mockEndpoint1.title", "mockEndpoint1Title"),
     (s"api-config.endpoints.$mockEndpoint2.title", "mockEndpoint2Title"),
     (s"api-config.endpoints.$mockEndpoint3.title", "mockEndpoint3Title")

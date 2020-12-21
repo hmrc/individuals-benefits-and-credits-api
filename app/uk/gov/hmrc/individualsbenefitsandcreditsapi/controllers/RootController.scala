@@ -33,8 +33,7 @@ abstract class RootController @Inject()(
     cc: ControllerComponents,
     scopeService: ScopesService,
     scopesHelper: ScopesHelper,
-    taxCreditsService: TaxCreditsService
-)(implicit val ec: ExecutionContext)
+    taxCreditsService: TaxCreditsService)(implicit val ec: ExecutionContext)
     extends CommonController(cc)
     with PrivilegedAuthentication {
 
@@ -47,7 +46,10 @@ abstract class RootController @Inject()(
               val selfLink =
                 HalLink("self",
                         s"/individuals/benefits-and-credits/?matchId=$matchId")
-              Ok(scopesHelper.getHalLinks(matchId, authScopes) ++ selfLink)
+              Ok(
+                scopesHelper.getHalLinks(matchId,
+                                         "benefits-and-credits",
+                                         authScopes) ++ selfLink)
             }
         } recover recovery
       }

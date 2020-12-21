@@ -49,8 +49,11 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
   SandboxTaxCreditsService
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
-
 import java.util.UUID
+
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ScopesConfigHelper
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class RootControllerSpec extends SpecBase with MockitoSugar {
@@ -59,13 +62,13 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
   private val testMatchId =
     UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
 
-  trait Fixture {
+  trait Fixture extends ScopesConfigHelper {
 
     implicit val ec: ExecutionContext =
       fakeApplication.injector.instanceOf[ExecutionContext]
+    lazy val scopeService: ScopesService = new ScopesService(mockScopesConfig)
+    lazy val scopesHelper: ScopesHelper = new ScopesHelper(scopeService)
 
-    val scopeService = mock[ScopesService]
-    val scopeHelper = mock[ScopesHelper]
     val liveTaxCreditsService = mock[LiveTaxCreditsService]
     val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
@@ -78,15 +81,12 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         refEq(Retrievals.allEnrolments))(any(), any()))
       .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
-    val scopes: Iterable[String] =
-      Iterable("test-scope")
-
     val liveRootController =
       new LiveRootController(
         mockAuthConnector,
         cc,
         scopeService,
-        scopeHelper,
+        scopesHelper,
         liveTaxCreditsService
       )
 
@@ -95,11 +95,10 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         mockAuthConnector,
         cc,
         scopeService,
-        scopeHelper,
+        scopesHelper,
         sandboxTaxCreditsService
       )
 
-    when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
   }
 
   "Root" should {
@@ -127,12 +126,12 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       status(eventualResult) shouldBe OK
       contentAsJson(eventualResult) shouldBe Json.obj(
         "_links" -> Json.obj(
-          "childTaxCredits" -> Json.obj(
-            "href" -> s"/individuals/benefits-and-credits/child-tax-credits?matchId=$testMatchId{&startDate,endDate}",
+          "child-tax-credit" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/child-tax-credit?matchId=$testMatchId{&fromDate,toDate}",
             "title" -> "Get an individual's child tax credits data"
           ),
-          "workingTaxCredits" -> Json.obj(
-            "href" -> s"/individuals/benefits-and-credits/working-tax-credits?matchId=$testMatchId{&startDate,endDate}",
+          "working-tax-credit" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/working-tax-credit?matchId=$testMatchId{&fromDate,toDate}",
             "title" -> "Get an individual's working tax credits data"
           ),
           "self" -> Json.obj(
