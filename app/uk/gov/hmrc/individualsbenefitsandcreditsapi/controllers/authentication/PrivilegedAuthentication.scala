@@ -37,6 +37,7 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
       f: Iterable[String] => Future[Result])(
       implicit hc: HeaderCarrier): Future[Result] = {
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
+
     if (environment == Environment.SANDBOX)
       f(endpointScopes.toList)
     else {

@@ -44,14 +44,12 @@ trait TestHelpers {
     generate("")
   }
 
+  val ifWorkTaxCredit = IfWorkTaxCredit(Some(22), Some(22), Some(22))
+  val ifChildTaxCredit =
+    IfChildTaxCredit(Some(22), Some(22), Some(22), Some(22), Some(22), Some(22))
+
   def createValidIfApplications: IfApplications = {
-    val ifWorkTaxCredit = IfWorkTaxCredit(Some(22), Some(22), Some(22))
-    val ifChildTaxCredit = IfChildTaxCredit(Some(22),
-                                            Some(22),
-                                            Some(22),
-                                            Some(22),
-                                            Some(22),
-                                            Some(22))
+
     val ifPayments = Seq(
       IfPayment(
         Some("2020-08-18"),

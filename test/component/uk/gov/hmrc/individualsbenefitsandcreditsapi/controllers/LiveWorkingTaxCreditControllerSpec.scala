@@ -16,20 +16,18 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  BaseSpec,
-  IfStub,
-  IndividualsMatchingApiStub
-}
+import java.util.UUID
+
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, IfStub, IndividualsMatchingApiStub}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
 import testUtils.TestHelpers
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 
-import java.util.UUID
-
-class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
+class LiveWorkingTaxCreditControllerSpec
+    extends CommonControllerSpec
+    with TestHelpers {
 
   val rootScope = List(
     "read:individuals-benefits-and-credits-hmcts-c2",
@@ -41,19 +39,22 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
     "read:individuals-benefits-and-credits-lsani-c3"
   )
 
-  private val matchId = UUID.randomUUID()
-  private val nino = "AB123456C"
-  private val fromDate = "2017-01-01"
-  private val toDate = "2017-09-25"
+  val matchId = UUID.randomUUID()
+  val endpoint = "working-tax-credit"
+  val nino = "AB123456C"
+  val fromDate = "2017-01-01"
+  val toDate = "2017-09-25"
 
   private val applications = createValidIfApplicationsMultiple
 
   feature("Live working tax credit route") {
-    scenario("valid request") {
+
+    scenario("Valid Request to working-tax-credits endpoint") {
+
       Given("A valid auth token ")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
 
-      And("a valid record in the matching API")
+      And("A valid record in the matching API")
       IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
 
       And("IF will return benefits and credits applications")
@@ -62,56 +63,21 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
       When("I make a call to working-tax-credit endpoint")
       val response =
         Http(
-          s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeaderP1))
           .asString
 
       Then("The response status should be 200")
+
       response.code shouldBe OK
-    }
-
-    scenario("missing match Id") {
-
-      Given("A valid auth token ")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      And("IF will return benefits and credits applications")
-      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
-
-      When("I make a call to working-tax-credit endpoint")
-      val response =
-        Http(
-          s"$serviceUrl/working-tax-credit/?fromDate=$fromDate&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
-          .asString
-
-      Then("The response status should be 400")
-      response.code shouldBe BAD_REQUEST
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "matchId is required"
-      )
-    }
-
-    scenario("missing from date") {
-
-      Given("A valid auth token ")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      And("IF will return benefits and credits applications")
-      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
-
-      When("I make a call to working-tax-credit endpoint")
-      val response =
-        Http(s"$serviceUrl/working-tax-credit/?matchId=$matchId&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
-          .asString
-
-      Then("The response status should be 400")
-      response.code shouldBe BAD_REQUEST
-      Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "fromDate is required"
+        "_links" -> Json.obj(
+          "self" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/working-tax-credits?matchId=$matchId&fromDate=$fromDate&toDate=$toDate"
+          )
+        ),
+        "applications" -> Json.toJson(
+          applications.applications.map(WtcApplication.create))
       )
     }
 
@@ -133,46 +99,5 @@ class LiveWorkingTaxCreditControllerSpec extends BaseSpec with TestHelpers {
         "message" -> "Bearer token is missing or not authorized"
       )
     }
-
-    scenario("toDate earlier than fromDate") {
-      Given("a valid privileged Auth bearer token")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      When(
-        "the working tax credits endpoint is invoked with an toDate earlier than fromDate")
-      val response =
-        Http(
-          s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=$toDate&toDate=$fromDate")
-          .headers(requestHeaders(acceptHeaderP1))
-          .asString
-
-      Then("the response status should be 400 (invalid request)")
-      response.code shouldBe BAD_REQUEST
-      Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "Invalid time period requested"
-      )
-    }
-
-    scenario("From date requested is earlier than 31st March 2013") {
-      Given("a valid privileged Auth bearer token")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      When(
-        "the workign tax credits endpoint is invoked with toDate before 31st March 2013")
-      val response = Http(
-        s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=2012-01-01&toDate=$toDate")
-        .headers(requestHeaders(acceptHeaderP1))
-        .asString
-
-      Then("the response status should be 400 (invalid request)")
-      response.code shouldBe BAD_REQUEST
-      Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "fromDate earlier than 31st March 2013"
-      )
-    }
-
   }
-
 }

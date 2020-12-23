@@ -142,9 +142,13 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[WtcApplication]] = {
-    Future.successful(
-      WorkingTaxCredits.Applications.applications
-    )
+
+    resolve(matchId).flatMap(
+      _ =>
+        Future.successful(
+          WorkingTaxCredits.Applications.applications
+      ))
+
   }
 
   override def getChildTaxCredits(matchId: UUID,
@@ -153,8 +157,10 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
                                   scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[CtcApplication]] = {
-    Future.successful(
-      ChildTaxCredits.Applications.applications
-    )
+    resolve(matchId).flatMap(
+      _ =>
+        Future.successful(
+          ChildTaxCredits.Applications.applications
+      ))
   }
 }

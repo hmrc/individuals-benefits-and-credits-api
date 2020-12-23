@@ -16,20 +16,18 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  BaseSpec,
-  IfStub,
-  IndividualsMatchingApiStub
-}
+import java.util.UUID
+
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, IfStub, IndividualsMatchingApiStub}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
 import testUtils.TestHelpers
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 
-import java.util.UUID
-
-class LiveChildTaxCreditControllerSpec extends BaseSpec with TestHelpers {
+class LiveChildTaxCreditControllerSpec
+    extends CommonControllerSpec
+    with TestHelpers {
 
   val rootScope = List(
     "read:individuals-benefits-and-credits-hmcts-c2",
@@ -41,15 +39,20 @@ class LiveChildTaxCreditControllerSpec extends BaseSpec with TestHelpers {
     "read:individuals-benefits-and-credits-lsani-c3"
   )
 
-  private val matchId = UUID.randomUUID()
-  private val nino = "AB123456C"
-  private val fromDate = "2017-01-01"
-  private val toDate = "2017-09-25"
+  val endpoint = "child-tax-credit"
+  val matchId = UUID.randomUUID()
+  val nino = "AB123456C"
+  val fromDate = "2017-01-01"
+  val toDate = "2017-09-25"
+
   private val applications = createValidIfApplicationsMultiple
 
   feature("Live Child Tax Credit Controller") {
-    scenario("valid request") {
-      Given("A valid auth token ")
+
+    scenario("Valid request to child-tax-credits endpoint") {
+
+      Given("A valid auth token")
+
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
 
       And("a valid record in the matching API")
@@ -61,66 +64,31 @@ class LiveChildTaxCreditControllerSpec extends BaseSpec with TestHelpers {
       When("I make a call to child-tax-credit endpoint")
       val response =
         Http(
-          s"$serviceUrl/child-tax-credit/?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeaderP1))
           .asString
 
-      Then("The response status should be 200")
+      Then("The response status should be 200 (ok)")
       response.code shouldBe OK
-    }
-
-    scenario("missing match Id") {
-
-      Given("A valid auth token ")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      And("IF will return benefits and credits applications")
-      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
-
-      When("I make a call to child-tax-credit endpoint")
-      val response =
-        Http(s"$serviceUrl/child-tax-credit/?fromDate=$fromDate&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
-          .asString
-
-      Then("The response status should be 400")
-      response.code shouldBe BAD_REQUEST
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "matchId is required"
+        "_links" -> Json.obj(
+          "self" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId&fromDate=$fromDate&toDate=$toDate"
+          )
+        ),
+        "applications" -> Json.toJson(
+          applications.applications.map(CtcApplication.create))
       )
     }
 
-    scenario("missing from date") {
-
-      Given("A valid auth token ")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      And("IF will return benefits and credits applications")
-      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
-
-      When("I make a call to child-tax-credit endpoint")
-      val response =
-        Http(s"$serviceUrl/child-tax-credit/?matchId=$matchId&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
-          .asString
-
-      Then("The response status should be 400")
-      response.code shouldBe BAD_REQUEST
-      Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "fromDate is required"
-      )
-    }
-
-    scenario("invalid token") {
+    scenario("Invalid token") {
       Given("an invalid token")
       AuthStub.willNotAuthorizePrivilegedAuthToken(authToken, rootScope)
 
       When("I make a call to child-tax-credit endpoint")
       val response =
         Http(
-          s"$serviceUrl/child-tax-credit/?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeaderP1))
           .asString
 
@@ -131,45 +99,5 @@ class LiveChildTaxCreditControllerSpec extends BaseSpec with TestHelpers {
         "message" -> "Bearer token is missing or not authorized"
       )
     }
-
-    scenario("toDate earlier than fromDate") {
-      Given("a valid privileged Auth bearer token")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      When(
-        "the child tax credits endpoint is invoked with an toDate earlier than fromDate")
-      val response =
-        Http(
-          s"$serviceUrl/child-tax-credit/?matchId=$matchId&fromDate=$toDate&toDate=$fromDate")
-          .headers(requestHeaders(acceptHeaderP1))
-          .asString
-
-      Then("the response status should be 400 (invalid request)")
-      response.code shouldBe BAD_REQUEST
-      Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "Invalid time period requested"
-      )
-    }
-
-    scenario("From date requested is earlier than 31st March 2013") {
-      Given("a valid privileged Auth bearer token")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
-
-      When(
-        "the child tax credits endpoint is invoked with toDate before 31st March 2013")
-      val response = Http(
-        s"$serviceUrl/child-tax-credit/?matchId=$matchId&fromDate=2012-01-01&toDate=$toDate")
-        .headers(requestHeaders(acceptHeaderP1))
-        .asString
-
-      Then("the response status should be 400 (invalid request)")
-      response.code shouldBe BAD_REQUEST
-      Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
-        "message" -> "fromDate earlier than 31st March 2013"
-      )
-    }
-
   }
 }

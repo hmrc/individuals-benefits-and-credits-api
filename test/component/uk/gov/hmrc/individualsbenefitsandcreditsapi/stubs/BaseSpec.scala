@@ -27,6 +27,7 @@ import play.api.Application
 import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.mvc.Http.MimeTypes.JSON
+import scalaj.http.Http
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 
 import scala.concurrent.duration.Duration
@@ -58,6 +59,12 @@ trait BaseSpec
   val authToken = "Bearer AUTH_TOKEN"
   val clientId = "CLIENT_ID"
   val acceptHeaderP1 = ACCEPT -> "application/vnd.hmrc.P1.0+json"
+
+  def invokeEndpoint(endpoint: String) =
+    Http(endpoint)
+      .timeout(10000, 10000)
+      .headers(requestHeaders(acceptHeaderP1))
+      .asString
 
   protected def requestHeaders(
       acceptHeader: (String, String) = acceptHeaderP1) =

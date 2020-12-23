@@ -53,7 +53,7 @@ class ScopesService @Inject()(configuration: Configuration) {
       .flatMap(value => keys.map(value.get))
       .flatten
 
-  def getValidItemsFor(scopes: List[String],
+  def getValidItemsFor(scopes: Seq[String],
                        endpoint: String): Iterable[String] = {
     val uniqueDataFields = scopes.flatMap(getScopeItemsKeys).distinct
     val endpointDataItems = getEndpointFieldKeys(endpoint).toSet

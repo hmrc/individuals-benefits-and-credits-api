@@ -1,5 +1,3 @@
-GET        /hello-world             uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveMicroserviceHelloWorldController.hello
-GET        /hello-scopes            uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveMicroserviceHelloWorldController.helloScopes
 GET        /working-tax-credit      uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveWorkingTaxCreditController.workingTaxCredit(matchId: java.util.UUID, interval: org.joda.time.Interval)
 GET        /child-tax-credit        uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveChildTaxCreditController.childTaxCredit(matchId: java.util.UUID, interval: org.joda.time.Interval)
 GET        /                        uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.LiveRootController.root(matchId: java.util.UUID)
