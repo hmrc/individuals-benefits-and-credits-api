@@ -18,7 +18,11 @@ package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import java.util.UUID
 
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, IfStub, IndividualsMatchingApiStub}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
+  AuthStub,
+  IfStub,
+  IndividualsMatchingApiStub
+}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
@@ -70,15 +74,59 @@ class LiveChildTaxCreditControllerSpec
 
       Then("The response status should be 200 (ok)")
       response.code shouldBe OK
+
+      val expectedData = """[ {
+                           |    "id" : 22,
+                           |    "awards" : [ {
+                           |      "payProfCalcDate" : "2020-08-18",
+                           |      "totalEntitlement" : 22,
+                           |      "childTaxCredit" : {
+                           |        "childCareAmount" : 22,
+                           |        "ctcChildAmount" : 22,
+                           |        "familyAmount" : 22,
+                           |        "babyAmount" : 22,
+                           |        "paidYTD" : 22
+                           |      },
+                           |      "payments" : [ {
+                           |        "startDate" : "2020-08-18",
+                           |        "endDate" : "2020-08-18",
+                           |        "frequency" : 1,
+                           |        "tcType" : "ETC",
+                           |        "amount" : 22
+                           |      } ]
+                           |    } ]
+                           |  }, {
+                           |    "id" : 22,
+                           |    "awards" : [ {
+                           |      "payProfCalcDate" : "2020-08-18",
+                           |      "totalEntitlement" : 22,
+                           |      "childTaxCredit" : {
+                           |        "childCareAmount" : 22,
+                           |        "ctcChildAmount" : 22,
+                           |        "familyAmount" : 22,
+                           |        "babyAmount" : 22,
+                           |        "paidYTD" : 22
+                           |      },
+                           |      "payments" : [ {
+                           |        "startDate" : "2020-08-18",
+                           |        "endDate" : "2020-08-18",
+                           |        "frequency" : 1,
+                           |        "tcType" : "ETC",
+                           |        "amount" : 22
+                           |      } ]
+                           |    } ]
+                           |  } ]
+                           |""".stripMargin
+
       Json.parse(response.body) shouldBe Json.obj(
         "_links" -> Json.obj(
           "self" -> Json.obj(
             "href" -> s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId&fromDate=$fromDate&toDate=$toDate"
           )
         ),
-        "applications" -> Json.toJson(
-          applications.applications.map(CtcApplication.create))
+        "applications" -> Json.parse(expectedData)
       )
+
     }
 
     scenario("Invalid token") {

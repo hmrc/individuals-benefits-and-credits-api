@@ -23,7 +23,10 @@ import org.scalatestplus.mockito.MockitoSugar
 import testUtils.TestHelpers
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
+  IfConnector,
+  IndividualsMatchingApiConnector
+}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.LiveTaxCreditsService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.CacheService
