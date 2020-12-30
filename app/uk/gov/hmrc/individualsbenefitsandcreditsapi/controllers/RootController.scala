@@ -46,16 +46,13 @@ abstract class RootController @Inject()(
               val selfLink =
                 HalLink("self",
                         s"/individuals/benefits-and-credits/?matchId=$matchId")
-              Ok(
-                scopesHelper.getHalLinks(matchId,
-                                         "benefits-and-credits",
-                                         authScopes) ++ selfLink)
+              Ok(scopesHelper.getHalLinks(matchId, authScopes) ++ selfLink)
             }
         } recover recovery
       }
   }
-
 }
+
 @Singleton
 class LiveRootController @Inject()(
     val authConnector: AuthConnector,

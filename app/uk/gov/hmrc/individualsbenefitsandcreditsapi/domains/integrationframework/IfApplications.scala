@@ -24,9 +24,9 @@ object IfApplications {
   implicit val applicationsFormat: Format[IfApplications] = Format(
     (JsPath \ "applications")
       .read[Seq[IfApplication]]
-      .map(x => IfApplications(x)),
+      .map(IfApplications.apply),
     (JsPath \ "applications")
       .write[Seq[IfApplication]]
-      .contramap(x => x.applications)
+      .contramap(_.applications)
   )
 }

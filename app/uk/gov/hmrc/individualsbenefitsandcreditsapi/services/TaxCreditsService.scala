@@ -75,21 +75,23 @@ class LiveTaxCreditsService @Inject()(
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[WtcApplication]] = {
+
     val cacheid = CacheId(
       matchId,
       interval,
       scopesService.getValidFieldsForCacheKey(scopes.toList))
+
     cacheService
       .get(
         cacheid, {
           resolve(matchId)
             .flatMap(ninoMatch => {
-              val scopesFields =
+              val fieldsQuery =
                 scopesHelper.getQueryStringFor(scopes.toList, endpoint)
-              val scopesFieldsOption =
-                if (scopesFields.length == 0) None else Some(scopesFields)
               ifConnector
-                .fetchTaxCredits(ninoMatch.nino, interval, scopesFieldsOption)
+                .fetchTaxCredits(ninoMatch.nino,
+                                 interval,
+                                 Option(fieldsQuery).filter(_.nonEmpty))
             })
         }
       )
@@ -106,21 +108,23 @@ class LiveTaxCreditsService @Inject()(
                                   scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[CtcApplication]] = {
+
     val cacheid = CacheId(
       matchId,
       interval,
       scopesService.getValidFieldsForCacheKey(scopes.toList))
+
     cacheService
       .get(
         cacheid, {
           resolve(matchId)
             .flatMap(ninoMatch => {
-              val scopesFields =
+              val fieldsQuery =
                 scopesHelper.getQueryStringFor(scopes.toList, endpoint)
-              val scopesFieldsOption =
-                if (scopesFields.length == 0) None else Some(scopesFields)
-              ifConnector
-                .fetchTaxCredits(ninoMatch.nino, interval, scopesFieldsOption)
+              ifConnector.fetchTaxCredits(
+                ninoMatch.nino,
+                interval,
+                Option(fieldsQuery).filter(_.nonEmpty))
             })
         }
       )

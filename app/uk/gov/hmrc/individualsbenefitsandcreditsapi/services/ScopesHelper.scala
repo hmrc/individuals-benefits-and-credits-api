@@ -52,17 +52,15 @@ class ScopesHelper @Inject()(scopesService: ScopesService) {
     state(data) ++ linksSeq(hateoasLinks)
   }
 
-  def getHalLinks(matchId: UUID,
-                  endpoint: String,
-                  scopes: Iterable[String]): HalResource =
+  def getHalLinks(matchId: UUID, scopes: Iterable[String]): HalResource =
     linksSeq(
       scopesService
         .getEndpoints(scopes)
-        .filter(c => !c.name.equals(endpoint))
-        .map(endpoint =>
-          HalLink(rel = endpoint.name,
-                  href =
-                    endpoint.link.replaceAllLiterally("<matchId>", s"$matchId"),
-                  title = Some(endpoint.title)))
+        .map(
+          endpoint =>
+            HalLink(rel = endpoint.name,
+                    href = endpoint.link.replaceAllLiterally("<matchId>",
+                                                             s"$matchId"),
+                    title = Some(endpoint.title)))
         .toSeq)
 }

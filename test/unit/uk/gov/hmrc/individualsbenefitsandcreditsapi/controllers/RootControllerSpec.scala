@@ -16,6 +16,8 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import java.util.UUID
+
 import akka.stream.Materializer
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
 import org.mockito.Mockito.{verifyNoInteractions, when}
@@ -48,15 +50,12 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
   LiveTaxCreditsService,
   SandboxTaxCreditsService
 }
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
-import java.util.UUID
-
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ScopesConfigHelper
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
-
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import scala.concurrent.{ExecutionContext, Future}
 
 class RootControllerSpec extends SpecBase with MockitoSugar {
+
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
   private val testMatchId =
