@@ -79,7 +79,8 @@ class LiveTaxCreditsService @Inject()(
     val cacheid = CacheId(
       matchId,
       interval,
-      scopesService.getValidFieldsForCacheKey(scopes.toList))
+      scopesService.getValidFieldsForCacheKey(scopes.toList,
+                                              List("working-tax-credit")))
 
     cacheService
       .get(
@@ -112,7 +113,8 @@ class LiveTaxCreditsService @Inject()(
     val cacheid = CacheId(
       matchId,
       interval,
-      scopesService.getValidFieldsForCacheKey(scopes.toList))
+      scopesService.getValidFieldsForCacheKey(scopes.toList,
+                                              List("child-tax-credit")))
 
     cacheService
       .get(

@@ -76,7 +76,6 @@ trait CommonControllerSpec extends BaseSpec {
         s"$serviceUrl/${endpoint}?matchId=0a184ef3-fd75-4d4d-b6a3-f886cc39a366&fromDate=$fromDate")
 
       Then("the response status should be 404 (not found)")
-      println(response)
       response.code shouldBe NOT_FOUND
       Json.parse(response.body) shouldBe Json.obj(
         "code" -> "NOT_FOUND",

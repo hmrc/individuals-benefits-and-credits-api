@@ -132,8 +132,6 @@ class IfConnectorSpec
             .withBody(Json.toJson(applicationsData).toString())))
 
       val result = await(underTest.fetchTaxCredits(nino, interval, None))
-      println(Json.toJson(result))
-
       result shouldBe applicationsData.applications
     }
   }
