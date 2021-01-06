@@ -17,10 +17,10 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{ControllerComponents, Result}
+import org.joda.time.DateTime
+import play.api.mvc.{ControllerComponents, Request, Result}
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http.TooManyRequestException
-
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
   ErrorInvalidRequest,
   ErrorNotFound,
@@ -28,12 +28,21 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
   ErrorUnauthorized,
   MatchNotFoundException
 }
-
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Dates.toFormattedLocalDate
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 abstract class CommonController @Inject()(
     cc: ControllerComponents
 ) extends BackendController(cc) {
+
+  private def getQueryParam[T](name: String)(implicit request: Request[T]) =
+    request.queryString.get(name).flatMap(_.headOption)
+
+  private[controllers] def urlWithInterval[T](url: String, fromDate: DateTime)(
+      implicit request: Request[T]) = {
+    val urlWithFromDate = s"$url&fromDate=${toFormattedLocalDate(fromDate)}"
+    getQueryParam("toDate") map (toDate => s"$urlWithFromDate&toDate=$toDate") getOrElse urlWithFromDate
+  }
 
   private[controllers] def recovery: PartialFunction[Throwable, Result] = {
     case _: MatchNotFoundException => ErrorNotFound.toHttpResponse

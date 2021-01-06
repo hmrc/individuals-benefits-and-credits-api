@@ -16,14 +16,13 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.{
   ApiConfig,
   EndpointConfig,
   ScopeConfig
 }
-trait ScopesConfig extends MockitoSugar {
+trait ScopesConfig {
 
   val mockScope1 = "test1"
   val mockScope2 = "test2"
@@ -74,7 +73,10 @@ trait ScopesConfig extends MockitoSugar {
     (s"api-config.endpoints.$mockEndpoint3.endpoint",
      "/a/b/e?matchId=<matchId>{&fromDate,toDate}"),
     (s"api-config.endpoints.$mockEndpoint3.fields.O", "field3"),
-    (s"api-config.endpoints.$mockEndpoint3.fields.P", "field4")
+    (s"api-config.endpoints.$mockEndpoint3.fields.P", "field4"),
+    (s"api-config.endpoints.$mockEndpoint1.title", "mockEndpoint1Title"),
+    (s"api-config.endpoints.$mockEndpoint2.title", "mockEndpoint2Title"),
+    (s"api-config.endpoints.$mockEndpoint3.title", "mockEndpoint3Title")
   )
 
   val mockApiConfig = ApiConfig(
@@ -88,6 +90,7 @@ trait ScopesConfig extends MockitoSugar {
     endpoints = List(
       EndpointConfig(
         name = mockEndpoint1,
+        title = mockEndpoint1,
         link = "/a/b/c?matchId=<matchId>{&fromDate,toDate}",
         fields = Map(
           "A" -> "payments",
@@ -105,12 +108,14 @@ trait ScopesConfig extends MockitoSugar {
         )
       ),
       EndpointConfig(name = mockEndpoint2,
+                     title = mockEndpoint2,
                      link = "/a/b/d?matchId=<matchId>{&fromDate,toDate}",
                      fields = Map(
                        "M" -> "field1",
                        "N" -> "field2"
                      )),
       EndpointConfig(name = mockEndpoint3,
+                     title = mockEndpoint3,
                      link = "/a/b/e?matchId=<matchId>{&fromDate,toDate}",
                      fields = Map(
                        "O" -> "field3",

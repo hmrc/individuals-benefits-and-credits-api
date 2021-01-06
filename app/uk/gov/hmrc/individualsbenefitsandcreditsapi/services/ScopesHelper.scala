@@ -16,10 +16,13 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import javax.inject.Inject
 import play.api.hal.Hal.{linksSeq, state}
 import play.api.hal.{HalLink, HalResource}
+import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.JsValue
+
+import java.util.UUID
+import javax.inject.Inject
 
 class ScopesHelper @Inject()(scopesService: ScopesService) {
 
@@ -28,7 +31,7 @@ class ScopesHelper @Inject()(scopesService: ScopesService) {
     * @param endpoint The endpoint that the user has called
     * @return A google fields-style query string with the fields determined by the provided endpoint and scopes
     */
-  def getQueryStringFor(scopes: List[String], endpoint: String): String =
+  def getQueryStringFor(scopes: Seq[String], endpoint: String): String =
     PathTree(scopesService.getValidItemsFor(scopes, endpoint)).toString
 
   /**
@@ -48,4 +51,16 @@ class ScopesHelper @Inject()(scopesService: ScopesService) {
 
     state(data) ++ linksSeq(hateoasLinks)
   }
+
+  def getHalLinks(matchId: UUID, scopes: Iterable[String]): HalResource =
+    linksSeq(
+      scopesService
+        .getEndpoints(scopes)
+        .map(
+          endpoint =>
+            HalLink(rel = endpoint.name,
+                    href = endpoint.link.replaceAllLiterally("<matchId>",
+                                                             s"$matchId"),
+                    title = Some(endpoint.title)))
+        .toSeq)
 }

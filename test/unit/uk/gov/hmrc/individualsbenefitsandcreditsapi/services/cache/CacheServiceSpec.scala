@@ -16,8 +16,6 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
-import java.util.UUID
-
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.{verify, verifyNoInteractions}

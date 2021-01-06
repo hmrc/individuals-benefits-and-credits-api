@@ -39,16 +39,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
     implicit ec: ExecutionContext) {
 
-  private val baseUrl = servicesConfig.baseUrl("integration-framework")
   private val integrationFrameworkBearerToken =
     servicesConfig.getString(
       "microservice.services.integration-framework.authorization-token")
   private val integrationFrameworkEnvironment =
     servicesConfig.getString(
       "microservice.services.integration-framework.environment")
-
-  private val emptyResponse =
-    IfApplications(Seq(IfApplication(0, None, None, None, None)))
 
   val serviceUrl = servicesConfig.baseUrl("integration-framework")
 
@@ -57,7 +53,8 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
       ec: ExecutionContext): Future[Seq[IfApplication]] = {
     val startDate = interval.getStart.toLocalDate
     val endDate = interval.getEnd.toLocalDate
-    val payeUrl = s"$serviceUrl/individuals/tax-credits/" + s"nino/$nino?startDate=$startDate&endDate=$endDate&fields=$filter"
+    val payeUrl = s"$serviceUrl/individuals/tax-credits/nino/$nino?" +
+      s"startDate=$startDate&endDate=$endDate${filter.map(f => s"&fields=$f").getOrElse("")}"
     recover[IfApplication](
       http
         .GET[IfApplications](payeUrl)(implicitly, header(), ec)
@@ -66,10 +63,9 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
 
   private def header(extraHeaders: (String, String)*)(
       implicit hc: HeaderCarrier) =
-    // The correlationId should be passed in by the caller and will already be present in hc
     hc.copy(
         authorization =
-          Some(Authorization(s"Bearer $integrationFrameworkBearerToken")))
+          Option(Authorization(s"Bearer $integrationFrameworkBearerToken")))
       .withExtraHeaders(
         Seq("Environment" -> integrationFrameworkEnvironment) ++ extraHeaders: _*)
 

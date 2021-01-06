@@ -72,20 +72,25 @@ class ScopesServiceSpec
 
     "get valid data items keys for single scope" in {
       val result =
-        scopesService.getValidFieldsForCacheKey(List(mockScope1))
+        scopesService.getValidFieldsForCacheKey(
+          List(mockScope1),
+          List(mockEndpoint1, mockEndpoint2, mockEndpoint3))
       result shouldBe "ABF"
     }
 
     "get valid data items keys for multiple scopes" in {
       val result =
-        scopesService.getValidFieldsForCacheKey(List(mockScope1, mockScope2))
+        scopesService.getValidFieldsForCacheKey(
+          List(mockScope1, mockScope2),
+          List(mockEndpoint1, mockEndpoint2, mockEndpoint3))
       result shouldBe "ABFCDEG"
     }
 
     "get valid data items keys for multiple scopes including no match" in {
       val result =
         scopesService.getValidFieldsForCacheKey(
-          List(mockScope1, mockScope2, "not-exists"))
+          List(mockScope1, mockScope2, "not-exists"),
+          List(mockEndpoint1, mockEndpoint2, mockEndpoint3))
       result shouldBe "ABFCDEG"
     }
 

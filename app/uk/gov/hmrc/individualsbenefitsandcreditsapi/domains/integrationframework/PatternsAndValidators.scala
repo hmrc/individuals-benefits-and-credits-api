@@ -30,12 +30,12 @@ trait PatternsAndValidators {
   val maxPaymentValue = 1000000000000000.0
   val statusPattern = "^([ADSCX])$".r
   val methodPattern = "^([ROM])$".r
-  val tcTypePattern = "^(ETC|ITC])$".r
+  val tcTypePattern = "^(ETC|ICC)$".r
 
   def isMultipleOfPointZeroOne(value: Double): Boolean =
-    (value * 100.0) % 1 == 0
+    (BigDecimal(value) * 100.0) % 1 == 0
 
-  def isMultipleOfOne(value: Double): Boolean = value % 1 == 0
+  def isMultipleOfOne(value: Double): Boolean = BigDecimal(value) % 1 == 0
 
   def applicationIdValidator: Reads[Double] =
     min[Double](0) andKeep max[Double](999999999999.0) andKeep verifying[

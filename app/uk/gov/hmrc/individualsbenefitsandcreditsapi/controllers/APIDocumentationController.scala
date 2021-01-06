@@ -17,13 +17,12 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import controllers.Assets
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
-import play.api.http.HttpErrorHandler
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.api.controllers.DocumentationController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.views._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class APIDocumentationController @Inject()(cc: ControllerComponents,

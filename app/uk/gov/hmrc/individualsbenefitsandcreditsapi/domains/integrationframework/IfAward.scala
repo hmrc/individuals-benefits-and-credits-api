@@ -17,10 +17,10 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath, Reads}
-import play.api.libs.json.Reads.{max, min, pattern, verifying}
+import play.api.libs.json.Reads.pattern
+import play.api.libs.json.{Format, JsPath}
 
-case class IfAwards(
+case class IfAward(
     payProfCalcDate: Option[String],
     startDate: Option[String],
     endDate: Option[String],
@@ -28,12 +28,12 @@ case class IfAwards(
     workTaxCredit: Option[IfWorkTaxCredit],
     childTaxCredit: Option[IfChildTaxCredit],
     grossTaxYearAmount: Option[Double],
-    payments: Option[IfPayments]
+    payments: Option[Seq[IfPayment]]
 )
 
-object IfAwards extends PatternsAndValidators {
+object IfAward extends PatternsAndValidators {
 
-  implicit val awardsFormat: Format[IfAwards] = Format(
+  implicit val awardsFormat: Format[IfAward] = Format(
     (
       (JsPath \ "payProfCalcDate")
         .readNullable[String](pattern(datePattern, "invalid date")) and
@@ -47,8 +47,8 @@ object IfAwards extends PatternsAndValidators {
         (JsPath \ "childTaxCredit").readNullable[IfChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount")
           .readNullable[Double](paymentAmountValidator) and
-        (JsPath \ "payments").readNullable[IfPayments]
-    )(IfAwards.apply _),
+        (JsPath \ "payments").readNullable[Seq[IfPayment]]
+    )(IfAward.apply _),
     (
       (JsPath \ "payProfCalcDate").writeNullable[String] and
         (JsPath \ "startDate").writeNullable[String] and
@@ -57,7 +57,7 @@ object IfAwards extends PatternsAndValidators {
         (JsPath \ "workTaxCredit").writeNullable[IfWorkTaxCredit] and
         (JsPath \ "childTaxCredit").writeNullable[IfChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount").writeNullable[Double] and
-        (JsPath \ "payments").writeNullable[IfPayments]
-    )(unlift(IfAwards.unapply))
+        (JsPath \ "payments").writeNullable[Seq[IfPayment]]
+    )(unlift(IfAward.unapply))
   )
 }

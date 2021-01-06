@@ -18,28 +18,28 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.integrationfram
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
-  IfAwards
+  IfAward
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class IfAwardsSpec extends UnitSpec {
+class IfAwardSpec extends UnitSpec {
 
-  val awards = IfAwards(Some("2020-08-18"),
-                        Some("2020-08-18"),
-                        Some("2020-08-18"),
-                        Some(20),
-                        None,
-                        None,
-                        Some(20),
-                        None)
-  val invalidAwards = IfAwards(Some("asd"),
-                               Some("abcdefghijklmnopqrstuvwxyz0123456789"),
-                               Some("a"),
-                               Some(0),
-                               None,
-                               None,
-                               None,
-                               None)
+  val awards = IfAward(Some("2020-08-18"),
+                       Some("2020-08-18"),
+                       Some("2020-08-18"),
+                       Some(20),
+                       None,
+                       None,
+                       Some(20),
+                       None)
+  val invalidAwards = IfAward(Some("asd"),
+                              Some("abcdefghijklmnopqrstuvwxyz0123456789"),
+                              Some("a"),
+                              Some(0),
+                              None,
+                              None,
+                              None,
+                              None)
 
   "Contact details" should {
     "Write to JSON" in {
@@ -57,12 +57,12 @@ class IfAwardsSpec extends UnitSpec {
     }
 
     "Validate successfully when reading valid contact details" in {
-      val result = Json.toJson(awards).validate[IfAwards]
+      val result = Json.toJson(awards).validate[IfAward]
       result.isSuccess shouldBe true
     }
 
     "Validate unsuccessfully when reading invalid contact details" in {
-      val result = Json.toJson(invalidAwards).validate[IfAwards]
+      val result = Json.toJson(invalidAwards).validate[IfAward]
       result.isError shouldBe true
     }
   }

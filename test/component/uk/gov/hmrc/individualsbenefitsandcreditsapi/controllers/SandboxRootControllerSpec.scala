@@ -16,32 +16,95 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  BaseSpec
-}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.BaseSpec
+import play.api.libs.json.Json
+import play.api.libs.json.Json.parse
 import play.api.test.Helpers._
-import scalaj.http.Http
+import scalaj.http.HttpResponse
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData
 
 class SandboxRootControllerSpec extends BaseSpec {
 
   val rootScope = "read:individuals-benefits-and-credits"
 
   feature("Sandbox Root Controller") {
-    scenario("root route") {
-      Given("A valid auth token ")
-      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
 
-      When("I make a call to root endpoint")
-      val response =
-        Http(s"$serviceUrl/sandbox")
-          .headers(requestHeaders(acceptHeaderP1))
-          .asString
+    scenario("missing match id") {
+      When("the root entry point to the API is invoked with a missing match id")
+      val response = invokeEndpoint(s"$serviceUrl/sandbox")
 
-      Then("The response tatus should be 500")
-      response.code shouldBe INTERNAL_SERVER_ERROR
-
+      Then("the response status should be 400 (bad request)")
+      assertResponseIs(response, BAD_REQUEST, """
+          {
+             "code" : "INVALID_REQUEST",
+             "message" : "matchId is required"
+          }
+        """)
     }
+
+    scenario("malformed match id") {
+      When(
+        "the root entry point to the API is invoked with a malformed match id")
+      val response =
+        invokeEndpoint(s"$serviceUrl/sandbox?matchId=malformed-match-id-value")
+
+      Then("the response status should be 400 (bad request)")
+      response.code shouldBe BAD_REQUEST
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "INVALID_REQUEST",
+        "message" -> "matchId format is invalid"
+      )
+    }
+
+    scenario("invalid match id") {
+
+      When(
+        "the root entry point to the API is invoked with an invalid match id")
+      val response = invokeEndpoint(
+        s"$serviceUrl/sandbox?matchId=0a184ef3-fd75-4d4d-b6a3-f886cc39a366")
+
+      Then("the response status should be 404 (not found)")
+      response.code shouldBe NOT_FOUND
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "NOT_FOUND",
+        "message" -> "The resource can not be found"
+      )
+    }
+
+    scenario("valid request to the sandbox implementation") {
+      When("I request the root entry point to the API")
+      val response = invokeEndpoint(
+        s"$serviceUrl/sandbox?matchId=${SandboxData.sandboxMatchIdString}")
+
+      Then("The response status should be 200 (ok)")
+      assertResponseIs(
+        response,
+        OK,
+        Json.stringify(
+          Json.obj(
+            "_links" -> Json.obj(
+              "self" -> Json.obj(
+                "href" -> s"/individuals/benefits-and-credits/?matchId=${SandboxData.sandboxMatchIdString}"
+              ),
+              "working-tax-credit" -> Json.obj(
+                "href" -> s"/individuals/benefits-and-credits/working-tax-credit?matchId=${SandboxData.sandboxMatchIdString}{&fromDate,toDate}",
+                "title" -> "Get an individual's working tax credits data"
+              ),
+              "child-tax-credit" -> Json.obj(
+                "href" -> s"/individuals/benefits-and-credits/child-tax-credit?matchId=${SandboxData.sandboxMatchIdString}{&fromDate,toDate}",
+                "title" -> "Get an individual's child tax credits data"
+              )
+            )
+          ))
+      )
+    }
+  }
+
+  private def assertResponseIs(httpResponse: HttpResponse[String],
+                               expectedResponseCode: Int,
+                               expectedResponseBody: String) = {
+    httpResponse.code shouldBe expectedResponseCode
+    parse(httpResponse.body) shouldBe parse(expectedResponseBody)
   }
 
 }

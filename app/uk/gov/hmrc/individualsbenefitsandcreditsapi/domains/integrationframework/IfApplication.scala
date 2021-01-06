@@ -17,14 +17,14 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath, Reads}
-import play.api.libs.json.Reads.{max, min, pattern, verifying}
+import play.api.libs.json.Reads.pattern
+import play.api.libs.json.{Format, JsPath}
 
 case class IfApplication(id: Double,
                          ceasedDate: Option[String],
                          entStartDate: Option[String],
                          entEndDate: Option[String],
-                         awards: Option[Seq[IfAwards]])
+                         awards: Option[Seq[IfAward]])
 
 object IfApplication extends PatternsAndValidators {
 
@@ -37,14 +37,14 @@ object IfApplication extends PatternsAndValidators {
           .readNullable[String](pattern(datePattern, "invalid date")) and
         (JsPath \ "entEndDate")
           .readNullable[String](pattern(datePattern, "invalid date")) and
-        (JsPath \ "awards").readNullable[Seq[IfAwards]]
+        (JsPath \ "awards").readNullable[Seq[IfAward]]
     )(IfApplication.apply _),
     (
       (JsPath \ "id").write[Double] and
         (JsPath \ "ceasedDate").writeNullable[String] and
         (JsPath \ "entStartDate").writeNullable[String] and
         (JsPath \ "entEndDate").writeNullable[String] and
-        (JsPath \ "awards").writeNullable[Seq[IfAwards]]
+        (JsPath \ "awards").writeNullable[Seq[IfAward]]
     )(unlift(IfApplication.unapply))
   )
 }

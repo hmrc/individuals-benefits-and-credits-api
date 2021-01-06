@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
 
-import java.util.UUID
-
+import org.joda.time.LocalDate
 import org.joda.time.LocalDate.parse
-import org.joda.time.{Interval, LocalDate}
 import uk.gov.hmrc.domain.{EmpRef, Nino, SaUtr}
+
+import java.util.UUID
 
 case class MatchedCitizen(matchId: UUID, nino: Nino)
 

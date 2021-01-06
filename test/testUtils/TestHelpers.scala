@@ -19,9 +19,9 @@ package testUtils
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
   IfApplication,
   IfApplications,
-  IfAwards,
+  IfAward,
   IfChildTaxCredit,
-  IfPayments,
+  IfPayment,
   IfWorkTaxCredit
 }
 
@@ -30,6 +30,7 @@ import scala.util.Random
 trait TestHelpers {
 
   def generateString(length: Int): String = {
+
     val chars = "abcdefghijklmnopqrstuvwxyz123456789"
 
     def generate(string: String): String = {
@@ -44,42 +45,105 @@ trait TestHelpers {
     generate("")
   }
 
-  def createValidIfApplications: IfApplications = {
-    val ifWorkTaxCredit = IfWorkTaxCredit(Some(22), Some(22), Some(22))
-    val ifChildTaxCredit = IfChildTaxCredit(Some(22),
-                                            Some(22),
-                                            Some(22),
-                                            Some(22),
-                                            Some(22),
-                                            Some(22))
-    val ifPayments = IfPayments(
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some("A"),
-      Some("2020-08-18"),
-      Some("2020-08-18"),
-      Some(1),
-      Some("ETC"),
-      Some(22),
-      Some("R")
-    )
-    val ifAwards = IfAwards(Some("2020-08-18"),
-                            Some("2020-08-18"),
-                            Some("2020-08-18"),
-                            Some(22),
-                            Some(ifWorkTaxCredit),
-                            Some(ifChildTaxCredit),
-                            Some(22),
-                            Some(ifPayments))
+  val ifWorkTaxCredit = IfWorkTaxCredit(amount = Some(22),
+                                        entitlementYTD = Some(22),
+                                        paidYTD = Some(22))
 
-    val application = IfApplication(22,
-                                    Some("2020-08-18"),
-                                    Some("2020-08-18"),
-                                    Some("2020-08-18"),
-                                    Some(Seq(ifAwards)))
+  val ifChildTaxCredit = IfChildTaxCredit(childCareAmount = Some(22),
+                                          ctcChildAmount = Some(22),
+                                          familyAmount = Some(22),
+                                          babyAmount = Some(22),
+                                          entitlementYTD = Some(22),
+                                          paidYTD = Some(22))
+
+  def createValidIfApplications: IfApplications = {
+
+    val ifPayments = Seq(
+      IfPayment(
+        periodStartDate = Some("2020-08-18"),
+        periodEndDate = Some("2020-08-18"),
+        startDate = Some("2020-08-18"),
+        endDate = Some("2020-08-18"),
+        status = Some("A"),
+        postedDate = Some("2020-08-18"),
+        nextDueDate = Some("2020-08-18"),
+        frequency = Some(1),
+        tcType = Some("ETC"),
+        amount = Some(22),
+        method = Some("R")
+      )
+    )
+    val ifAwards = IfAward(
+      payProfCalcDate = Some("2020-08-18"),
+      startDate = Some("2020-08-18"),
+      endDate = Some("2020-08-18"),
+      totalEntitlement = Some(22),
+      workTaxCredit = Some(ifWorkTaxCredit),
+      childTaxCredit = Some(ifChildTaxCredit),
+      grossTaxYearAmount = Some(22),
+      payments = Some(ifPayments)
+    )
+
+    val application = IfApplication(
+      id = 22,
+      ceasedDate = Some("2020-08-18"),
+      entStartDate = Some("2020-08-18"),
+      entEndDate = Some("2020-08-18"),
+      awards = Some(Seq(ifAwards))
+    )
 
     IfApplications(Seq(application))
+  }
+
+  def createValidIfApplicationsMultiple: IfApplications = {
+    val ifWorkTaxCredit = IfWorkTaxCredit(amount = Some(22),
+                                          entitlementYTD = Some(22),
+                                          paidYTD = Some(22))
+
+    val ifChildTaxCredit = IfChildTaxCredit(childCareAmount = Some(22),
+                                            ctcChildAmount = Some(22),
+                                            familyAmount = Some(22),
+                                            babyAmount = Some(22),
+                                            entitlementYTD = Some(22),
+                                            paidYTD = Some(22))
+
+    val ifPayments = Seq(
+      IfPayment(
+        periodStartDate = Some("2020-08-18"),
+        periodEndDate = Some("2020-08-18"),
+        startDate = Some("2020-08-18"),
+        endDate = Some("2020-08-18"),
+        status = Some("A"),
+        postedDate = Some("2020-08-18"),
+        nextDueDate = Some("2020-08-18"),
+        frequency = Some(1),
+        tcType = Some("ETC"),
+        amount = Some(22),
+        method = Some("R")
+      )
+    )
+
+    val ifAwards = IfAward(
+      payProfCalcDate = Some("2020-08-18"),
+      startDate = Some("2020-08-18"),
+      endDate = Some("2020-08-18"),
+      totalEntitlement = Some(22),
+      workTaxCredit = Some(ifWorkTaxCredit),
+      childTaxCredit = Some(ifChildTaxCredit),
+      grossTaxYearAmount = Some(22),
+      payments = Some(ifPayments)
+    )
+
+    val application = IfApplication(id = 22,
+                                    ceasedDate = Some("2020-08-18"),
+                                    entStartDate = Some("2020-08-18"),
+                                    entEndDate = Some("2020-08-18"),
+                                    awards = Some(Seq(ifAwards)))
+
+    IfApplications(Seq(application, application))
+  }
+
+  def createEmpyIfApplications: IfApplications = {
+    IfApplications(Seq.empty)
   }
 }

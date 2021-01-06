@@ -26,11 +26,13 @@ class ApiConfigTest extends UnitSpec with MockitoSugar {
   val config: Configuration = Configuration(
     ("api-config.scopes.scope1.fields", List("A", "B")),
     ("api-config.scopes.scope2.fields", List("C")),
-    ("api-config.endpoints.endpoint1.fields.A", "field1"),
     ("api-config.endpoints.endpoint1.endpoint", "a/b/c"),
+    ("api-config.endpoints.endpoint1.title", "Endpoint 1"),
+    ("api-config.endpoints.endpoint1.fields.A", "field1"),
+    ("api-config.endpoints.endpoint2.endpoint", "d/e/f"),
+    ("api-config.endpoints.endpoint2.title", "Endpoint 2"),
     ("api-config.endpoints.endpoint2.fields.B", "field2"),
     ("api-config.endpoints.endpoint2.fields.C", "field3"),
-    ("api-config.endpoints.endpoint2.endpoint", "d/e/f")
   )
 
   val apiConfig: ApiConfig = config.get[ApiConfig]("api-config")
