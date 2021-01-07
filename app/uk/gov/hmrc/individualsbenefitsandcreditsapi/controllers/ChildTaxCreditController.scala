@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import play.api.libs.json.Json
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.extractCorrelationId
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
@@ -41,6 +42,8 @@ abstract class ChildTaxCreditController @Inject()(
 
   def childTaxCredit(matchId: UUID, interval: Interval) =
     Action.async { implicit request =>
+      extractCorrelationId(request)
+
       val scopes =
         scopeService.getEndPointScopes("working-tax-credit")
 

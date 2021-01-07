@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import java.util.UUID
-
 import akka.stream.Materializer
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
 import org.mockito.Mockito.{verifyNoInteractions, when}
@@ -33,7 +32,7 @@ import uk.gov.hmrc.auth.core.{
   InsufficientEnrolments
 }
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
   LiveRootController,
   SandboxRootController
@@ -52,9 +51,13 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ScopesConfigHelper
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class RootControllerSpec extends SpecBase with MockitoSugar {
+
+  val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
+  val correlationIdHeader = "CorrelationId" -> sampleCorrelationId
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
@@ -106,7 +109,8 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.failed(new MatchNotFoundException))
 
-      val eventualResult = liveRootController.root(testMatchId)(FakeRequest())
+      val eventualResult = liveRootController.root(testMatchId)(
+        FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe NOT_FOUND
       contentAsJson(eventualResult) shouldBe Json.obj(
@@ -120,7 +124,8 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-      val eventualResult = liveRootController.root(testMatchId)(FakeRequest())
+      val eventualResult = liveRootController.root(testMatchId)(
+        FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe OK
       contentAsJson(eventualResult) shouldBe Json.obj(
@@ -145,7 +150,8 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(mockAuthConnector.authorise(any(), any())(any(), any()))
         .thenReturn(Future.failed(InsufficientEnrolments()))
 
-      val result = liveRootController.root(testMatchId)(FakeRequest())
+      val result = liveRootController.root(testMatchId)(
+        FakeRequest().withHeaders(correlationIdHeader))
 
       status(result) shouldBe UNAUTHORIZED
       verifyNoInteractions(liveTaxCreditsService)
@@ -157,10 +163,38 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-      val result = sandboxRootController.root(testMatchId)(FakeRequest())
+      val result = sandboxRootController.root(testMatchId)(
+        FakeRequest().withHeaders(correlationIdHeader))
 
       status(result) shouldBe OK
       verifyNoInteractions(mockAuthConnector)
+    }
+
+    "throws an exception when missing CorrelationId Header" in new Fixture {
+      when(
+        sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
+
+      val exception =
+        intercept[BadRequestException](
+          liveRootController.root(testMatchId)(FakeRequest()))
+
+      exception.message shouldBe "CorrelationId is required"
+      exception.responseCode shouldBe BAD_REQUEST
+    }
+
+    "throws an exception when CorrelationId Header is malformed" in new Fixture {
+      when(
+        sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
+
+      val exception =
+        intercept[BadRequestException](
+          liveRootController.root(testMatchId)(
+            FakeRequest().withHeaders("CorrelationId" -> "test")))
+
+      exception.message shouldBe "Malformed CorrelationId"
+      exception.responseCode shouldBe BAD_REQUEST
     }
   }
 }

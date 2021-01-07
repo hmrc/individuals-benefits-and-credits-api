@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.hal._
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.extractCorrelationId
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
@@ -39,6 +40,7 @@ abstract class WorkingTaxCreditController @Inject()(
 
   def workingTaxCredit(matchId: UUID, interval: Interval): Action[AnyContent] =
     Action.async { implicit request =>
+      extractCorrelationId(request)
       val scopes = scopeService.getEndPointScopes("working-tax-credit")
       requiresPrivilegedAuthentication(scopes) { authScopes =>
         taxCreditsService
