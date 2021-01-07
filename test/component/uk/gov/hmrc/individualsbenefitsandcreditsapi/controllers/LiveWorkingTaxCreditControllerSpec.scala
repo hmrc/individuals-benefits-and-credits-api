@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,11 @@ package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import java.util.UUID
 
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, IfStub, IndividualsMatchingApiStub}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
+  AuthStub,
+  IfStub,
+  IndividualsMatchingApiStub
+}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
