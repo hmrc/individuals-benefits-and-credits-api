@@ -1,16 +1,15 @@
 @import play.api.libs.json.Json
-@(privilegedWhitelistedApplicationIds: Seq[String])
+@(
+  privilegedWhitelistedApplicationIds: Seq[String],
+  endpointsEnabled: Boolean,
+  status: String
+)
 {
   "scopes":[
     {
       "key": "assigned:scopes",
       "name": "The scopes you have been assigned",
       "description": "An OAuth 2.0 Bearer Token with the scopes you have been assigned"
-    },
-    {
-      "key":"read:hellow-world",
-      "name":"Hello World",
-      "description":"Access Hello world"
     },
     {
       "key":"read:individuals-benefits-and-credits-laa-c1",
@@ -56,7 +55,8 @@
     "versions":[
       {
         "version":"P1.0",
-        "status":"PUBLISHED",
+        "status":@Json.toJson(status),
+        "endpointsEnabled":@Json.toJson(endpointsEnabled),
         "access":{
           "type":"PRIVATE",
           "whitelistedApplicationIds": @Json.toJson(privilegedWhitelistedApplicationIds)
