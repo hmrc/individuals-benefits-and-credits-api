@@ -43,7 +43,7 @@ class SandboxChildTaxCreditControllerSpec extends CommonControllerSpec {
       val response =
         Http(
           s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
+          .headers(requestHeaders(acceptHeader1))
           .asString
 
       Then("The response status should be 200 (ok)")
