@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,16 +58,15 @@ trait BaseSpec
   val mocks = Seq(AuthStub, IndividualsMatchingApiStub, IfStub)
   val authToken = "Bearer AUTH_TOKEN"
   val clientId = "CLIENT_ID"
-  val acceptHeaderP1 = ACCEPT -> "application/vnd.hmrc.P1.0+json"
+  val acceptHeader1 = ACCEPT -> "application/vnd.hmrc.1.0+json"
 
   def invokeEndpoint(endpoint: String) =
     Http(endpoint)
       .timeout(10000, 10000)
-      .headers(requestHeaders(acceptHeaderP1))
+      .headers(requestHeaders(acceptHeader1))
       .asString
 
-  protected def requestHeaders(
-      acceptHeader: (String, String) = acceptHeaderP1) =
+  protected def requestHeaders(acceptHeader: (String, String) = acceptHeader1) =
     Map(CONTENT_TYPE -> JSON, AUTHORIZATION -> authToken, acceptHeader)
 
   protected def errorResponse(message: String) =
