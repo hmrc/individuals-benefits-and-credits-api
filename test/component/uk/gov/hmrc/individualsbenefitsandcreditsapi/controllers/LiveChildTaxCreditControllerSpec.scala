@@ -68,7 +68,7 @@ class LiveChildTaxCreditControllerSpec
       val response =
         Http(
           s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
+          .headers(requestHeaders(acceptHeader1))
           .asString
 
       Then("The response status should be 200 (ok)")
@@ -136,7 +136,7 @@ class LiveChildTaxCreditControllerSpec
       val response =
         Http(
           s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
+          .headers(requestHeaders(acceptHeader1))
           .asString
 
       Then("the response status should be 401 (unauthorized)")

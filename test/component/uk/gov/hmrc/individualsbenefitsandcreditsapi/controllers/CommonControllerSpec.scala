@@ -91,7 +91,7 @@ trait CommonControllerSpec extends BaseSpec {
       When(s"I make a call to ${endpoint} endpoint")
       val response =
         Http(s"$serviceUrl/${endpoint}?matchId=$matchId&toDate=$toDate")
-          .headers(requestHeaders(acceptHeaderP1))
+          .headers(requestHeaders(acceptHeader1))
           .asString
 
       Then("The response status should be 400")
@@ -113,7 +113,7 @@ trait CommonControllerSpec extends BaseSpec {
       val response =
         Http(
           s"$serviceUrl/${endpoint}?matchId=$matchId&fromDate=$toDate&toDate=$fromDate")
-          .headers(requestHeaders(acceptHeaderP1))
+          .headers(requestHeaders(acceptHeader1))
           .asString
 
       Then("the response status should be 400 (invalid request)")
@@ -133,7 +133,7 @@ trait CommonControllerSpec extends BaseSpec {
         s"the ${endpoint} endpoint is invoked with toDate before 31st March 2013")
       val response = Http(
         s"$serviceUrl/${endpoint}?matchId=$matchId&fromDate=2012-01-01&toDate=$toDate")
-        .headers(requestHeaders(acceptHeaderP1))
+        .headers(requestHeaders(acceptHeader1))
         .asString
 
       Then("the response status should be 400 (invalid request)")
