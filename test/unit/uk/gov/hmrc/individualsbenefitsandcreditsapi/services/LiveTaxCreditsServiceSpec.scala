@@ -18,6 +18,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
 import java.util.UUID
 
+import com.typesafe.config.Config
 import org.joda.time.{Interval, LocalDate}
 import org.scalatestplus.mockito.MockitoSugar
 import testUtils.TestHelpers
@@ -27,13 +28,25 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
   IfConnector,
   IndividualsMatchingApiConnector
 }
+import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
+import org.mockito.Mockito.{verifyNoInteractions, when}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.Format
+import play.api.{Application, Configuration}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.CacheConfiguration
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.LiveTaxCreditsService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.CacheService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
+  CacheId,
+  CacheIdBase,
+  CacheService
+}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class LiveTaxCreditsServiceSpec
     extends UnitSpec
@@ -42,7 +55,13 @@ class LiveTaxCreditsServiceSpec
     with ScopesConfig {
 
   trait Setup {
-    val cacheService = mock[CacheService]
+
+    val cacheService = new CacheService(null, null)(null) {
+      override def get[T: Format](cacheId: CacheIdBase,
+                                  functionToCache: => Future[T]) =
+        functionToCache
+    }
+
     val ifConnector = mock[IfConnector]
     val scopeService = mock[ScopesService]
     val scopesHelper = mock[ScopesHelper]
@@ -66,52 +85,56 @@ class LiveTaxCreditsServiceSpec
     implicit val ec = ExecutionContext.global
     implicit val hc = HeaderCarrier()
 
+    when(scopeService.getValidFieldsForCacheKey(any(), any()))
+      .thenReturn("test")
+    when(scopesHelper.getQueryStringFor(any(), any())).thenReturn("(ABC)")
+    when(matchingConnector.resolve(eqTo(testMatchId))(any()))
+      .thenReturn(Future.successful(MatchedCitizen(testMatchId, nino)))
+
   }
 
   "Live Tax Credits Service" should {
-    "return an empty list when no applications received from IF" in new Setup {
-//
-//      when(scopeService.getValidFieldsForCacheKey(any())).thenReturn("test")
-//      when(matchingConnector.resolve(eqTo(testMatchId))(any()))
-//        .thenReturn(Future.successful(MatchedCitizen(testMatchId, nino)))
-//      when(
-//        scopesHelper.getQueryStringFor(eqTo(List("testScope")),
-//                                       eqTo("working-tax-credits")))
-//        .thenReturn("(ABC)")
-//
-////      when(
-////        cacheService.get(
-////          eqTo(CacheId(testMatchId, testInterval, "test")(any())))
-////      ).thenReturn(Future.successful(createEmpyIfApplications.applications))
-//
-//      val response =
-//        await(
-//          taxCreditsService.getWorkingTaxCredits(testMatchId,
-//                                                 testInterval,
-//                                                 "working-tax-credits",
-//                                                 Seq("testScope")))
-//
-//      when(scopeService.getValidFieldsForCacheKey(any())).thenReturn("test")
-//      when(matchingConnector.resolve(eqTo(testMatchId))(any()))
-//        .thenReturn(Future.successful(MatchedCitizen(testMatchId, nino)))
-//      when(
-//        scopesHelper.getQueryStringFor(eqTo(List("testScope")),
-//                                       eqTo("working-tax-credits")))
-//        .thenReturn("(ABC)")
-//
-////      when(
-////        cacheService.get(
-////          eqTo(CacheId(testMatchId, testInterval, "test")(any())))
-////      ).thenReturn(Future.successful(createEmpyIfApplications.applications))
-//
-//      val response =
-//        await(
-//          taxCreditsService.getWorkingTaxCredits(testMatchId,
-//                                                 testInterval,
-//                                                 "working-tax-credits",
-//                                                 Seq("testScope")))
 
-      //response.isEmpty shouldBe true
+    "return empty list of working tax credits when no records exists for the given matchId" in new Setup {
+      when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(createEmpyIfApplications.applications))
+      val response = await(
+        taxCreditsService
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope")))
+      response.isEmpty shouldBe true
+    }
+
+    "return list of working tax credits when records exists for the given matchId" in new Setup {
+      when(
+        ifConnector
+          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any())(any(), any()))
+        .thenReturn(
+          Future.successful(createValidIfApplicationsMultiple.applications))
+      val response = await(
+        taxCreditsService
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope")))
+      response.isEmpty shouldBe false
+    }
+
+    "return empty list of child tax credits when no records exists for the given matchId" in new Setup {
+      when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(createEmpyIfApplications.applications))
+      val response = await(
+        taxCreditsService
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope")))
+      response.isEmpty shouldBe true
+    }
+
+    "return list of child tax credits when records exists for the given matchId" in new Setup {
+      when(
+        ifConnector
+          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any())(any(), any()))
+        .thenReturn(
+          Future.successful(createValidIfApplicationsMultiple.applications))
+      val response = await(
+        taxCreditsService
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope")))
+      response.isEmpty shouldBe false
     }
   }
 }

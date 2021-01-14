@@ -42,10 +42,7 @@ abstract class WorkingTaxCreditController @Inject()(
       val scopes = scopeService.getEndPointScopes("working-tax-credit")
       requiresPrivilegedAuthentication(scopes) { authScopes =>
         taxCreditsService
-          .getWorkingTaxCredits(matchId,
-                                interval,
-                                "working-tax-credit",
-                                authScopes)
+          .getWorkingTaxCredits(matchId, interval, authScopes)
           .map(applications => {
             val selfLink = HalLink(
               "self",
