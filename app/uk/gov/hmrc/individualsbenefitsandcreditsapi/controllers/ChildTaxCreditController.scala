@@ -46,7 +46,7 @@ abstract class ChildTaxCreditController @Inject()(
 
       requiresPrivilegedAuthentication(scopes) { authScopes =>
         taxCreditsService
-          .getChildTaxCredits(matchId, interval, "child-tax-credit", authScopes)
+          .getChildTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {
               val selfLink =

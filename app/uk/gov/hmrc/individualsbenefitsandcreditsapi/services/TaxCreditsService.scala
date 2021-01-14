@@ -49,14 +49,12 @@ trait TaxCreditsService {
 
   def getWorkingTaxCredits(matchId: UUID,
                            interval: Interval,
-                           endpoint: String,
                            scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[WtcApplication]]
 
   def getChildTaxCredits(matchId: UUID,
                          interval: Interval,
-                         endpoint: String,
                          scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[CtcApplication]]
@@ -71,16 +69,16 @@ class LiveTaxCreditsService @Inject()(
 ) extends TaxCreditsService {
   override def getWorkingTaxCredits(matchId: UUID,
                                     interval: Interval,
-                                    endpoint: String,
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[WtcApplication]] = {
 
+    val endpoint: String = "working-tax-credit"
+
     val cacheid = CacheId(
       matchId,
       interval,
-      scopesService.getValidFieldsForCacheKey(scopes.toList,
-                                              List("working-tax-credit")))
+      scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
 
     cacheService
       .get(
@@ -105,16 +103,16 @@ class LiveTaxCreditsService @Inject()(
 
   override def getChildTaxCredits(matchId: UUID,
                                   interval: Interval,
-                                  endpoint: String,
                                   scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[CtcApplication]] = {
 
+    val endpoint: String = "child-tax-credit"
+
     val cacheid = CacheId(
       matchId,
       interval,
-      scopesService.getValidFieldsForCacheKey(scopes.toList,
-                                              List("child-tax-credit")))
+      scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
 
     cacheService
       .get(
@@ -144,7 +142,6 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
 
   override def getWorkingTaxCredits(matchId: UUID,
                                     interval: Interval,
-                                    endpoint: String,
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[WtcApplication]] = {
@@ -159,7 +156,6 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
 
   override def getChildTaxCredits(matchId: UUID,
                                   interval: Interval,
-                                  endpoint: String,
                                   scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[CtcApplication]] = {

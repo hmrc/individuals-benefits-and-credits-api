@@ -111,7 +111,6 @@ class WorkingTaxCreditControllerSpec
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo("working-tax-credit"),
               eqTo(List("test-scope")))(any(), any()))
             .thenReturn(
               Future.successful(
@@ -130,7 +129,6 @@ class WorkingTaxCreditControllerSpec
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo("working-tax-credit"),
               eqTo(List("test-scope")))(any(), any()))
             .thenReturn(
               Future.failed(new MatchNotFoundException)
