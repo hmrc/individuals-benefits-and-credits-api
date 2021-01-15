@@ -103,7 +103,7 @@ trait DomainHelpers {
   }
 
   def createValidWtcApplication(): WtcApplication = {
-    new WtcApplication(123, Seq(createValidWtcAward()))
+    new WtcApplication(Some(123), Seq(createValidWtcAward()))
   }
 
   def createValidCtcPayment(): CtcPayment = {
@@ -131,7 +131,7 @@ trait DomainHelpers {
   }
 
   def createValidCtcApplication(): CtcApplication = {
-    new CtcApplication(123, Some(Seq(createValidCtcAward())))
+    new CtcApplication(Some(123), Seq(createValidCtcAward()))
   }
 
 }

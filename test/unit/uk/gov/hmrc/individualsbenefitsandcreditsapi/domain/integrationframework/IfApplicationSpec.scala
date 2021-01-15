@@ -22,13 +22,13 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class IfApplicationSpec extends UnitSpec {
 
-  val application = IfApplication(9,
+  val application = IfApplication(Some(9),
                                   Some("2020-08-18"),
                                   Some("2020-08-18"),
                                   Some("2019-08-18"),
                                   None)
   val invalidApplication = IfApplication(
-    -42,
+    Some(-42),
     Some("abcdefghijklmnopqrstuvwxyz0123456789"),
     Some("a"),
     Some("as"),

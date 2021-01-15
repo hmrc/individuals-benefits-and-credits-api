@@ -85,7 +85,7 @@ trait TestHelpers {
     )
 
     val application = IfApplication(
-      id = 22,
+      id = Some(22),
       ceasedDate = Some("2020-08-18"),
       entStartDate = Some("2020-08-18"),
       entEndDate = Some("2020-08-18"),
@@ -134,7 +134,7 @@ trait TestHelpers {
       payments = Some(ifPayments)
     )
 
-    val application = IfApplication(id = 22,
+    val application = IfApplication(id = Some(22),
                                     ceasedDate = Some("2020-08-18"),
                                     entStartDate = Some("2020-08-18"),
                                     entEndDate = Some("2020-08-18"),
