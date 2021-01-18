@@ -42,6 +42,9 @@ trait BaseSpec
     with GivenWhenThen {
 
   override lazy val port = 9000
+
+  val cacheEnabled = false;
+
   implicit override lazy val app: Application = GuiceApplicationBuilder()
     .configure(
       "auditing.enabled" -> false,
@@ -49,7 +52,7 @@ trait BaseSpec
       "microservice.services.auth.port" -> AuthStub.port,
       "microservice.services.individuals-matching-api.port" -> IndividualsMatchingApiStub.port,
       "microservice.services.integration-framework.port" -> IfStub.port,
-      "run.mode" -> "It"
+      "cache.enabled" -> cacheEnabled
     )
     .build()
 
