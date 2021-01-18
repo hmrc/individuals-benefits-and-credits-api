@@ -143,7 +143,19 @@ trait TestHelpers {
     IfApplications(Seq(application, application))
   }
 
-  def createEmpyIfApplications: IfApplications = {
+  def createIfApplicationsWithEmptyRewards() = {
+    val application = IfApplication(
+      id = Some(22),
+      ceasedDate = Some("2020-08-18"),
+      entStartDate = Some("2020-08-18"),
+      entEndDate = Some("2020-08-18"),
+      None
+    )
+
+    IfApplications(Seq(application, application))
+  }
+
+  def createEmptyIfApplications: IfApplications = {
     IfApplications(Seq.empty)
   }
 }
