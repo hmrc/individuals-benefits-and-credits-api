@@ -77,14 +77,14 @@ uses:
           type: string
           example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
         fromDate:
-          description: The start date for Child Tax Credit data requested.
+          description: The date that Child Tax Credit data is requested from.
           type: string
           required: true
-          example: 2016-01-01
+          example: 2019-01-01
         toDate:
-         description: The end date for Child Tax Credit data requested. If missing, it defaults to today's date.
+         description: The date that Child Tax Credit data is requested to. If missing, it defaults to today's date.
          type: string
-         example: 2017-03-01
+         example: 2020-03-01
       responses:
         200:
           description: Use this endpoint to get an individual’s Child Tax Credit details for the requested time period. Data is not available before 2015.
@@ -125,14 +125,14 @@ uses:
           required: true
           example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
         fromDate:
-          description: The start date for Working Tax Credit data requested.
+          description: The date that Working Tax Credit data is requested from.
           type: string
           required: true
-          example: 2016-01-01
+          example: 2019-01-01
         toDate:
-         description: The end date for Working Tax Credit data requested. If missing, it defaults to today's date.
+         description: The date that Working Tax Credit data is requested to. If missing, it defaults to today's date.
          type: string
-         example: 2017-03-01
+         example: 2020-03-01
       responses:
         200:
           description: Use this endpoint to get an individual’s Working Tax Credit details for the requested time period. Data is not available before 2015.

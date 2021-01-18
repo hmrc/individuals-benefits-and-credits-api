@@ -14,7 +14,7 @@
         <td><p>Child Tax Credit data found</p>
         <td>
             <p>matchId=&lt;obtained from Individuals Matching API example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430&gt;</p>
-            <p>fromDate=2016-01-01<br>toDate= 2017-03-01</p>
+            <p>fromDate=2019-01-01<br>toDate= 2020-03-01</p>
         </td>
         <td><p>200 (OK)</p><p>Payload as response example above</p></td>
     </tr>
@@ -41,14 +41,14 @@
     </tr>
     <tr>
           <td>startTaxYear earlier than the current tax year minus 6</td>
-          <td>For example, startTaxYear=2008-09-01 </td>
+          <td>For example, fromDate=2008-09-01 </td>
           <td><p>400 (Bad Request)</p>
           <p>{ &quot;code&quot; : &quot;BAD_REQUEST&quot;,<br/>&quot;message&quot; : &quot;startTaxYear is earlier than maximum allowed" }</p></td>
     </tr>
     <tr>
           <td>fromDate requested is earlier than available data</td>
           <td>
-            <p>fromDate earlier than 2015.</p> 
+            <p>fromDate earlier than 6 April 2015.</p> 
             <p>For example, fromDate=2015-02-28</p>
           </td>
           <td><p>400 (Bad Request)</p>

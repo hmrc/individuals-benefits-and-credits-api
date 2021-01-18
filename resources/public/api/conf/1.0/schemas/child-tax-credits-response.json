@@ -5,10 +5,11 @@
   "properties": {
     "_links": {
       "type": "object",
+      "description": "A list of links for possible actions related to this endpoint.",
       "properties": {
         "self": {
           "type": "object",
-          "description": "The URI for this endpoint.",
+          "description": "The Uniform Resource Identifier (URI) for this endpoint.",
           "properties": {
             "href": {
               "type": "string",
@@ -23,7 +24,7 @@
       ]
     },
     "applications": {
-      "description": "The applications that are active during the date range requested",
+      "description": "The applications that are active during the date range requested.",
       "type": "array",
       "items": {
         "type": "object",
@@ -35,65 +36,65 @@
           },
           "awards": {
             "type": "array",
-            "description": "The awards that were active for this application during the time period",
+            "description": "The awards that were active for this application during the time period.",
             "items": {
               "type": "object",
               "properties": {
                 "payProfCalcDate": {
                   "type": "string",
-                  "description": "Payment Profile Calculated Date",
+                  "description": "The date the Payment Profile was calculated.",
                   "example": "1996-08-01"
                 },
                 "totalEntitlement": {
                   "type": "number",
-                  "description": "The sum of all the award entitlements for an award version; the net amount the entitlement unit will receive",
+                  "description": "The sum of all the award entitlements for an award version. The net amount that will be received.",
                   "example": "18765.23"
                 },
                 "childTaxCredit": {
                   "type": "object",
-                  "description": "Child Tax Credit (CTC) amounts",
+                  "description": "Child Tax Credit (CTC) amounts.",
                   "properties": {
                     "childCareAmount": {
                       "type": "number",
-                      "description": "Amount for childcare",
+                      "description": "The amount for childcare",
                       "example": "930.98"
                     },
                     "ctcChildAmount": {
                       "type": "number",
-                      "description": "CTC Child Entitlements",
+                      "description": "CTC Child Entitlements.",
                       "example": "730.49"
                     },
                     "familyAmount": {
                       "type": "number",
-                      "description": "Family Entitlement",
+                      "description": "Family entitlement.",
                       "example": "100.49"
                     },
                     "babyAmount": {
                       "type": "number",
-                      "description": "Baby Entitlement (no longer available after 2017)",
+                      "description": "Baby entitlement. (no longer available after 2017)",
                       "example": "100.01"
                     },
                     "paidYTD": {
                       "type": "number",
-                      "description": "The actual amount of payment out both PVE and direct, from the start of the tax credit period up to the calculated date of the payment profile",
+                      "description": "The actual payment amount both direct and payment via employer (PVE) from the start of the tax credit period up to the calculated date of the payment profile.",
                       "example": "8976.34"
                     }
                   }
                 },
                 "payments": {
                   "type": "array",
-                  "description": "All payments made to the individual during the time period. If no payments to this individual an empty array will be returned.",
+                  "description": "All payments made to the individual during the time period. If there were no payments to this individual, an empty array will be returned.",
                   "items": {
                     "type": "object",
                     "properties": {
                       "startDate": {
                         "type": "string",
-                        "description": "Start Date of the payment",
+                        "description": "The start date of the payment. Date in the format YYYY-MM-DD",
                         "example": "1996-08-01"
                       },
                       "endDate": {
                         "type": "string",
-                        "description": "End Date of the payment",
+                        "description": "The end date of the payment. Date in the format YYYY-MM-DD",
                         "example": "1996-08-07"
                       },
                       "frequency": {
@@ -103,7 +104,7 @@
                       },
                       "tcType": {
                         "type": "string",
-                        "description": "The type of tax credit. Currently supported values are ETC and ICC",
+                        "description": "The type of tax credit. Currently supported values are ETC and ICC.",
                         "example": "ICC"
                       },
                       "amount": {

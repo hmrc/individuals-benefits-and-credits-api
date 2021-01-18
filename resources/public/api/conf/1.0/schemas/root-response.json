@@ -18,12 +18,11 @@
             },
             "title": {
               "type": "string",
-              "description": "Title for the endpoint",
-              "example": "Get Child Tax credit details"
+              "description": "Get Child Tax Credit details"
             },
             "name": {
               "type": "string",
-              "description": "The HTTP Action to use on this endpoint",
+              "description": "The HTTP Action to use on this endpoint.",
               "example": "GET"
             }
           }
@@ -35,16 +34,15 @@
             "href" : {
               "type": "string",
               "description": "The URL of the endpoint.",
-              "example": "/individuals/benefits-and-credits/working-tax-credit?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430{&startDate,endDate}"
+              "example": "/individuals/benefits-and-credits/working-tax-credit?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430{&fromDate,toDate}"
             },
             "title": {
               "type": "string",
-              "description": "Title for the endpoint",
-              "example": "Get Child Tax credit details"
+              "description": "Get Working Tax credit details"
             },
             "name": {
               "type": "string",
-              "description": "The HTTP Action to use on this endpoint",
+              "description": "The HTTP Action to use on this endpoint.",
               "example": "GET"
             }
           }

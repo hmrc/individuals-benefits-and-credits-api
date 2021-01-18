@@ -1,2 +1,3 @@
 <p>Use this endpoint to get an individual’s Child Tax Credit details for the requested time period.</p>
-<p>Data is not available before the 2015 tax year.</p>
+<p>For individuals who receive tax credits, data is only available for their latest tax credits application. Data will be returned for a 3 month period within the requested time period, if available.</p>
+<p>No data is available before 6 April 2015. From 6 April 2021, data will be available for the current and previous 6 tax years.</p>
