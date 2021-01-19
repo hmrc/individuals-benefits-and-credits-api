@@ -52,7 +52,7 @@
             <p>For example, fromDate=2015-02-28</p>
           </td>
           <td><p>400 (Bad Request)</p>
-          <p>{ &quot;code&quot; : &quot;INVALID_REQUEST&quot;,<br/>&quot;message&quot; : &quot;startDate earlier than 31 March 2015" }</p></td>
+          <p>{ &quot;code&quot; : &quot;INVALID_REQUEST&quot;,<br/>&quot;message&quot; : &quot;fromDate earlier than 31 March 2015" }</p></td>
     </tr>
     <tr>
           <td>Invalid date format</td>
