@@ -38,7 +38,7 @@
             },
             "title": {
               "type": "string",
-              "description": "Get Working Tax credit details"
+              "description": "Get Working Tax Credit details"
             },
             "name": {
               "type": "string",

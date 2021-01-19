@@ -9,7 +9,7 @@
       "properties": {
         "self": {
           "type": "object",
-          "description": "The URL for this endpoint.",
+          "description": "The URL of the endpoint.",
           "properties": {
             "href": {
               "type": "string",
@@ -34,7 +34,7 @@
           },
           "awards": {
             "type": "array",
-            "description": "The awards that were active for this application during the time.",
+            "description": "The awards that are active for this application during the time period.",
             "items": {
               "type": "object",
               "properties": {

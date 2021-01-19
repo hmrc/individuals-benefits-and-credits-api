@@ -61,7 +61,7 @@
                     },
                     "ctcChildAmount": {
                       "type": "number",
-                      "description": "CTC Child Entitlements.",
+                      "description": "CTC child entitlements.",
                       "example": "730.49"
                     },
                     "familyAmount": {
@@ -71,7 +71,7 @@
                     },
                     "babyAmount": {
                       "type": "number",
-                      "description": "Baby entitlement. (no longer available after 2017)",
+                      "description": "Baby entitlement. This was no longer available after 2017.",
                       "example": "100.01"
                     },
                     "paidYTD": {
