@@ -28,7 +28,7 @@
     </tr>
     <tr>
           <td><p>Incorrect matchId</p></td>
-          <td>The matchId is not valid</td>
+          <td><p>The matchId is not valid</p></td>
           <td><p>404 (Not Found)</p>
           <p>{ &quot;code&quot; : &quot;NOT_FOUND&quot;,<br/>&quot;message&quot; : &quot;The resource cannot be found&quot; }</p></td>
     </tr>

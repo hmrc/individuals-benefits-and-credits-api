@@ -34,7 +34,7 @@
           },
           "awards": {
             "type": "array",
-            "description": "The awards that are active for this application during the time period.",
+            "description": "The awards that were active for this application during the time period.",
             "items": {
               "type": "object",
               "properties": {
