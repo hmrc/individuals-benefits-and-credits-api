@@ -40,10 +40,10 @@
           <p>{ &quot;code&quot; : &quot;BAD_REQUEST&quot;,<br/>&quot;message&quot; : &quot;Invalid time period requested" }</p></td>
     </tr>
     <tr>
-          <td><p>startTaxYear earlier than the current tax year minus 6</p></td>
+          <td><p>fromDate earlier than the current tax year minus 6</p></td>
           <td><p>For example, fromDate=2008-09-01 </p></td>
           <td><p>400 (Bad Request)</p>
-          <p>{ &quot;code&quot; : &quot;BAD_REQUEST&quot;,<br/>&quot;message&quot; : &quot;startTaxYear is earlier than maximum allowed" }</p></td>
+          <p>{ &quot;code&quot; : &quot;BAD_REQUEST&quot;,<br/>&quot;message&quot; : &quot;fromDate is earlier than maximum allowed" }</p></td>
     </tr>
     <tr>
           <td><p>fromDate requested is earlier than available data</p></td>
