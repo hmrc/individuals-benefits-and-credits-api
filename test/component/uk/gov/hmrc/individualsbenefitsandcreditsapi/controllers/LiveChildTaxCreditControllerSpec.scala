@@ -74,48 +74,49 @@ class LiveChildTaxCreditControllerSpec
       Then("The response status should be 200 (ok)")
       response.code shouldBe OK
 
-      val expectedData = """[ {
-                           |    "id" : 22,
-                           |    "awards" : [ {
-                           |      "payProfCalcDate" : "2020-08-18",
-                           |      "totalEntitlement" : 22,
-                           |      "childTaxCredit" : {
-                           |        "childCareAmount" : 22,
-                           |        "ctcChildAmount" : 22,
-                           |        "familyAmount" : 22,
-                           |        "babyAmount" : 22,
-                           |        "paidYTD" : 22
-                           |      },
-                           |      "payments" : [ {
-                           |        "startDate" : "2020-08-18",
-                           |        "endDate" : "2020-08-18",
-                           |        "frequency" : 1,
-                           |        "tcType" : "ETC",
-                           |        "amount" : 22
-                           |      } ]
-                           |    } ]
-                           |  }, {
-                           |    "id" : 22,
-                           |    "awards" : [ {
-                           |      "payProfCalcDate" : "2020-08-18",
-                           |      "totalEntitlement" : 22,
-                           |      "childTaxCredit" : {
-                           |        "childCareAmount" : 22,
-                           |        "ctcChildAmount" : 22,
-                           |        "familyAmount" : 22,
-                           |        "babyAmount" : 22,
-                           |        "paidYTD" : 22
-                           |      },
-                           |      "payments" : [ {
-                           |        "startDate" : "2020-08-18",
-                           |        "endDate" : "2020-08-18",
-                           |        "frequency" : 1,
-                           |        "tcType" : "ETC",
-                           |        "amount" : 22
-                           |      } ]
-                           |    } ]
-                           |  } ]
-                           |""".stripMargin
+      val expectedData =
+        """[ {
+          |    "id" : 22,
+          |    "awards" : [ {
+          |      "payProfCalcDate" : "2020-08-18",
+          |      "totalEntitlement" : 22,
+          |      "childTaxCredit" : {
+          |        "childCareAmount" : 22,
+          |        "ctcChildAmount" : 22,
+          |        "familyAmount" : 22,
+          |        "babyAmount" : 22,
+          |        "paidYTD" : 22
+          |      },
+          |      "payments" : [ {
+          |        "startDate" : "2020-08-18",
+          |        "endDate" : "2020-08-18",
+          |        "frequency" : 1,
+          |        "tcType" : "ETC",
+          |        "amount" : 22
+          |      } ]
+          |    } ]
+          |  }, {
+          |    "id" : 22,
+          |    "awards" : [ {
+          |      "payProfCalcDate" : "2020-08-18",
+          |      "totalEntitlement" : 22,
+          |      "childTaxCredit" : {
+          |        "childCareAmount" : 22,
+          |        "ctcChildAmount" : 22,
+          |        "familyAmount" : 22,
+          |        "babyAmount" : 22,
+          |        "paidYTD" : 22
+          |      },
+          |      "payments" : [ {
+          |        "startDate" : "2020-08-18",
+          |        "endDate" : "2020-08-18",
+          |        "frequency" : 1,
+          |        "tcType" : "ETC",
+          |        "amount" : 22
+          |      } ]
+          |    } ]
+          |  } ]
+          |""".stripMargin
 
       Json.parse(response.body) shouldBe Json.obj(
         "_links" -> Json.obj(
@@ -126,6 +127,51 @@ class LiveChildTaxCreditControllerSpec
         "applications" -> Json.parse(expectedData)
       )
 
+    }
+
+    scenario(
+      "Valid request to child-tax-credits endpoint when there are no rewards") {
+
+      Given("A valid auth token")
+
+      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
+
+      And("a valid record in the matching API")
+      IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
+
+      And("IF will return benefits and credits applications")
+      IfStub.searchBenefitsAndCredits(nino,
+                                      fromDate,
+                                      toDate,
+                                      createIfApplicationsWithEmptyRewards())
+
+      When("I make a call to child-tax-credit endpoint")
+      val response =
+        Http(
+          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+          .headers(requestHeaders(acceptHeader1))
+          .asString
+
+      Then("The response status should be 200 (ok)")
+      response.code shouldBe OK
+
+      val expectedData =
+        """[ {
+          |    "id" : 22,
+          |    "awards": []
+          |  }, {
+          |    "id" : 22,
+          |    "awards": []
+          |  } ]""".stripMargin
+
+      Json.parse(response.body) shouldBe Json.obj(
+        "_links" -> Json.obj(
+          "self" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId&fromDate=$fromDate&toDate=$toDate"
+          )
+        ),
+        "applications" -> Json.parse(expectedData)
+      )
     }
 
     scenario("Invalid token") {

@@ -33,7 +33,8 @@ class CacheService @Inject()(
 
   lazy val cacheEnabled: Boolean = conf.cacheEnabled
 
-  def get[T: Format](cacheId: CacheIdBase, fallbackFunction: => Future[T]): Future[T] = {
+  def get[T: Format](cacheId: CacheIdBase,
+                     fallbackFunction: => Future[T]): Future[T] = {
 
     if (cacheEnabled)
       cachingClient.fetchAndGetEntry[T](cacheId.id, conf.key) flatMap {

@@ -24,7 +24,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 class CtcApplicationSpec extends UnitSpec with DomainHelpers {
   "Creates correctly from IfApplication" in {
     val ifApplication = IfApplication(
-      123,
+      Some(123),
       Some("2017-08-08"),
       Some("2017-09-09"),
       Some("2017-10-10"),
@@ -32,6 +32,6 @@ class CtcApplicationSpec extends UnitSpec with DomainHelpers {
     )
 
     val result = CtcApplication.create(ifApplication)
-    result.id shouldBe 123
+    result.id shouldBe Some(123)
   }
 }
