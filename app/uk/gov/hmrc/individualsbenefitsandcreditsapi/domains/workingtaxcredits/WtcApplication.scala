@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 
-case class WtcApplication(id: Double, awards: Seq[WtcAward])
+case class WtcApplication(id: Option[Double], awards: Seq[WtcAward])
 
 object WtcApplication {
 
@@ -33,11 +33,11 @@ object WtcApplication {
 
   implicit val applicationFormat: Format[WtcApplication] = Format(
     (
-      (JsPath \ "id").read[Double] and
+      (JsPath \ "id").readNullable[Double] and
         (JsPath \ "awards").read[Seq[WtcAward]]
     )(WtcApplication.apply _),
     (
-      (JsPath \ "id").write[Double] and
+      (JsPath \ "id").writeNullable[Double] and
         (JsPath \ "awards").write[Seq[WtcAward]]
     )(unlift(WtcApplication.unapply))
   )

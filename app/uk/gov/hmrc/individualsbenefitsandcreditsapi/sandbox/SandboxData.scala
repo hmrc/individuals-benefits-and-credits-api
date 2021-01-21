@@ -45,7 +45,7 @@ object SandboxData {
 
     object Applications {
       val firstApplication = WtcApplication(
-        123,
+        Some(123),
         Seq(
           WtcAward(
             Some(LocalDate.parse("2016-10-10")),
@@ -74,7 +74,7 @@ object SandboxData {
       )
 
       val secondApplication = WtcApplication(
-        456,
+        Some(456),
         Seq(
           WtcAward(
             Some(LocalDate.parse("2016-10-10")),
@@ -133,19 +133,19 @@ object SandboxData {
 
     object Applications {
       val firstApplication = CtcApplication(
-        123,
-        Some(
-          Seq(
-            CtcAward(
-              Some(LocalDate.parse("2016-10-10")),
-              Some(100.12),
-              Some(
-                CtcChildTaxCredit(Some(400.78),
-                                  Some(500.12),
-                                  Some(600.34),
-                                  Some(700.67),
-                                  Some(800.89))),
-              Some(Seq(
+        Some(123),
+        Seq(
+          CtcAward(
+            Some(LocalDate.parse("2016-10-10")),
+            Some(100.12),
+            Some(
+              CtcChildTaxCredit(Some(400.78),
+                                Some(500.12),
+                                Some(600.34),
+                                Some(700.67),
+                                Some(800.89))),
+            Some(
+              Seq(
                 CtcPayment(
                   Some(LocalDate.parse("2016-10-10")),
                   Some(LocalDate.parse("2016-11-11")),
@@ -161,24 +161,24 @@ object SandboxData {
                   Some(123.45)
                 )
               ))
-            )
-          ))
+          )
+        )
       )
 
       val secondApplication = CtcApplication(
-        456,
-        Some(
-          Seq(
-            CtcAward(
-              Some(LocalDate.parse("2016-10-10")),
-              Some(100.12),
-              Some(
-                CtcChildTaxCredit(Some(400.78),
-                                  Some(500.12),
-                                  Some(600.34),
-                                  Some(700.67),
-                                  Some(800.89))),
-              Some(Seq(
+        Some(456),
+        Seq(
+          CtcAward(
+            Some(LocalDate.parse("2016-10-10")),
+            Some(100.12),
+            Some(
+              CtcChildTaxCredit(Some(400.78),
+                                Some(500.12),
+                                Some(600.34),
+                                Some(700.67),
+                                Some(800.89))),
+            Some(
+              Seq(
                 CtcPayment(
                   Some(LocalDate.parse("2016-10-10")),
                   Some(LocalDate.parse("2016-11-11")),
@@ -194,17 +194,18 @@ object SandboxData {
                   Some(123.45)
                 )
               ))
-            ),
-            CtcAward(
-              Some(LocalDate.parse("2016-10-10")),
-              Some(100.12),
-              Some(
-                CtcChildTaxCredit(Some(400.78),
-                                  Some(500.12),
-                                  Some(600.34),
-                                  Some(700.67),
-                                  Some(800.89))),
-              Some(Seq(
+          ),
+          CtcAward(
+            Some(LocalDate.parse("2016-10-10")),
+            Some(100.12),
+            Some(
+              CtcChildTaxCredit(Some(400.78),
+                                Some(500.12),
+                                Some(600.34),
+                                Some(700.67),
+                                Some(800.89))),
+            Some(
+              Seq(
                 CtcPayment(
                   Some(LocalDate.parse("2016-10-10")),
                   Some(LocalDate.parse("2016-11-11")),
@@ -220,8 +221,8 @@ object SandboxData {
                   Some(123.45)
                 )
               ))
-            )
-          ))
+          )
+        )
       )
 
       val applications = Seq(firstApplication, secondApplication)

@@ -126,6 +126,50 @@ class LiveWorkingTaxCreditControllerSpec
 
     }
 
+    scenario(
+      "Valid Request to working-tax-credits endpoint when IF return no rewards") {
+
+      Given("A valid auth token ")
+      AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
+
+      And("A valid record in the matching API")
+      IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
+
+      And("IF will return benefits and credits applications")
+      IfStub.searchBenefitsAndCredits(nino,
+                                      fromDate,
+                                      toDate,
+                                      createIfApplicationsWithEmptyRewards())
+
+      When("I make a call to working-tax-credit endpoint")
+      val response =
+        Http(
+          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+          .headers(requestHeaders(acceptHeader1))
+          .asString
+
+      Then("The response status should be 200")
+
+      val expectedData = """[ {
+                           |    "id" : 22,
+                           |    "awards" : []
+                           |  }, {
+                           |    "id" : 22,
+                           |    "awards" : []
+                           |  } ]""".stripMargin
+
+      response.code shouldBe OK
+      Json.parse(response.body) shouldBe Json.obj(
+        "_links" -> Json.obj(
+          "self" -> Json.obj(
+            "href" -> s"/individuals/benefits-and-credits/working-tax-credits?matchId=$matchId&fromDate=$fromDate&toDate=$toDate"
+          )
+        ),
+        "applications" -> Json.parse(expectedData)
+      )
+
+    }
+
     scenario("invalid token") {
       Given("an invalid token")
       AuthStub.willNotAuthorizePrivilegedAuthToken(authToken, rootScope)

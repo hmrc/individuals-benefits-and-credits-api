@@ -97,7 +97,7 @@ class LiveTaxCreditsServiceSpec
 
     "return empty list of working tax credits when no records exists for the given matchId" in new Setup {
       when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(createEmpyIfApplications.applications))
+        .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response = await(
         taxCreditsService
           .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope")))
@@ -118,7 +118,7 @@ class LiveTaxCreditsServiceSpec
 
     "return empty list of child tax credits when no records exists for the given matchId" in new Setup {
       when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(createEmpyIfApplications.applications))
+        .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response = await(
         taxCreditsService
           .getChildTaxCredits(testMatchId, testInterval, Seq("testScope")))

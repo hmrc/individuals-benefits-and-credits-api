@@ -20,24 +20,24 @@ import play.api.libs.json.{Format, JsPath}
 import play.api.libs.functional.syntax._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 
-case class CtcApplication(id: Double, awards: Option[Seq[CtcAward]])
+case class CtcApplication(id: Option[Double], awards: Seq[CtcAward])
 
 object CtcApplication {
   def create(ifApplication: IfApplication): CtcApplication = {
     CtcApplication(
       ifApplication.id,
-      ifApplication.awards.map(x => x.map(CtcAward.create))
+      ifApplication.awards.map(x => x.map(CtcAward.create)).getOrElse(Seq.empty)
     )
   }
 
   implicit val applicationFormat: Format[CtcApplication] = Format(
     (
-      (JsPath \ "id").read[Double] and
-        (JsPath \ "awards").readNullable[Seq[CtcAward]]
+      (JsPath \ "id").readNullable[Double] and
+        (JsPath \ "awards").read[Seq[CtcAward]]
     )(CtcApplication.apply _),
     (
-      (JsPath \ "id").write[Double] and
-        (JsPath \ "awards").writeNullable[Seq[CtcAward]]
+      (JsPath \ "id").writeNullable[Double] and
+        (JsPath \ "awards").write[Seq[CtcAward]]
     )(unlift(CtcApplication.unapply))
   )
 }

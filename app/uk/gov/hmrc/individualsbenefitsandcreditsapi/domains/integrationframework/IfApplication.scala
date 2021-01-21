@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.pattern
 import play.api.libs.json.{Format, JsPath}
 
-case class IfApplication(id: Double,
+case class IfApplication(id: Option[Double],
                          ceasedDate: Option[String],
                          entStartDate: Option[String],
                          entEndDate: Option[String],
@@ -30,7 +30,7 @@ object IfApplication extends PatternsAndValidators {
 
   implicit val applicationFormat: Format[IfApplication] = Format(
     (
-      (JsPath \ "id").read[Double](applicationIdValidator) and
+      (JsPath \ "id").readNullable[Double](applicationIdValidator) and
         (JsPath \ "ceasedDate")
           .readNullable[String](pattern(datePattern, "invalid date")) and
         (JsPath \ "entStartDate")
@@ -40,7 +40,7 @@ object IfApplication extends PatternsAndValidators {
         (JsPath \ "awards").readNullable[Seq[IfAward]]
     )(IfApplication.apply _),
     (
-      (JsPath \ "id").write[Double] and
+      (JsPath \ "id").writeNullable[Double] and
         (JsPath \ "ceasedDate").writeNullable[String] and
         (JsPath \ "entStartDate").writeNullable[String] and
         (JsPath \ "entEndDate").writeNullable[String] and
