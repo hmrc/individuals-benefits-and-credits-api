@@ -96,7 +96,8 @@ class LiveTaxCreditsServiceSpec
   "Live Tax Credits Service" should {
 
     "return empty list of working tax credits when no records exists for the given matchId" in new Setup {
-      when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
+      when(
+        ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response = await(
         taxCreditsService
@@ -107,7 +108,10 @@ class LiveTaxCreditsServiceSpec
     "return list of working tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any())(any(), any()))
+          .fetchTaxCredits(eqTo(nino),
+                           eqTo(testInterval),
+                           any(),
+                           eqTo(testMatchId.toString))(any(), any()))
         .thenReturn(
           Future.successful(createValidIfApplicationsMultiple.applications))
       val response = await(
@@ -117,7 +121,8 @@ class LiveTaxCreditsServiceSpec
     }
 
     "return empty list of child tax credits when no records exists for the given matchId" in new Setup {
-      when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
+      when(
+        ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response = await(
         taxCreditsService
@@ -128,7 +133,10 @@ class LiveTaxCreditsServiceSpec
     "return list of child tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any())(any(), any()))
+          .fetchTaxCredits(eqTo(nino),
+                           eqTo(testInterval),
+                           any(),
+                           eqTo(testMatchId.toString))(any(), any()))
         .thenReturn(
           Future.successful(createValidIfApplicationsMultiple.applications))
       val response = await(

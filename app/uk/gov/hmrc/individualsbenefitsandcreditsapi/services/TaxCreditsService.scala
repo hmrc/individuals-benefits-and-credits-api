@@ -90,7 +90,8 @@ class LiveTaxCreditsService @Inject()(
               ifConnector
                 .fetchTaxCredits(ninoMatch.nino,
                                  interval,
-                                 Option(fieldsQuery).filter(_.nonEmpty))
+                                 Option(fieldsQuery).filter(_.nonEmpty),
+                                 matchId.toString)
             })
         }
       )
@@ -124,7 +125,8 @@ class LiveTaxCreditsService @Inject()(
               ifConnector.fetchTaxCredits(
                 ninoMatch.nino,
                 interval,
-                Option(fieldsQuery).filter(_.nonEmpty))
+                Option(fieldsQuery).filter(_.nonEmpty),
+                matchId.toString)
             })
         }
       )

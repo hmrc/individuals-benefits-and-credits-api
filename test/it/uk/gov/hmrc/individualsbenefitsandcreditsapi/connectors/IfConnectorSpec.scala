@@ -69,6 +69,8 @@ class IfConnectorSpec
     fakeApplication.injector.instanceOf[ExecutionContext]
 
   trait Setup {
+    val matchId = "80a6bb14-d888-436e-a541-4000674c60aa"
+
     implicit val hc = HeaderCarrier()
 
     val underTest = fakeApplication.injector.instanceOf[IfConnector]
@@ -102,7 +104,7 @@ class IfConnectorSpec
           .willReturn(aResponse().withStatus(500)))
 
       intercept[Upstream5xxResponse] {
-        await(underTest.fetchTaxCredits(nino, interval, None))
+        await(underTest.fetchTaxCredits(nino, interval, None, matchId))
       }
     }
 
@@ -114,7 +116,7 @@ class IfConnectorSpec
           .willReturn(aResponse().withStatus(400)))
 
       intercept[BadRequestException] {
-        await(underTest.fetchTaxCredits(nino, interval, None))
+        await(underTest.fetchTaxCredits(nino, interval, None, matchId))
       }
     }
 
@@ -131,7 +133,8 @@ class IfConnectorSpec
             .withStatus(200)
             .withBody(Json.toJson(applicationsData).toString())))
 
-      val result = await(underTest.fetchTaxCredits(nino, interval, None))
+      val result =
+        await(underTest.fetchTaxCredits(nino, interval, None, matchId))
       result shouldBe applicationsData.applications
     }
   }

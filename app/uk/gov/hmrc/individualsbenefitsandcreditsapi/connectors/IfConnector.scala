@@ -48,7 +48,10 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
 
   val serviceUrl = servicesConfig.baseUrl("integration-framework")
 
-  def fetchTaxCredits(nino: Nino, interval: Interval, filter: Option[String])(
+  def fetchTaxCredits(nino: Nino,
+                      interval: Interval,
+                      filter: Option[String],
+                      matchId: String)(
       implicit hc: HeaderCarrier,
       ec: ExecutionContext): Future[Seq[IfApplication]] = {
     val startDate = interval.getStart.toLocalDate
