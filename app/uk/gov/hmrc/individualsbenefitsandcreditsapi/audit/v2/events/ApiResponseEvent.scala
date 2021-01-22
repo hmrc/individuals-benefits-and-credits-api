@@ -25,6 +25,6 @@ class ApiResponseEvent @Inject()(
 
   override def auditType = "ApiResponseEvent"
   override def transactionName = "AuditCall"
-  override def apiVersion = "2.0"
+  override def apiVersion = "1.0"
 
 }

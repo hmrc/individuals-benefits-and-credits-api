@@ -34,7 +34,7 @@ abstract case class FailureEventBase @Inject()(
 
   def auditType = "ApiFailureEvent"
   def transactionName = "AuditFail"
-  def apiVersion = "2.0"
+  def apiVersion = "1.0"
 
   def apply(correlationId: String,
             scopes: Option[String],

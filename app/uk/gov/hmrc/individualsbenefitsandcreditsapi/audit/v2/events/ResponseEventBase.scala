@@ -32,7 +32,7 @@ abstract case class ResponseEventBase @Inject()(
 
   def auditType = "ApiResponseEvent"
   def transactionName = "AuditCall"
-  def apiVersion = "2.0"
+  def apiVersion = "1.0"
 
   def apply(correlationId: String,
             scopes: Option[String],

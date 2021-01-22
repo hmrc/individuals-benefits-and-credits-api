@@ -76,7 +76,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       val result =
         Json.parse("""
                                 |{
-                                |  "apiVersion": "2.0",
+                                |  "apiVersion": "1.0",
                                 |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
                                 |  "correlationId": "test",
                                 |  "scopes": "test",
@@ -124,7 +124,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       val result = Json.parse(
         """
           |{
-          |  "apiVersion": "2.0",
+          |  "apiVersion": "1.0",
           |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
           |  "correlationId": "test",
           |  "scopes": "test",
@@ -171,7 +171,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       val result = Json.parse(
         """
           |{
-          |  "apiVersion": "2.0",
+          |  "apiVersion": "1.0",
           |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
           |  "correlationId": "test",
           |  "scopes": "test",

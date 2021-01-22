@@ -25,6 +25,6 @@ class ApiFailureEvent @Inject()(
 
   override def auditType = "ApiFailureEvent"
   override def transactionName = "AuditFail"
-  override def apiVersion = "2.0"
+  override def apiVersion = "1.0"
 
 }
