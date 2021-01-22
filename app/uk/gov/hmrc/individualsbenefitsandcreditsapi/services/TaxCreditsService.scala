@@ -37,9 +37,11 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
   CacheId,
   CacheService
 }
-
 import java.util.UUID
+
 import javax.inject.Inject
+import play.api.mvc.RequestHeader
+
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,12 +53,14 @@ trait TaxCreditsService {
                            interval: Interval,
                            scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
+      request: RequestHeader,
       ec: ExecutionContext): Future[Seq[WtcApplication]]
 
   def getChildTaxCredits(matchId: UUID,
                          interval: Interval,
                          scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
+      request: RequestHeader,
       ec: ExecutionContext): Future[Seq[CtcApplication]]
 }
 
@@ -71,6 +75,7 @@ class LiveTaxCreditsService @Inject()(
                                     interval: Interval,
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
+      request: RequestHeader,
       ec: ExecutionContext): Future[Seq[WtcApplication]] = {
 
     val endpoint: String = "working-tax-credit"
@@ -106,6 +111,7 @@ class LiveTaxCreditsService @Inject()(
                                   interval: Interval,
                                   scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
+      request: RequestHeader,
       ec: ExecutionContext): Future[Seq[CtcApplication]] = {
 
     val endpoint: String = "child-tax-credit"
@@ -146,6 +152,7 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
                                     interval: Interval,
                                     scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
+      request: RequestHeader,
       ec: ExecutionContext): Future[Seq[WtcApplication]] = {
 
     resolve(matchId).flatMap(
@@ -160,6 +167,7 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
                                   interval: Interval,
                                   scopes: Iterable[String])(
       implicit hc: HeaderCarrier,
+      request: RequestHeader,
       ec: ExecutionContext): Future[Seq[CtcApplication]] = {
     resolve(matchId).flatMap(
       _ =>

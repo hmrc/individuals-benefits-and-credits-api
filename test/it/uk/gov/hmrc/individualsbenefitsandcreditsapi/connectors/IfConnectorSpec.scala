@@ -26,17 +26,25 @@ import com.github.tomakehurst.wiremock.client.WireMock.{
   urlPathMatching
 }
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.{times, verify}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
+import play.api.test.FakeRequest
 import testUtils.{TestDates, TestHelpers}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{
   BadRequestException,
   HeaderCarrier,
+  HttpClient,
   Upstream5xxResponse
 }
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IfConnector
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import scala.concurrent.ExecutionContext
@@ -45,6 +53,7 @@ class IfConnectorSpec
     extends SpecBase
     with BeforeAndAfterEach
     with TestHelpers
+    with MockitoSugar
     with TestDates {
   val stubPort = sys.env.getOrElse("WIREMOCK", "11122").toInt
   val stubHost = "localhost"
@@ -70,10 +79,15 @@ class IfConnectorSpec
 
   trait Setup {
     val matchId = "80a6bb14-d888-436e-a541-4000674c60aa"
+    val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
+    val sampleCorrelationIdHeader = ("CorrelationId" -> sampleCorrelationId)
 
     implicit val hc = HeaderCarrier()
 
-    val underTest = fakeApplication.injector.instanceOf[IfConnector]
+    val config = fakeApplication.injector.instanceOf[ServicesConfig]
+    val httpClient = fakeApplication.injector.instanceOf[HttpClient]
+    val auditHelper = mock[AuditHelper]
+    val underTest = new IfConnector(config, httpClient, auditHelper)
   }
 
   override def beforeEach() {
@@ -97,6 +111,9 @@ class IfConnectorSpec
     val nino = Nino("NA000799C")
 
     "Fail when IF returns an error" in new Setup {
+
+      Mockito.reset(underTest.auditHelper)
+
       stubFor(
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
@@ -104,11 +121,23 @@ class IfConnectorSpec
           .willReturn(aResponse().withStatus(500)))
 
       intercept[Upstream5xxResponse] {
-        await(underTest.fetchTaxCredits(nino, interval, None, matchId))
+        await(
+          underTest.fetchTaxCredits(nino, interval, None, matchId)(
+            hc,
+            FakeRequest().withHeaders(sampleCorrelationIdHeader),
+            ec
+          )
+        )
       }
+
+      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any())(
+        any())
     }
 
     "Fail when IF returns a bad request" in new Setup {
+
+      Mockito.reset(underTest.auditHelper)
+
       stubFor(
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
@@ -116,11 +145,23 @@ class IfConnectorSpec
           .willReturn(aResponse().withStatus(400)))
 
       intercept[BadRequestException] {
-        await(underTest.fetchTaxCredits(nino, interval, None, matchId))
+        await(
+          underTest.fetchTaxCredits(nino, interval, None, matchId)(
+            hc,
+            FakeRequest().withHeaders(sampleCorrelationIdHeader),
+            ec
+          )
+        )
       }
+
+      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any())(
+        any())
     }
 
     "for standard response" in new Setup {
+
+      Mockito.reset(underTest.auditHelper)
+
       stubFor(
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
@@ -134,8 +175,18 @@ class IfConnectorSpec
             .withBody(Json.toJson(applicationsData).toString())))
 
       val result =
-        await(underTest.fetchTaxCredits(nino, interval, None, matchId))
+        await(
+          underTest.fetchTaxCredits(nino, interval, None, matchId)(
+            hc,
+            FakeRequest().withHeaders(sampleCorrelationIdHeader),
+            ec
+          )
+        )
+
+      verify(underTest.auditHelper, times(1)).auditIfApiResponse(any())(any())
+
       result shouldBe applicationsData.applications
+
     }
   }
 }

@@ -109,7 +109,7 @@ class ChildTaxCreditControllerSpec
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any()))
+              eqTo(List("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidCtcApplication(), createValidCtcApplication()))
@@ -127,7 +127,7 @@ class ChildTaxCreditControllerSpec
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any()))
+              eqTo(List("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )

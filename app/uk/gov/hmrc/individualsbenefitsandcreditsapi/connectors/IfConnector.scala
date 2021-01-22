@@ -16,17 +16,27 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
+import java.util.UUID
+
 import javax.inject.Inject
 import org.joda.time.Interval
 import play.api.Logger
+import play.api.libs.json.Json
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{
+  BadRequestException,
   HeaderCarrier,
   HttpClient,
   NotFoundException,
   TooManyRequestException,
   Upstream4xxResponse
+}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.models.{
+  ApiIfAuditRequest,
+  ApiIfFailureAuditRequest
 }
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
   IfApplication,
@@ -35,9 +45,12 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
 
-class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
-    implicit ec: ExecutionContext) {
+class IfConnector @Inject()(
+    servicesConfig: ServicesConfig,
+    http: HttpClient,
+    val auditHelper: AuditHelper)(implicit ec: ExecutionContext) {
 
   private val integrationFrameworkBearerToken =
     servicesConfig.getString(
@@ -53,16 +66,29 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
                       filter: Option[String],
                       matchId: String)(
       implicit hc: HeaderCarrier,
+      request: RequestHeader,
       ec: ExecutionContext): Future[Seq[IfApplication]] = {
+
+    val endpoint = "IfConnector::fetchTaxCredits"
     val startDate = interval.getStart.toLocalDate
     val endDate = interval.getEnd.toLocalDate
-    val payeUrl = s"$serviceUrl/individuals/tax-credits/nino/$nino?" +
+
+    val url = s"$serviceUrl/individuals/tax-credits/nino/$nino?" +
       s"startDate=$startDate&endDate=$endDate${filter.map(f => s"&fields=$f").getOrElse("")}"
-    recover[IfApplication](
-      http
-        .GET[IfApplications](payeUrl)(implicitly, header(), ec)
-        .map(_.applications))
+
+    call(url, endpoint, matchId)
+
   }
+
+  private def extractCorrelationId(requestHeader: RequestHeader) =
+    requestHeader.headers.get("CorrelationId") match {
+      case Some(uuidString) =>
+        Try(UUID.fromString(uuidString)) match {
+          case Success(_) => uuidString
+          case _          => throw new BadRequestException("Malformed CorrelationId")
+        }
+      case None => throw new BadRequestException("CorrelationId is required")
+    }
 
   private def header(extraHeaders: (String, String)*)(
       implicit hc: HeaderCarrier) =
@@ -72,11 +98,63 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
       .withExtraHeaders(
         Seq("Environment" -> integrationFrameworkEnvironment) ++ extraHeaders: _*)
 
-  def recover[A](x: Future[Seq[A]]): Future[Seq[A]] = x.recoverWith {
-    case _: NotFoundException => Future.successful(Seq.empty)
+  private def call(url: String, endpoint: String, matchId: String)(
+      implicit hc: HeaderCarrier,
+      request: RequestHeader,
+      ec: ExecutionContext) =
+    recover[IfApplication](
+      http.GET[IfApplications](url)(implicitly, header(), ec) map { response =>
+        Logger.debug(s"$endpoint - Response: $response")
+
+        auditHelper.auditIfApiResponse(
+          ApiIfAuditRequest(
+            extractCorrelationId(request),
+            None,
+            Some(matchId),
+            request,
+            url,
+            Json.toJson(response)
+          )
+        )
+
+        response.applications
+      },
+      ApiIfFailureAuditRequest(
+        extractCorrelationId(request),
+        None,
+        None,
+        request,
+        url
+      )
+    )
+
+  private def recover[A](x: Future[Seq[A]],
+                         apiIfFailedAuditRequest: ApiIfFailureAuditRequest)(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext): Future[Seq[A]] = x.recoverWith {
+    case notFound: NotFoundException => {
+
+      auditHelper.auditIfApiFailure(apiIfFailedAuditRequest,
+                                    notFound.getMessage)
+
+      Future.successful(Seq.empty)
+
+    }
     case Upstream4xxResponse(msg, 429, _, _) => {
+
       Logger.warn(s"IF Rate limited: $msg")
+
+      auditHelper.auditIfApiFailure(apiIfFailedAuditRequest,
+                                    s"IF Rate limited: $msg")
+
       Future.failed(new TooManyRequestException(msg))
+    }
+    case e: Exception => {
+
+      auditHelper.auditIfApiFailure(apiIfFailedAuditRequest, e.getMessage)
+
+      Future.failed(e)
+
     }
   }
 
