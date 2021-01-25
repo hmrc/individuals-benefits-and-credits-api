@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.models
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 
 import play.api.libs.json.JsValue
 import play.api.mvc.RequestHeader

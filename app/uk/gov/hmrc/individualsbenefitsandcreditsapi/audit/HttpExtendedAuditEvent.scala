@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit
 
 import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Named}

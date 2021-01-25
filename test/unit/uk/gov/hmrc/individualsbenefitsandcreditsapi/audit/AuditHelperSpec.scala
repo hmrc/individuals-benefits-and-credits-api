@@ -23,15 +23,13 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.models.{
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{
   ApiAuditRequest,
   ApiIfAuditRequest,
   ApiIfFailureAuditRequest
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.{
-  AuditHelper,
-  DefaultHttpExtendedAuditEvent
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.DefaultHttpExtendedAuditEvent
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec

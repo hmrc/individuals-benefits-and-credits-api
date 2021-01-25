@@ -42,7 +42,7 @@ import uk.gov.hmrc.http.{
   HttpClient,
   Upstream5xxResponse
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IfConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase

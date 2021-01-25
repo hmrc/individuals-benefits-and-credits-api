@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit
 
 import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.events.{
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events.{
   ApiResponseEvent,
   IfApiFailureEvent,
   IfApiResponseEvent
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.models.{
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{
   ApiAuditRequest,
   ApiIfAuditRequest,
   ApiIfFailureAuditRequest
 }
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events.IfApiResponseEvent
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.models
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events
 
-import play.api.libs.json.JsValue
-import play.api.mvc.RequestHeader
+import javax.inject.Inject
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.HttpExtendedAuditEvent
 
-case class ApiIfAuditRequest(
-    correlationId: String,
-    scopes: Option[String],
-    matchId: Option[String],
-    request: RequestHeader,
-    requestUrl: String,
-    response: JsValue
-)
+class IfApiResponseEvent @Inject()(
+    override val httpAuditEvent: HttpExtendedAuditEvent)
+    extends ResponseEventBase(httpAuditEvent) {
+
+  override def auditType = "IfApiResponseEvent"
+  override def transactionName = "AuditCall"
+  override def apiVersion = "1.0"
+
+}

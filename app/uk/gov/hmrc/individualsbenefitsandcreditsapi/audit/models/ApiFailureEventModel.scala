@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.events
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 
-import javax.inject.Inject
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.HttpExtendedAuditEvent
+import java.util.UUID
 
-class IfApiResponseEvent @Inject()(
-    override val httpAuditEvent: HttpExtendedAuditEvent)
-    extends ResponseEventBase(httpAuditEvent) {
+import play.api.libs.json.Json
 
-  override def auditType = "IfApiResponseEvent"
-  override def transactionName = "AuditCall"
-  override def apiVersion = "1.0"
+case class ApiFailureEventModel(apiVersion: String,
+                                matchId: Option[UUID],
+                                correlationId: String,
+                                scopes: Option[String],
+                                requestUrl: Option[String],
+                                msg: String)
 
+object ApiFailureEventModel {
+  implicit val formatApiFailureEventModel = Json.format[ApiFailureEventModel]
 }

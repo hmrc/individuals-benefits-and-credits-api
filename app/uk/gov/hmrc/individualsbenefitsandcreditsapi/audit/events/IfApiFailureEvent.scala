@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.events
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events
 
 import javax.inject.Inject
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.HttpExtendedAuditEvent
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.HttpExtendedAuditEvent
 
-class ApiResponseEvent @Inject()(
+class IfApiFailureEvent @Inject()(
     override val httpAuditEvent: HttpExtendedAuditEvent)
     extends ResponseEventBase(httpAuditEvent) {
 
-  override def auditType = "ApiResponseEvent"
-  override def transactionName = "AuditCall"
+  override def auditType = "IfApiFailureEvent"
+  override def transactionName = "AuditFail"
   override def apiVersion = "1.0"
 
 }

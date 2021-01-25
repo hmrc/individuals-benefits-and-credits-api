@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.events
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events
+
+import java.util.UUID
 
 import javax.inject.Inject
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.HttpExtendedAuditEvent
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.models.ApiResponseEventModel
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.HttpExtendedAuditEvent
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.ApiFailureEventModel
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
-abstract case class ResponseEventBase @Inject()(
+abstract case class FailureEventBase @Inject()(
     httpAuditEvent: HttpExtendedAuditEvent) {
 
   import httpAuditEvent.extendedDataEvent
 
-  def auditType = "ApiResponseEvent"
-  def transactionName = "AuditCall"
+  def auditType = "ApiFailureEvent"
+  def transactionName = "AuditFail"
   def apiVersion = "1.0"
 
   def apply(correlationId: String,
             scopes: Option[String],
-            matchId: Option[String],
+            matchId: Option[UUID],
             request: RequestHeader,
             requestUrl: Option[String],
-            response: String)(
+            msg: String)(
       implicit hc: HeaderCarrier =
         HeaderCarrierConverter.fromHeadersAndSession(request.headers)
   ): ExtendedDataEvent =
@@ -48,11 +50,11 @@ abstract case class ResponseEventBase @Inject()(
       transactionName,
       request,
       Json.toJson(
-        ApiResponseEventModel(apiVersion,
-                              matchId,
-                              correlationId,
-                              scopes,
-                              requestUrl,
-                              response))
+        ApiFailureEventModel(apiVersion,
+                             matchId,
+                             correlationId,
+                             scopes,
+                             requestUrl,
+                             msg))
     )
 }

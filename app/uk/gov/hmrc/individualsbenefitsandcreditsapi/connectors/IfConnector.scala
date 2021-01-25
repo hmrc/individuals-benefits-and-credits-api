@@ -33,8 +33,8 @@ import uk.gov.hmrc.http.{
   TooManyRequestException,
   Upstream4xxResponse
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.AuditHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.v2.models.{
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{
   ApiIfAuditRequest,
   ApiIfFailureAuditRequest
 }
