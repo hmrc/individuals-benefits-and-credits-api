@@ -189,7 +189,6 @@ class ChildTaxCreditControllerSpec
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo("child-tax-credit"),
               eqTo(List("test-scope")))(any(), any()))
             .thenReturn(
               Future.successful(
@@ -210,7 +209,6 @@ class ChildTaxCreditControllerSpec
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo("child-tax-credit"),
               eqTo(List("test-scope")))(any(), any()))
             .thenReturn(
               Future.successful(
