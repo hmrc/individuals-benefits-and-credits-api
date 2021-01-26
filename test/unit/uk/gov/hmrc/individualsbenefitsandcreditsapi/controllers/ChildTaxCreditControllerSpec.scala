@@ -23,6 +23,7 @@ import org.mockito.Mockito.{verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{
   AuthConnector,
@@ -30,10 +31,12 @@ import uk.gov.hmrc.auth.core.{
   Enrolments,
   InsufficientEnrolments
 }
+import uk.gov.hmrc.http.BadRequestException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
   LiveChildTaxCreditController,
   SandboxChildTaxCreditController
 }
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
   LiveTaxCreditsService,
@@ -41,8 +44,6 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
 }
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
-import play.api.test.Helpers._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,6 +52,9 @@ class ChildTaxCreditControllerSpec
     extends SpecBase
     with MockitoSugar
     with DomainHelpers {
+
+  val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
+  val correlationIdHeader = "CorrelationId" -> sampleCorrelationId
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
@@ -104,6 +108,7 @@ class ChildTaxCreditControllerSpec
         "Return Applications when successful" in new Fixture {
 
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+            .withHeaders(correlationIdHeader)
 
           when(
             liveTaxCreditsService.getChildTaxCredits(
@@ -133,6 +138,7 @@ class ChildTaxCreditControllerSpec
             )
 
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+            .withHeaders(correlationIdHeader)
 
           val result = liveChildTaxCreditsController.childTaxCredit(
             testMatchId,
@@ -152,6 +158,7 @@ class ChildTaxCreditControllerSpec
             .thenReturn(Future.failed(InsufficientEnrolments()))
 
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+            .withHeaders(correlationIdHeader)
 
           val result = liveChildTaxCreditsController.childTaxCredit(
             testMatchId,
@@ -166,6 +173,7 @@ class ChildTaxCreditControllerSpec
 
           val fakeRequest =
             FakeRequest("GET", s"/child-tax-credits/")
+              .withHeaders(correlationIdHeader)
 
           val result =
             intercept[Exception] {
@@ -174,6 +182,49 @@ class ChildTaxCreditControllerSpec
                   .childTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
+        }
+
+        "throws an exception when missing CorrelationId Header" in new Fixture {
+          when(
+            liveTaxCreditsService.getChildTaxCredits(
+              eqTo(testMatchId),
+              eqTo(testInterval),
+              eqTo("child-tax-credit"),
+              eqTo(List("test-scope")))(any(), any()))
+            .thenReturn(
+              Future.successful(
+                Seq(createValidCtcApplication(), createValidCtcApplication()))
+            )
+
+          val exception =
+            intercept[BadRequestException](
+              liveChildTaxCreditsController
+                .childTaxCredit(testMatchId, testInterval)(FakeRequest()))
+
+          exception.message shouldBe "CorrelationId is required"
+          exception.responseCode shouldBe BAD_REQUEST
+        }
+
+        "throws an exception when CorrelationId Header is malformed" in new Fixture {
+          when(
+            liveTaxCreditsService.getChildTaxCredits(
+              eqTo(testMatchId),
+              eqTo(testInterval),
+              eqTo("child-tax-credit"),
+              eqTo(List("test-scope")))(any(), any()))
+            .thenReturn(
+              Future.successful(
+                Seq(createValidCtcApplication(), createValidCtcApplication()))
+            )
+
+          val exception =
+            intercept[BadRequestException](
+              liveChildTaxCreditsController.childTaxCredit(testMatchId,
+                                                           testInterval)(
+                FakeRequest().withHeaders("CorrelationId" -> "test")))
+
+          exception.message shouldBe "Malformed CorrelationId"
+          exception.responseCode shouldBe BAD_REQUEST
         }
       }
     }

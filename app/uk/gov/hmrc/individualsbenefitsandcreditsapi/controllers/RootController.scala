@@ -22,6 +22,7 @@ import play.api.hal.HalLink
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.extractCorrelationId
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesHelper
@@ -40,6 +41,7 @@ abstract class RootController @Inject()(
   def root(matchId: UUID): Action[AnyContent] = Action.async {
     implicit request =>
       {
+        extractCorrelationId(request)
         requiresPrivilegedAuthentication(scopeService.getAllScopes) {
           authScopes =>
             taxCreditsService.resolve(matchId) map { _ =>

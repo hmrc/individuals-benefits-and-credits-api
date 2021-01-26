@@ -31,7 +31,7 @@ import uk.gov.hmrc.auth.core.{
   Enrolments,
   InsufficientEnrolments
 }
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
   LiveWorkingTaxCreditController,
   SandboxWorkingTaxCreditController
@@ -52,6 +52,9 @@ class WorkingTaxCreditControllerSpec
     extends SpecBase
     with MockitoSugar
     with DomainHelpers {
+
+  val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
+  val correlationIdHeader = "CorrelationId" -> sampleCorrelationId
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer
   private val testMatchId =
@@ -106,6 +109,7 @@ class WorkingTaxCreditControllerSpec
         "Return Applications when successful" in new Fixture {
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
+            .withHeaders(correlationIdHeader)
 
           when(
             liveTaxCreditsService.getWorkingTaxCredits(
@@ -135,6 +139,7 @@ class WorkingTaxCreditControllerSpec
             )
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
+            .withHeaders(correlationIdHeader)
 
           val result = liveWorkingTaxCreditsController.workingTaxCredit(
             testMatchId,
@@ -154,6 +159,7 @@ class WorkingTaxCreditControllerSpec
             .thenReturn(Future.failed(InsufficientEnrolments()))
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
+            .withHeaders(correlationIdHeader)
 
           val result = liveWorkingTaxCreditsController.workingTaxCredit(
             testMatchId,
@@ -168,6 +174,7 @@ class WorkingTaxCreditControllerSpec
 
           val fakeRequest =
             FakeRequest("GET", s"/working-tax-credits/")
+              .withHeaders(correlationIdHeader)
 
           val result =
             intercept[Exception] {
@@ -176,6 +183,48 @@ class WorkingTaxCreditControllerSpec
                   .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
+        }
+        "throws an exception when missing CorrelationId Header" in new Fixture {
+          when(
+            liveTaxCreditsService.getWorkingTaxCredits(
+              eqTo(testMatchId),
+              eqTo(testInterval),
+              eqTo("working-tax-credit"),
+              eqTo(List("test-scope")))(any(), any()))
+            .thenReturn(
+              Future.successful(
+                Seq(createValidWtcApplication(), createValidWtcApplication()))
+            )
+
+          val exception =
+            intercept[BadRequestException](
+              liveWorkingTaxCreditsController
+                .workingTaxCredit(testMatchId, testInterval)(FakeRequest()))
+
+          exception.message shouldBe "CorrelationId is required"
+          exception.responseCode shouldBe BAD_REQUEST
+        }
+
+        "throws an exception when CorrelationId Header is malformed" in new Fixture {
+          when(
+            liveTaxCreditsService.getWorkingTaxCredits(
+              eqTo(testMatchId),
+              eqTo(testInterval),
+              eqTo("working-tax-credit"),
+              eqTo(List("test-scope")))(any(), any()))
+            .thenReturn(
+              Future.successful(
+                Seq(createValidWtcApplication(), createValidWtcApplication()))
+            )
+
+          val exception =
+            intercept[BadRequestException](
+              liveWorkingTaxCreditsController.workingTaxCredit(testMatchId,
+                                                               testInterval)(
+                FakeRequest().withHeaders("CorrelationId" -> "test")))
+
+          exception.message shouldBe "Malformed CorrelationId"
+          exception.responseCode shouldBe BAD_REQUEST
         }
       }
     }
