@@ -122,7 +122,7 @@ class IfConnector @Inject()(
       ApiIfFailureAuditRequest(
         extractCorrelationId(request),
         None,
-        None,
+        Some(matchId),
         request,
         url
       )
