@@ -43,7 +43,7 @@ object IfAward extends PatternsAndValidators {
           .readNullable[String](pattern(datePattern, "invalid date")) and
         (JsPath \ "totalEntitlement")
           .readNullable[Double](paymentAmountValidator) and
-        (JsPath \ "workTaxCredit").readNullable[IfWorkTaxCredit] and
+        (JsPath \ "workingTaxCredit").readNullable[IfWorkTaxCredit] and
         (JsPath \ "childTaxCredit").readNullable[IfChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount")
           .readNullable[Double](paymentAmountValidator) and
@@ -54,7 +54,7 @@ object IfAward extends PatternsAndValidators {
         (JsPath \ "startDate").writeNullable[String] and
         (JsPath \ "endDate").writeNullable[String] and
         (JsPath \ "totalEntitlement").writeNullable[Double] and
-        (JsPath \ "workTaxCredit").writeNullable[IfWorkTaxCredit] and
+        (JsPath \ "workingTaxCredit").writeNullable[IfWorkTaxCredit] and
         (JsPath \ "childTaxCredit").writeNullable[IfChildTaxCredit] and
         (JsPath \ "grossTaxYearAmount").writeNullable[Double] and
         (JsPath \ "payments").writeNullable[Seq[IfPayment]]
