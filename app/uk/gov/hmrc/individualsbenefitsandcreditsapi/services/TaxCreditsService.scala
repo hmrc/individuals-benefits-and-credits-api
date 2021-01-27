@@ -51,32 +51,31 @@ trait TaxCreditsService {
 
   def getWorkingTaxCredits(matchId: UUID,
                            interval: Interval,
-                           scopes: Iterable[String])(
-      implicit hc: HeaderCarrier,
-      request: RequestHeader,
-      ec: ExecutionContext): Future[Seq[WtcApplication]]
+                           scopes: Iterable[String])
+                          (implicit hc: HeaderCarrier,
+                           request: RequestHeader,
+                           ec: ExecutionContext): Future[Seq[WtcApplication]]
 
   def getChildTaxCredits(matchId: UUID,
                          interval: Interval,
-                         scopes: Iterable[String])(
-      implicit hc: HeaderCarrier,
-      request: RequestHeader,
-      ec: ExecutionContext): Future[Seq[CtcApplication]]
+                         scopes: Iterable[String])
+                        (implicit hc: HeaderCarrier,
+                         request: RequestHeader,
+                         ec: ExecutionContext): Future[Seq[CtcApplication]]
 }
 
-class LiveTaxCreditsService @Inject()(
-    cacheService: CacheService,
-    ifConnector: IfConnector,
-    scopesService: ScopesService,
-    scopesHelper: ScopesHelper,
-    individualsMatchingApiConnector: IndividualsMatchingApiConnector
-) extends TaxCreditsService {
+class LiveTaxCreditsService @Inject()(cacheService: CacheService,
+                                      ifConnector: IfConnector,
+                                      scopesService: ScopesService,
+                                      scopesHelper: ScopesHelper,
+                                      individualsMatchingApiConnector: IndividualsMatchingApiConnector)
+  extends TaxCreditsService {
   override def getWorkingTaxCredits(matchId: UUID,
                                     interval: Interval,
-                                    scopes: Iterable[String])(
-      implicit hc: HeaderCarrier,
-      request: RequestHeader,
-      ec: ExecutionContext): Future[Seq[WtcApplication]] = {
+                                    scopes: Iterable[String])
+                                   (implicit hc: HeaderCarrier,
+                                    request: RequestHeader,
+                                    ec: ExecutionContext): Future[Seq[WtcApplication]] = {
 
     val endpoint: String = "working-tax-credit"
 
@@ -103,16 +102,16 @@ class LiveTaxCreditsService @Inject()(
       .map(applications => applications.map(WtcApplication.create))
   }
 
-  override def resolve(matchId: UUID)(
-      implicit hc: HeaderCarrier): Future[MatchedCitizen] =
+  override def resolve(matchId: UUID)
+                      (implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     individualsMatchingApiConnector.resolve(matchId)
 
   override def getChildTaxCredits(matchId: UUID,
                                   interval: Interval,
-                                  scopes: Iterable[String])(
-      implicit hc: HeaderCarrier,
-      request: RequestHeader,
-      ec: ExecutionContext): Future[Seq[CtcApplication]] = {
+                                  scopes: Iterable[String])
+                                 (implicit hc: HeaderCarrier,
+                                  request: RequestHeader,
+                                  ec: ExecutionContext): Future[Seq[CtcApplication]] = {
 
     val endpoint: String = "child-tax-credit"
 
@@ -150,10 +149,10 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
 
   override def getWorkingTaxCredits(matchId: UUID,
                                     interval: Interval,
-                                    scopes: Iterable[String])(
-      implicit hc: HeaderCarrier,
-      request: RequestHeader,
-      ec: ExecutionContext): Future[Seq[WtcApplication]] = {
+                                    scopes: Iterable[String])
+                                   (implicit hc: HeaderCarrier,
+                                    request: RequestHeader,
+                                    ec: ExecutionContext): Future[Seq[WtcApplication]] = {
 
     resolve(matchId).flatMap(
       _ =>
@@ -165,10 +164,10 @@ class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
 
   override def getChildTaxCredits(matchId: UUID,
                                   interval: Interval,
-                                  scopes: Iterable[String])(
-      implicit hc: HeaderCarrier,
-      request: RequestHeader,
-      ec: ExecutionContext): Future[Seq[CtcApplication]] = {
+                                  scopes: Iterable[String])
+                                 (implicit hc: HeaderCarrier,
+                                  request: RequestHeader,
+                                  ec: ExecutionContext): Future[Seq[CtcApplication]] = {
     resolve(matchId).flatMap(
       _ =>
         Future.successful(

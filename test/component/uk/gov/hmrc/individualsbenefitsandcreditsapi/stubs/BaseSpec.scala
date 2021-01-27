@@ -62,7 +62,7 @@ trait BaseSpec
   val authToken = "Bearer AUTH_TOKEN"
   val clientId = "CLIENT_ID"
   val acceptHeader1 = ACCEPT -> "application/vnd.hmrc.1.0+json"
-  val correlationIdHeader = ("CorrelationId" -> "188e9400-b636-4a3b-80ba-230a8c72b92a")
+  val correlationIdHeader = "CorrelationId" -> "188e9400-b636-4a3b-80ba-230a8c72b92a"
 
   def invokeEndpoint(endpoint: String) =
     Http(endpoint)
