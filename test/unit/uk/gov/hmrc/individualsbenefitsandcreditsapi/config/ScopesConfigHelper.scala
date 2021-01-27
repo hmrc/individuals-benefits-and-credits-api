@@ -26,7 +26,7 @@ trait ScopesConfigHelper {
 
     (s"api-config.endpoints.child-tax-credit.endpoint",
       "/individuals/benefits-and-credits/child-tax-credit?matchId=<matchId>{&fromDate,toDate}"),
-    (s"api-config.endpoints.child-tax-credit.title", "Get an individual's child tax credits data"),
+    (s"api-config.endpoints.child-tax-credit.title", "Get Child Tax Credit details"),
     (s"api-config.endpoints.child-tax-credit.fields.A", "applications/id"),
     (s"api-config.endpoints.child-tax-credit.fields.B", "applications/awards/totalEntitlement"),
     (s"api-config.endpoints.child-tax-credit.fields.C", "applications/awards/payProfCalcDate"),
@@ -43,7 +43,7 @@ trait ScopesConfigHelper {
 
     (s"api-config.endpoints.working-tax-credit.endpoint",
       "/individuals/benefits-and-credits/working-tax-credit?matchId=<matchId>{&fromDate,toDate}"),
-    (s"api-config.endpoints.working-tax-credit.title", "Get an individual's working tax credits data"),
+    (s"api-config.endpoints.working-tax-credit.title", "Get Working Tax Credit details"),
     (s"api-config.endpoints.working-tax-credit.fields.V", "applications/id"),
     (s"api-config.endpoints.working-tax-credit.fields.W", "applications/awards/totalEntitlement"),
     (s"api-config.endpoints.working-tax-credit.fields.X", "applications/awards/payProfCalcDate"),
