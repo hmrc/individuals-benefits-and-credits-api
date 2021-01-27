@@ -19,8 +19,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events
 import javax.inject.Inject
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.HttpExtendedAuditEvent
 
-class ApiFailureEvent @Inject()(
-    override val httpAuditEvent: HttpExtendedAuditEvent)
+class ApiFailureEvent @Inject()(httpAuditEvent: HttpExtendedAuditEvent)
     extends ResponseEventBase(httpAuditEvent) {
 
   override def auditType = "ApiFailureEvent"
