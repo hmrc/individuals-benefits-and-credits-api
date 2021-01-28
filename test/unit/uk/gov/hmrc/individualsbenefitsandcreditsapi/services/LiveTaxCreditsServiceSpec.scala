@@ -32,6 +32,7 @@ import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
 import org.mockito.Mockito.{verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Format
+import play.api.test.FakeRequest
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.CacheConfiguration
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
@@ -96,44 +97,68 @@ class LiveTaxCreditsServiceSpec
   "Live Tax Credits Service" should {
 
     "return empty list of working tax credits when no records exists for the given matchId" in new Setup {
-      when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
+      when(
+        ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(),
+                                                                any(),
+                                                                any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response = await(
         taxCreditsService
-          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope")))
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(
+            hc,
+            FakeRequest(),
+            ec))
       response.isEmpty shouldBe true
     }
 
     "return list of working tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any())(any(), any()))
+          .fetchTaxCredits(eqTo(nino),
+                           eqTo(testInterval),
+                           any(),
+                           eqTo(testMatchId.toString))(any(), any(), any()))
         .thenReturn(
           Future.successful(createValidIfApplicationsMultiple.applications))
       val response = await(
         taxCreditsService
-          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope")))
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(
+            hc,
+            FakeRequest(),
+            ec))
       response.isEmpty shouldBe false
     }
 
     "return empty list of child tax credits when no records exists for the given matchId" in new Setup {
-      when(ifConnector.fetchTaxCredits(any(), any(), any())(any(), any()))
+      when(
+        ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(),
+                                                                any(),
+                                                                any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response = await(
         taxCreditsService
-          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope")))
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(
+            hc,
+            FakeRequest(),
+            ec))
       response.isEmpty shouldBe true
     }
 
     "return list of child tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any())(any(), any()))
+          .fetchTaxCredits(eqTo(nino),
+                           eqTo(testInterval),
+                           any(),
+                           eqTo(testMatchId.toString))(any(), any(), any()))
         .thenReturn(
           Future.successful(createValidIfApplicationsMultiple.applications))
       val response = await(
         taxCreditsService
-          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope")))
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(
+            hc,
+            FakeRequest(),
+            ec))
       response.isEmpty shouldBe false
     }
   }

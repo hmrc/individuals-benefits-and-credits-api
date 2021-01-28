@@ -115,7 +115,7 @@ class WorkingTaxCreditControllerSpec
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any()))
+              eqTo(List("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
@@ -133,7 +133,7 @@ class WorkingTaxCreditControllerSpec
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any()))
+              eqTo(List("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )
@@ -189,7 +189,7 @@ class WorkingTaxCreditControllerSpec
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any()))
+              eqTo(List("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
@@ -209,7 +209,7 @@ class WorkingTaxCreditControllerSpec
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any()))
+              eqTo(List("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
