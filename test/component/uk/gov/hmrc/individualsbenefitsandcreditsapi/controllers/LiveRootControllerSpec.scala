@@ -125,11 +125,11 @@ class LiveRootControllerSpec extends BaseSpec {
           ),
           "working-tax-credit" -> Json.obj(
             "href" -> s"/individuals/benefits-and-credits/working-tax-credit?matchId=$matchId{&fromDate,toDate}",
-            "title" -> "Get an individual's working tax credits data"
+            "title" -> "Get Working Tax Credit details"
           ),
           "child-tax-credit" -> Json.obj(
             "href" -> s"/individuals/benefits-and-credits/child-tax-credit?matchId=$matchId{&fromDate,toDate}",
-            "title" -> "Get an individual's child tax credits data"
+            "title" -> "Get Child Tax Credit details"
           )
         )
       )
