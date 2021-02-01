@@ -42,7 +42,7 @@ object WtcAward {
       ifAward.totalEntitlement,
       wtc,
       ctc,
-      ifAward.payments.map(x => x.map(WtcPayment.create))
+      ifAward.payments.map(_.filter(_.tcType.exists(s => s.equals("ETC")))).map(_.map(WtcPayment.create))
     )
   }
 
