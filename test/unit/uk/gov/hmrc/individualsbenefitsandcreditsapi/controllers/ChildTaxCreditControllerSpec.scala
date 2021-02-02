@@ -102,6 +102,8 @@ class ChildTaxCreditControllerSpec
       "the child tax credit function" should {
         "Return Applications when successful" in new Fixture {
 
+          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
@@ -109,7 +111,7 @@ class ChildTaxCreditControllerSpec
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidCtcApplication(), createValidCtcApplication()))
@@ -120,6 +122,12 @@ class ChildTaxCreditControllerSpec
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe OK
+
+          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+            auditApiResponse(any(), any(), any(), any(), any(), any())(any())
+
+          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+            auditAuthScopes(any(), any(), any())(any())
         }
 
         "return 404 (not found) for an invalid matchId" in new Fixture {
@@ -130,7 +138,7 @@ class ChildTaxCreditControllerSpec
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )
