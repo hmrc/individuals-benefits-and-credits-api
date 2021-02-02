@@ -19,7 +19,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import akka.stream.Materializer
 import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
-import org.mockito.Mockito.{verifyNoInteractions, when}
+import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.libs.json.Json
@@ -34,7 +34,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsServ
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import java.util.UUID
-
+import org.mockito.Mockito
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -102,6 +102,8 @@ class WorkingTaxCreditControllerSpec
       "the working tax credit function" should {
         "Return Applications when successful" in new Fixture {
 
+          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
             .withHeaders(correlationIdHeader)
 
@@ -109,7 +111,7 @@ class WorkingTaxCreditControllerSpec
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
@@ -120,14 +122,23 @@ class WorkingTaxCreditControllerSpec
               .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe OK
+
+          verify(liveWorkingTaxCreditsController.auditHelper, times(1)).
+            auditApiResponse(any(), any(), any(), any(), any(), any())(any())
+
+          verify(liveWorkingTaxCreditsController.auditHelper, times(1)).
+            auditAuthScopes(any(), any(), any())(any())
         }
 
         "return 404 (not found) for an invalid matchId" in new Fixture {
+
+          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+
           when(
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )
@@ -145,6 +156,9 @@ class WorkingTaxCreditControllerSpec
             "code" -> "NOT_FOUND",
             "message" -> "The resource can not be found"
           )
+
+          verify(liveWorkingTaxCreditsController.auditHelper, times(1))
+            .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
         "return 401 when the bearer token does not have enrolment test-scope" in new Fixture {
