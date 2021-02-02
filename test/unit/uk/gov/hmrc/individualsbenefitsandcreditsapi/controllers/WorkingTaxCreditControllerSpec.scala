@@ -34,8 +34,6 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsServ
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import java.util.UUID
-
-import org.mockito.Matchers.any
 import org.mockito.Mockito
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
