@@ -25,9 +25,7 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
-class DefaultHttpExtendedAuditEvent @Inject()(
-    @Named("appName") val appName: String)
-    extends HttpExtendedAuditEvent
+class DefaultHttpExtendedAuditEvent @Inject()(@Named("appName") val appName: String) extends HttpExtendedAuditEvent
 
 @ImplementedBy(classOf[DefaultHttpExtendedAuditEvent])
 trait HttpExtendedAuditEvent {
@@ -45,26 +43,26 @@ trait HttpExtendedAuditEvent {
     val Referer = "Referer"
   }
 
-  def extendedDataEvent(eventType: String,
-                        transactionName: String,
-                        request: RequestHeader,
-                        detail: JsValue = JsString(""))(
-      implicit hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(
-        request.headers)): ExtendedDataEvent = {
+  def extendedDataEvent(
+                         eventType: String,
+                         transactionName: String,
+                         request: RequestHeader,
+                         detail: JsValue = JsString(""))(
+                         implicit hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers)): ExtendedDataEvent = {
 
     import auditDetailKeys._
     import headers._
     import uk.gov.hmrc.play.audit.http.HeaderFieldsExtractor._
 
     val requiredFields = Map(
-      "ipAddress" -> hc.forwarded.map(_.value).getOrElse("-"),
+      "ipAddress"            -> hc.forwarded.map(_.value).getOrElse("-"),
       hc.names.authorisation -> hc.authorization.map(_.value).getOrElse("-"),
-      hc.names.token -> hc.token.map(_.value).getOrElse("-"),
-      hc.names.deviceID -> hc.deviceID.getOrElse("-"),
-      Input -> s"Request to ${request.path}",
-      Method -> request.method.toUpperCase,
-      UserAgentString -> request.headers.get(UserAgent).getOrElse("-"),
-      Referrer -> request.headers.get(Referer).getOrElse("-")
+      hc.names.token         -> hc.token.map(_.value).getOrElse("-"),
+      hc.names.deviceID      -> hc.deviceID.getOrElse("-"),
+      Input                  -> s"Request to ${request.path}",
+      Method                 -> request.method.toUpperCase,
+      UserAgentString        -> request.headers.get(UserAgent).getOrElse("-"),
+      Referrer               -> request.headers.get(Referer).getOrElse("-")
     )
 
     val tags = hc.toAuditTags(transactionName, request.path)

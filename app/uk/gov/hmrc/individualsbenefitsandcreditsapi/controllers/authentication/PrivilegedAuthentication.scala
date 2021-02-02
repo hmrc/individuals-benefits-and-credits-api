@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import play.api.mvc.Result
+import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -29,22 +30,29 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
 
   val environment: String
 
-  def authPredicate(scopes: Iterable[String]): Predicate = {
+  def authPredicate(scopes: Iterable[String]): Predicate =
     scopes.map(Enrolment(_): Predicate).reduce(_ or _)
-  }
 
-  def requiresPrivilegedAuthentication(endpointScopes: Iterable[String])(
-      f: Iterable[String] => Future[Result])(
-      implicit hc: HeaderCarrier): Future[Result] = {
+  def authenticate(endpointScopes: Iterable[String],
+                   matchId: String)
+                  (f: Iterable[String] => Future[Result])
+                  (implicit hc: HeaderCarrier,
+                   request: RequestHeader,
+                   auditHelper: AuditHelper): Future[Result] = {
+
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
 
     if (environment == Environment.SANDBOX)
       f(endpointScopes.toList)
     else {
-      authorised(authPredicate(endpointScopes))
-        .retrieve(Retrievals.allEnrolments) {
-          case scopes => f(scopes.enrolments.map(e => e.key).toList)
+      authorised(authPredicate(endpointScopes)).retrieve(Retrievals.allEnrolments) {
+        case scopes => {
+
+          auditHelper.auditAuthScopes(matchId, scopes.enrolments.map(e => e.key).mkString(","), request)
+
+          f(scopes.enrolments.map(e => e.key))
         }
+      }
     }
   }
 }

@@ -21,20 +21,23 @@ import play.api.hal.Hal._
 import play.api.hal.HalLink
 import play.api.mvc.hal._
 import play.api.libs.json.Json
-
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.extractCorrelationId
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.validateCorrelationId
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.maybeCorrelationId
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
-
 import java.util.UUID
+
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+
 import scala.concurrent.ExecutionContext
 
 abstract class ChildTaxCreditController @Inject()(
     cc: ControllerComponents,
     scopeService: ScopesService,
+    implicit val auditHelper: AuditHelper,
     taxCreditsService: TaxCreditsService
 )(implicit val ec: ExecutionContext)
     extends CommonController(cc)
@@ -42,28 +45,24 @@ abstract class ChildTaxCreditController @Inject()(
 
   def childTaxCredit(matchId: UUID, interval: Interval) =
     Action.async { implicit request =>
-      extractCorrelationId(request)
+      val correlationId = validateCorrelationId(request)
 
-      val scopes =
-        scopeService.getEndPointScopes("working-tax-credit")
+      val scopes = scopeService.getEndPointScopes("child-tax-credit")
 
-      requiresPrivilegedAuthentication(scopes) { authScopes =>
-        taxCreditsService
-          .getChildTaxCredits(matchId, interval, authScopes)
+      authenticate(scopes, matchId.toString) { authScopes =>
+        taxCreditsService.getChildTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {
-              val selfLink =
-                HalLink(
-                  "self",
-                  urlWithInterval(
-                    s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId",
-                    interval.getStart))
-              val wtcJsonObj =
-                Json.obj("applications" -> Json.toJson(applications))
-              Ok(state(wtcJsonObj) ++ selfLink)
+              val selfLink = HalLink("self", urlWithInterval(s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId", interval.getStart))
+              val response = Json.obj("applications" -> Json.toJson(applications))
+
+              auditHelper.auditApiResponse(correlationId.toString, matchId.toString, Some(authScopes.mkString(",")),
+                request, selfLink.toString, Json.toJson(response))
+
+              Ok(state(response) ++ selfLink)
             }
           )
-      }.recover(recovery)
+      } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits")
     }
 
 }
@@ -73,9 +72,10 @@ class LiveChildTaxCreditController @Inject()(
     val authConnector: AuthConnector,
     cc: ControllerComponents,
     scopeService: ScopesService,
+    auditHelper:AuditHelper,
     liveTaxCreditsService: LiveTaxCreditsService
 )(implicit override val ec: ExecutionContext)
-    extends ChildTaxCreditController(cc, scopeService, liveTaxCreditsService) {
+    extends ChildTaxCreditController(cc, scopeService, auditHelper, liveTaxCreditsService) {
   override val environment = Environment.PRODUCTION
 }
 
@@ -84,8 +84,9 @@ class SandboxChildTaxCreditController @Inject()(
     val authConnector: AuthConnector,
     cc: ControllerComponents,
     scopeService: ScopesService,
+    auditHelper:AuditHelper,
     sandboxTaxCreditsService: SandboxTaxCreditsService
 )(implicit override val ec: ExecutionContext)
-    extends ChildTaxCreditController(cc, scopeService, sandboxTaxCreditsService) {
+    extends ChildTaxCreditController(cc, scopeService, auditHelper, sandboxTaxCreditsService) {
   override val environment = Environment.SANDBOX
 }

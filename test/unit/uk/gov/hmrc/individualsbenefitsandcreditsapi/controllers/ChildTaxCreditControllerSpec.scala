@@ -25,27 +25,18 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.{
-  AuthConnector,
-  Enrolment,
-  Enrolments,
-  InsufficientEnrolments
-}
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.http.BadRequestException
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
-  LiveChildTaxCreditController,
-  SandboxChildTaxCreditController
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveChildTaxCreditController, SandboxChildTaxCreditController}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
-  LiveTaxCreditsService,
-  SandboxTaxCreditsService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
-
 import java.util.UUID
+
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChildTaxCreditControllerSpec
@@ -73,6 +64,7 @@ class ChildTaxCreditControllerSpec
     val liveTaxCreditsService = mock[LiveTaxCreditsService]
     val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
+    val auditHelper: AuditHelper = mock[AuditHelper]
 
     when(
       mockAuthConnector.authorise(
@@ -88,6 +80,7 @@ class ChildTaxCreditControllerSpec
         mockAuthConnector,
         cc,
         scopeService,
+        auditHelper,
         liveTaxCreditsService
       )
 
@@ -96,6 +89,7 @@ class ChildTaxCreditControllerSpec
         mockAuthConnector,
         cc,
         scopeService,
+        auditHelper,
         sandboxTaxCreditsService
       )
 

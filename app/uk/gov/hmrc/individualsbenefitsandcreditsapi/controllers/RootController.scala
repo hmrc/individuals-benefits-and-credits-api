@@ -18,22 +18,26 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import play.api.mvc.hal._
 import play.api.hal.HalLink
-
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.extractCorrelationId
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.validateCorrelationId
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesHelper
-
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.maybeCorrelationId
 import java.util.UUID
+
+import play.api.libs.json.Json
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+
 import scala.concurrent.ExecutionContext
 
 abstract class RootController @Inject()(
     cc: ControllerComponents,
     scopeService: ScopesService,
     scopesHelper: ScopesHelper,
+    implicit val auditHelper: AuditHelper,
     taxCreditsService: TaxCreditsService)(implicit val ec: ExecutionContext)
     extends CommonController(cc)
     with PrivilegedAuthentication {
@@ -41,16 +45,20 @@ abstract class RootController @Inject()(
   def root(matchId: UUID): Action[AnyContent] = Action.async {
     implicit request =>
       {
-        extractCorrelationId(request)
-        requiresPrivilegedAuthentication(scopeService.getAllScopes) {
+        val correlationId = validateCorrelationId(request)
+
+        authenticate(scopeService.getAllScopes, matchId.toString) {
           authScopes =>
             taxCreditsService.resolve(matchId) map { _ =>
-              val selfLink =
-                HalLink("self",
-                        s"/individuals/benefits-and-credits/?matchId=$matchId")
-              Ok(scopesHelper.getHalLinks(matchId, authScopes) ++ selfLink)
+              val selfLink = HalLink("self",s"/individuals/benefits-and-credits/?matchId=$matchId")
+              val response = scopesHelper.getHalLinks(matchId, authScopes) ++ selfLink
+
+              auditHelper.auditApiResponse(correlationId.toString, matchId.toString,
+                Some(authScopes.mkString(",")), request, selfLink.toString, Json.toJson(response))
+
+              Ok(response)
             }
-        } recover recovery
+        } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits")
       }
   }
 }
@@ -61,11 +69,13 @@ class LiveRootController @Inject()(
     cc: ControllerComponents,
     scopeService: ScopesService,
     scopesHelper: ScopesHelper,
+    auditHelper: AuditHelper,
     liveTaxCreditsService: LiveTaxCreditsService
 )(implicit override val ec: ExecutionContext)
     extends RootController(cc,
                            scopeService,
                            scopesHelper,
+                           auditHelper,
                            liveTaxCreditsService) {
   override val environment = Environment.PRODUCTION
 }
@@ -76,11 +86,13 @@ class SandboxRootController @Inject()(
     cc: ControllerComponents,
     scopeService: ScopesService,
     scopesHelper: ScopesHelper,
+    auditHelper: AuditHelper,
     sandboxTaxCreditsService: SandboxTaxCreditsService
 )(implicit override val ec: ExecutionContext)
     extends RootController(cc,
                            scopeService,
                            scopesHelper,
+                           auditHelper,
                            sandboxTaxCreditsService) {
   override val environment = Environment.SANDBOX
 }

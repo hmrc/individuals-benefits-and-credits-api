@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 
-import play.api.libs.json.JsValue
-import play.api.mvc.RequestHeader
+import play.api.libs.json.Json
 
-case class ApiIfAuditRequest(
-    correlationId: String,
-    scopes: Option[String],
-    matchId: Option[String],
-    request: RequestHeader,
-    requestUrl: String,
-    response: JsValue
-)
+case class ScopesAuditEventModel(apiVersion: String,
+                                 matchId: String,
+                                 scopes: String)
+
+object ScopesAuditEventModel {
+  implicit val formatScopesAuditEventModel = Json.format[ScopesAuditEventModel]
+}

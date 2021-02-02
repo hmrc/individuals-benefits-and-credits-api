@@ -18,16 +18,11 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import javax.inject.Inject
 import org.joda.time.DateTime
-import play.api.mvc.{ControllerComponents, Request, Result}
+import play.api.mvc.{ControllerComponents, Request, RequestHeader, Result}
 import uk.gov.hmrc.auth.core.AuthorisationException
-import uk.gov.hmrc.http.TooManyRequestException
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  ErrorInvalidRequest,
-  ErrorNotFound,
-  ErrorTooManyRequests,
-  ErrorUnauthorized,
-  MatchNotFoundException
-}
+import uk.gov.hmrc.http.{BadRequestException, TooManyRequestException}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{ErrorInvalidRequest, ErrorNotFound, ErrorTooManyRequests, ErrorUnauthorized, MatchNotFoundException}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Dates.toFormattedLocalDate
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -45,12 +40,35 @@ abstract class CommonController @Inject()(
   }
 
   private[controllers] def recovery: PartialFunction[Throwable, Result] = {
-    case _: MatchNotFoundException => ErrorNotFound.toHttpResponse
-    case e: AuthorisationException =>
+    case _: MatchNotFoundException    => ErrorNotFound.toHttpResponse
+    case e: AuthorisationException    => ErrorUnauthorized(e.getMessage).toHttpResponse
+    case tmr: TooManyRequestException => ErrorTooManyRequests.toHttpResponse
+    case e: IllegalArgumentException  => ErrorInvalidRequest(e.getMessage).toHttpResponse
+  }
+
+  private[controllers] def withAudit(correlationId: Option[String], matchId: String, url: String)
+                                   (implicit request: RequestHeader,
+                                    auditHelper: AuditHelper): PartialFunction[Throwable, Result] = {
+    case _: MatchNotFoundException   => {
+      auditHelper.auditApiFailure(matchId, request, url, "Not Found")
+      ErrorNotFound.toHttpResponse
+    }
+    case e: AuthorisationException   => {
+      auditHelper.auditApiFailure(matchId, request, url, e.getMessage)
       ErrorUnauthorized(e.getMessage).toHttpResponse
-    case _: TooManyRequestException => ErrorTooManyRequests.toHttpResponse
-    case e: IllegalArgumentException =>
+    }
+    case tmr: TooManyRequestException  => {
+      auditHelper.auditApiFailure(matchId, request, url, tmr.getMessage)
+      ErrorTooManyRequests.toHttpResponse
+    }
+    case br: BadRequestException  => {
+      auditHelper.auditApiFailure(matchId, request, url, br.getMessage)
+      ErrorInvalidRequest(br.getMessage).toHttpResponse
+    }
+    case e: IllegalArgumentException => {
+      auditHelper.auditApiFailure(matchId, request, url, e.getMessage)
       ErrorInvalidRequest(e.getMessage).toHttpResponse
+    }
   }
 }
 

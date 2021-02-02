@@ -16,48 +16,38 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events
 
-import java.util.UUID
-
 import javax.inject.Inject
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.HttpExtendedAuditEvent
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.ApiFailureEventModel
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{ApiFailureEventModel, ScopesAuditEventModel}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
-abstract class FailureEventBase @Inject()(
-    httpAuditEvent: HttpExtendedAuditEvent) {
+abstract class FailureEventBase @Inject()(httpAuditEvent: HttpExtendedAuditEvent) {
 
   import httpAuditEvent.extendedDataEvent
 
   def auditType = "ApiFailureEvent"
   def transactionName = "AuditFail"
-  def apiVersion = "1.0"
+  def apiVersion = "2.0"
 
-  def apply(correlationId: String,
+  def apply(correlationId: Option[String],
             scopes: Option[String],
-            matchId: Option[UUID],
+            matchId: String,
             request: RequestHeader,
             requestUrl: Option[String],
-            msg: String)(
-      implicit hc: HeaderCarrier =
-        HeaderCarrierConverter.fromHeadersAndSession(request.headers)
-  ): ExtendedDataEvent = {
+            msg: String)
+           (implicit hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers)
+           ): ExtendedDataEvent = {
 
     val event = extendedDataEvent(
       auditType,
       transactionName,
       request,
-      Json.toJson(
-        ApiFailureEventModel(apiVersion,
-                             matchId,
-                             correlationId,
-                             scopes,
-                             requestUrl,
-                             msg))
+      Json.toJson(ApiFailureEventModel(apiVersion, matchId, correlationId, scopes, requestUrl, msg))
     )
 
     Logger.debug(s"$auditType - AuditEvent: $event")

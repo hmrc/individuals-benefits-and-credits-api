@@ -17,38 +17,24 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import java.util.UUID
+
 import akka.stream.Materializer
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
-import org.mockito.Mockito.{verifyNoInteractions, when}
+import org.mockito.Mockito
+import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.{
-  AuthConnector,
-  Enrolment,
-  Enrolments,
-  InsufficientEnrolments
-}
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
-  LiveRootController,
-  SandboxRootController
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  MatchNotFoundException,
-  MatchedCitizen
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
-  ScopesHelper,
-  ScopesService
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
-  LiveTaxCreditsService,
-  SandboxTaxCreditsService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveRootController, SandboxRootController}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ScopesConfigHelper
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
@@ -74,6 +60,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
     val liveTaxCreditsService = mock[LiveTaxCreditsService]
     val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
+    val auditHelper: AuditHelper = mock[AuditHelper]
 
     val testNino = Nino("AB123456C")
 
@@ -89,6 +76,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         cc,
         scopeService,
         scopesHelper,
+        auditHelper,
         liveTaxCreditsService
       )
 
@@ -98,6 +86,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         cc,
         scopeService,
         scopesHelper,
+        auditHelper,
         sandboxTaxCreditsService
       )
 
@@ -105,6 +94,8 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
   "Root" should {
     "return a 404 (not found) when a match id does not match live data" in new Fixture {
+
+      Mockito.reset(liveRootController.auditHelper)
 
       when(liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.failed(new MatchNotFoundException))
@@ -117,6 +108,9 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         "code" -> "NOT_FOUND",
         "message" -> "The resource can not be found"
       )
+
+      verify(liveRootController.auditHelper, times(1)).
+        auditApiFailure(any(), any(), any(), any())(any())
     }
 
     "return a 200 (ok) when a match id matches live data" in new Fixture {
