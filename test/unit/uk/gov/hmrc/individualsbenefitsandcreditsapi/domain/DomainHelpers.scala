@@ -53,7 +53,7 @@ trait DomainHelpers {
     IfWorkTaxCredit(Some(10.0), Some(20.0), Some(30.0))
   }
 
-  def createValidIfPayment() = {
+  def createValidIfWtcPayment() = {
     IfPayment(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -69,7 +69,24 @@ trait DomainHelpers {
     )
   }
 
-  def createValidIfAward() = {
+
+  def createValidIfCtcPayment() = {
+    IfPayment(
+      Some("2020-08-18"),
+      Some("2020-08-18"),
+      Some("2020-08-18"),
+      Some("2020-08-18"),
+      Some("A"),
+      Some("2020-08-18"),
+      Some("2020-08-18"),
+      Some(1),
+      Some("ICC"),
+      Some(2),
+      Some("R")
+    )
+  }
+
+  def createValidIfAward(payments: Seq[IfPayment]) = {
     IfAward(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -78,7 +95,7 @@ trait DomainHelpers {
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),
       Some(20.0),
-      Some(Seq(createValidIfPayment()))
+      Some(payments)
     )
   }
 

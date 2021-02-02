@@ -88,10 +88,10 @@ class LiveChildTaxCreditControllerSpec
           |        "paidYTD" : 22
           |      },
           |      "payments" : [ {
-          |        "startDate" : "2020-08-18",
-          |        "endDate" : "2020-08-18",
+          |        "startDate" : "2020-08-17",
+          |        "endDate" : "2020-08-17",
           |        "frequency" : 1,
-          |        "tcType" : "ETC",
+          |        "tcType" : "ICC",
           |        "amount" : 22
           |      } ]
           |    } ]
@@ -108,10 +108,10 @@ class LiveChildTaxCreditControllerSpec
           |        "paidYTD" : 22
           |      },
           |      "payments" : [ {
-          |        "startDate" : "2020-08-18",
-          |        "endDate" : "2020-08-18",
+          |        "startDate" : "2020-08-17",
+          |        "endDate" : "2020-08-17",
           |        "frequency" : 1,
-          |        "tcType" : "ETC",
+          |        "tcType" : "ICC",
           |        "amount" : 22
           |      } ]
           |    } ]
