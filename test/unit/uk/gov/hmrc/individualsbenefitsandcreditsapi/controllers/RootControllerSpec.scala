@@ -110,7 +110,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       )
 
       verify(liveRootController.auditHelper, times(1)).
-        auditApiFailure(any(), any(), any(), any())(any())
+        auditApiFailure(any(), any(), any(), any(), any())(any())
     }
 
     "return a 200 (ok) when a match id matches live data" in new Fixture {

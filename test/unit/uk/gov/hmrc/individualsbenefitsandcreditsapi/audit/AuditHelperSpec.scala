@@ -141,7 +141,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
 
       val captor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
 
-      auditHelper.auditApiFailure(matchId, request, "/test", msg)
+      auditHelper.auditApiFailure(Some(correlationId), matchId, request, "/test", msg)
 
       verify(auditConnector, times(1)).sendExtendedEvent(captor.capture())(any(), any())
 
@@ -188,7 +188,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
           |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
           |  "correlationId": "test",
           |  "scopes": "test",
-          |  "requestUrl": "host/individuals/benefits-and-credits/child-tax-credit/nino/$nino?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
+          |  "requestUrl": "host/individuals/benefits-and-credits/child-tax-credit/nino/CS700100A?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
           |  "response": "[\"some\",\"json\"]",
           |  "method": "GET",
           |  "deviceID": "-",
@@ -227,7 +227,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
           |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
           |  "correlationId": "test",
           |  "scopes": "test",
-          |  "requestUrl": "host/individuals/benefits-and-credits/child-tax-credit/nino/$nino?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
+          |  "requestUrl": "host/individuals/benefits-and-credits/child-tax-credit/nino/CS700100A?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
           |  "response": "Something went wrong",
           |  "method": "GET",
           |  "deviceID": "-",

@@ -50,23 +50,23 @@ abstract class CommonController @Inject()(
                                    (implicit request: RequestHeader,
                                     auditHelper: AuditHelper): PartialFunction[Throwable, Result] = {
     case _: MatchNotFoundException   => {
-      auditHelper.auditApiFailure(matchId, request, url, "Not Found")
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, "Not Found")
       ErrorNotFound.toHttpResponse
     }
     case e: AuthorisationException   => {
-      auditHelper.auditApiFailure(matchId, request, url, e.getMessage)
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorUnauthorized(e.getMessage).toHttpResponse
     }
     case tmr: TooManyRequestException  => {
-      auditHelper.auditApiFailure(matchId, request, url, tmr.getMessage)
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, tmr.getMessage)
       ErrorTooManyRequests.toHttpResponse
     }
     case br: BadRequestException  => {
-      auditHelper.auditApiFailure(matchId, request, url, br.getMessage)
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, br.getMessage)
       ErrorInvalidRequest(br.getMessage).toHttpResponse
     }
     case e: IllegalArgumentException => {
-      auditHelper.auditApiFailure(matchId, request, url, e.getMessage)
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInvalidRequest(e.getMessage).toHttpResponse
     }
   }
