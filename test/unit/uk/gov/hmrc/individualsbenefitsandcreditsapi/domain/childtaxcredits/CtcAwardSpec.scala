@@ -32,12 +32,36 @@ class CtcAwardSpec extends UnitSpec with DomainHelpers {
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),
       Some(20.0),
-      Some(Seq(createValidIfPayment()))
+      Some(Seq(createValidIfCtcPayment()))
     )
 
     val result = CtcAward.create(ifAward)
 
     result.payProfCalcDate shouldBe Some(LocalDate.parse("2017-08-08"))
     result.totalEntitlement shouldBe Some(10.0)
+    result.payments.isDefined shouldBe true
+    result.payments.get.size shouldBe 1
+    result.payments.get.head.tcType shouldBe Some("ICC")
+  }
+
+  "filters out WTC payments" in {
+    val ifAward = IfAward(
+      Some("2017-08-08"),
+      Some("2017-09-09"),
+      Some("2017-10-10"),
+      Some(10.0),
+      Some(createValidIfWorkingTaxCredit),
+      Some(createValidIfChildTaxCredit()),
+      Some(20.0),
+      Some(Seq(createValidIfCtcPayment(), createValidIfWtcPayment()))
+    )
+
+    val result = CtcAward.create(ifAward)
+
+    result.payProfCalcDate shouldBe Some(LocalDate.parse("2017-08-08"))
+    result.totalEntitlement shouldBe Some(10.0)
+    result.payments.isDefined shouldBe true
+    result.payments.get.size shouldBe 1
+    result.payments.get.head.tcType shouldBe Some("ICC")
   }
 }

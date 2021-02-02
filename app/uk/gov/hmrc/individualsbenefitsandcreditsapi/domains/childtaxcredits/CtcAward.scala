@@ -37,22 +37,22 @@ object CtcAward {
       ifAward.payProfCalcDate.map(LocalDate.parse),
       ifAward.totalEntitlement,
       ifAward.childTaxCredit.map(CtcChildTaxCredit.create),
-      ifAward.payments.map(x => x.map(CtcPayment.create))
+      ifAward.payments.map(_.filter(_.tcType.exists(s => s.equals("ICC")))).map(_.map(CtcPayment.create))
     )
   }
 
   implicit val awardFormat: Format[CtcAward] = Format(
     (
       (JsPath \ "payProfCalcDate").readNullable[LocalDate] and
-        (JsPath \ "totalEntitlement").readNullable[Double] and
-        (JsPath \ "childTaxCredit").readNullable[CtcChildTaxCredit] and
-        (JsPath \ "payments").readNullable[Seq[CtcPayment]]
+      (JsPath \ "totalEntitlement").readNullable[Double] and
+      (JsPath \ "childTaxCredit").readNullable[CtcChildTaxCredit] and
+      (JsPath \ "payments").readNullable[Seq[CtcPayment]]
     )(CtcAward.apply _),
     (
       (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
-        (JsPath \ "totalEntitlement").writeNullable[Double] and
-        (JsPath \ "childTaxCredit").writeNullable[CtcChildTaxCredit] and
-        (JsPath \ "payments").writeNullable[Seq[CtcPayment]]
+      (JsPath \ "totalEntitlement").writeNullable[Double] and
+      (JsPath \ "childTaxCredit").writeNullable[CtcChildTaxCredit] and
+      (JsPath \ "payments").writeNullable[Seq[CtcPayment]]
     )(unlift(CtcAward.unapply))
   )
 }
