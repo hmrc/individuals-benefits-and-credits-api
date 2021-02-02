@@ -19,7 +19,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import akka.stream.Materializer
 import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
-import org.mockito.Mockito.{verifyNoInteractions, when}
+import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -35,6 +35,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import java.util.UUID
 
+import org.mockito.Mockito
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -122,6 +123,9 @@ class ChildTaxCreditControllerSpec
         }
 
         "return 404 (not found) for an invalid matchId" in new Fixture {
+
+          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+
           when(
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
@@ -144,6 +148,9 @@ class ChildTaxCreditControllerSpec
             "code" -> "NOT_FOUND",
             "message" -> "The resource can not be found"
           )
+
+          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+            auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
         "return 401 when the bearer token does not have enrolment test-scope" in new Fixture {
