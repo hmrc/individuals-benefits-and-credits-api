@@ -48,7 +48,6 @@ abstract class WorkingTaxCreditController @Inject()(
       val scopes = scopeService.getEndPointScopes("working-tax-credit")
 
       authenticate(scopes, matchId.toString) { authScopes =>
-        println("ACHI: " + authScopes)
         taxCreditsService.getWorkingTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {
