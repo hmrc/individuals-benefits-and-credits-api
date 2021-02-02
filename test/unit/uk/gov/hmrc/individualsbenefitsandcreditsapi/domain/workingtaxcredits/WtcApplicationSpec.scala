@@ -28,10 +28,31 @@ class WtcApplicationSpec extends UnitSpec with DomainHelpers {
       Some("2017-08-08"),
       Some("2017-09-09"),
       Some("2017-10-10"),
-      Some(Seq(createValidIfAward()))
+      Some(Seq(createValidIfAward(Seq(createValidIfWtcPayment()))))
     )
 
     val result = WtcApplication.create(ifApplication)
     result.id shouldBe Some(123)
+    result.awards.size shouldBe 1
+    result.awards.head.payments.isDefined shouldBe true
+    result.awards.head.payments.get.size shouldBe 1
+    result.awards.head.payments.get.head.tcType shouldBe Some("ETC")
+  }
+
+  "filters out CTC payments" in {
+    val ifApplication = IfApplication(
+      Some(123),
+      Some("2017-08-08"),
+      Some("2017-09-09"),
+      Some("2017-10-10"),
+      Some(Seq(createValidIfAward(Seq(createValidIfCtcPayment(), createValidIfWtcPayment()))))
+    )
+
+    val result = WtcApplication.create(ifApplication)
+    result.id shouldBe Some(123)
+    result.awards.size shouldBe 1
+    result.awards.head.payments.isDefined shouldBe true
+    result.awards.head.payments.get.size shouldBe 1
+    result.awards.head.payments.get.head.tcType shouldBe Some("ETC")
   }
 }

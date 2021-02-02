@@ -73,6 +73,7 @@ trait TestHelpers {
         method = Some("R")
       )
     )
+
     val ifAwards = IfAward(
       payProfCalcDate = Some("2020-08-18"),
       startDate = Some("2020-08-18"),
@@ -118,6 +119,19 @@ trait TestHelpers {
         nextDueDate = Some("2020-08-18"),
         frequency = Some(1),
         tcType = Some("ETC"),
+        amount = Some(22),
+        method = Some("R")
+      ),
+      IfPayment(
+        periodStartDate = Some("2020-08-17"),
+        periodEndDate = Some("2020-08-17"),
+        startDate = Some("2020-08-17"),
+        endDate = Some("2020-08-17"),
+        status = Some("A"),
+        postedDate = Some("2020-08-17"),
+        nextDueDate = Some("2020-08-17"),
+        frequency = Some(1),
+        tcType = Some("ICC"),
         amount = Some(22),
         method = Some("R")
       )

@@ -42,24 +42,24 @@ object WtcAward {
       ifAward.totalEntitlement,
       wtc,
       ctc,
-      ifAward.payments.map(x => x.map(WtcPayment.create))
+      ifAward.payments.map(_.filter(_.tcType.exists(s => s.equals("ETC")))).map(_.map(WtcPayment.create))
     )
   }
 
   implicit val awardFormat: Format[WtcAward] = Format(
     (
       (JsPath \ "payProfCalcDate").readNullable[LocalDate] and
-        (JsPath \ "totalEntitlement").readNullable[Double] and
-        (JsPath \ "workingTaxCredit").readNullable[WtcWorkingTaxCredit] and
-        (JsPath \ "childTaxCredit").readNullable[WtcChildTaxCredit] and
-        (JsPath \ "payments").readNullable[Seq[WtcPayment]]
+      (JsPath \ "totalEntitlement").readNullable[Double] and
+      (JsPath \ "workingTaxCredit").readNullable[WtcWorkingTaxCredit] and
+      (JsPath \ "childTaxCredit").readNullable[WtcChildTaxCredit] and
+      (JsPath \ "payments").readNullable[Seq[WtcPayment]]
     )(WtcAward.apply _),
     (
       (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
-        (JsPath \ "totalEntitlement").writeNullable[Double] and
-        (JsPath \ "workingTaxCredit").writeNullable[WtcWorkingTaxCredit] and
-        (JsPath \ "childTaxCredit").writeNullable[WtcChildTaxCredit] and
-        (JsPath \ "payments").writeNullable[Seq[WtcPayment]]
+      (JsPath \ "totalEntitlement").writeNullable[Double] and
+      (JsPath \ "workingTaxCredit").writeNullable[WtcWorkingTaxCredit] and
+      (JsPath \ "childTaxCredit").writeNullable[WtcChildTaxCredit] and
+      (JsPath \ "payments").writeNullable[Seq[WtcPayment]]
     )(unlift(WtcAward.unapply))
   )
 }
