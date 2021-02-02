@@ -48,7 +48,8 @@ abstract class WorkingTaxCreditController @Inject()(
       val scopes = scopeService.getEndPointScopes("working-tax-credit")
 
       authenticate(scopes, matchId.toString) { authScopes =>
-        taxCreditsService.getChildTaxCredits(matchId, interval, authScopes)
+        println("ACHI: " + authScopes)
+        taxCreditsService.getWorkingTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {
               val selfLink = HalLink("self", urlWithInterval(s"/individuals/benefits-and-credits/working-tax-credits?matchId=$matchId", interval.getStart))
