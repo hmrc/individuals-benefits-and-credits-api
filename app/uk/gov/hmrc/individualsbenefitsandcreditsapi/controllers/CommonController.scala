@@ -39,13 +39,6 @@ abstract class CommonController @Inject()(
     getQueryParam("toDate") map (toDate => s"$urlWithFromDate&toDate=$toDate") getOrElse urlWithFromDate
   }
 
-  private[controllers] def recovery: PartialFunction[Throwable, Result] = {
-    case _: MatchNotFoundException    => ErrorNotFound.toHttpResponse
-    case e: AuthorisationException    => ErrorUnauthorized(e.getMessage).toHttpResponse
-    case tmr: TooManyRequestException => ErrorTooManyRequests.toHttpResponse
-    case e: IllegalArgumentException  => ErrorInvalidRequest(e.getMessage).toHttpResponse
-  }
-
   private[controllers] def withAudit(correlationId: Option[String], matchId: String, url: String)
                                    (implicit request: RequestHeader,
                                     auditHelper: AuditHelper): PartialFunction[Throwable, Result] = {

@@ -60,7 +60,7 @@ abstract class WorkingTaxCreditController @Inject()(
               Ok(state(response) ++ selfLink)
             }
           )
-      } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits")
+      } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits/working-tax-credits")
     }
 
 }
