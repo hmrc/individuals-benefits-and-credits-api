@@ -48,7 +48,7 @@ abstract class WorkingTaxCreditController @Inject()(
 
       authenticate(scopes, matchId.toString) { authScopes =>
         val correlationId = validateCorrelationId(request)
-        
+
         taxCreditsService.getWorkingTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {

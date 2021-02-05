@@ -193,44 +193,65 @@ class WorkingTaxCreditControllerSpec
           assert(result.getMessage == "No scopes defined")
         }
         "throws an exception when missing CorrelationId Header" in new Fixture {
+
+          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+
+          val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
+
           when(
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
-          val exception =
-            intercept[BadRequestException](
-              liveWorkingTaxCreditsController
-                .workingTaxCredit(testMatchId, testInterval)(FakeRequest()))
+          val result =
+            liveWorkingTaxCreditsController
+              .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
-          exception.message shouldBe "CorrelationId is required"
-          exception.responseCode shouldBe BAD_REQUEST
+          status(result) shouldBe BAD_REQUEST
+          contentAsJson(result) shouldBe Json.parse(
+            """{
+              |    "code": "INVALID_REQUEST",
+              |    "message": "CorrelationId is required"
+              |}""".stripMargin
+          )
+          verify(liveWorkingTaxCreditsController.auditHelper, times(1))
+            .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
         "throws an exception when CorrelationId Header is malformed" in new Fixture {
+
+          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+
+          val fakeRequest = FakeRequest("GET", s"/working-tax-credits/").withHeaders("correlationId" -> "InvalidId")
+
           when(
             liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
-          val exception =
-            intercept[BadRequestException](
-              liveWorkingTaxCreditsController.workingTaxCredit(testMatchId,
-                                                               testInterval)(
-                FakeRequest().withHeaders("CorrelationId" -> "test")))
+          val result =
+            liveWorkingTaxCreditsController
+              .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
-          exception.message shouldBe "Malformed CorrelationId"
-          exception.responseCode shouldBe BAD_REQUEST
+          status(result) shouldBe BAD_REQUEST
+          contentAsJson(result) shouldBe Json.parse(
+            """{
+              |    "code": "INVALID_REQUEST",
+              |    "message": "Malformed CorrelationId"
+              |}""".stripMargin
+          )
+          verify(liveWorkingTaxCreditsController.auditHelper, times(1))
+            .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
       }
     }
