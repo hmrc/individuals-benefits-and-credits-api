@@ -45,11 +45,12 @@ abstract class ChildTaxCreditController @Inject()(
 
   def childTaxCredit(matchId: UUID, interval: Interval) =
     Action.async { implicit request =>
-      val correlationId = validateCorrelationId(request)
 
       val scopes = scopeService.getEndPointScopes("child-tax-credit")
 
       authenticate(scopes, matchId.toString) { authScopes =>
+        val correlationId = validateCorrelationId(request)
+
         taxCreditsService.getChildTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {

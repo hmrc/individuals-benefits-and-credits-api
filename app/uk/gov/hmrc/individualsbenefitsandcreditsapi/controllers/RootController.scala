@@ -45,9 +45,9 @@ abstract class RootController @Inject()(
   def root(matchId: UUID): Action[AnyContent] = Action.async {
     implicit request =>
       {
-        val correlationId = validateCorrelationId(request)
-
         authenticate(scopeService.getAllScopes, matchId.toString) {
+          val correlationId = validateCorrelationId(request)
+
           authScopes =>
             taxCreditsService.resolve(matchId) map { _ =>
               val selfLink = HalLink("self",s"/individuals/benefits-and-credits/?matchId=$matchId")

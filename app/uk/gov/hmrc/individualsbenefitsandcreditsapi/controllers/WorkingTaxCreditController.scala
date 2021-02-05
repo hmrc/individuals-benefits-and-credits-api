@@ -43,11 +43,12 @@ abstract class WorkingTaxCreditController @Inject()(
 
   def workingTaxCredit(matchId: UUID, interval: Interval) =
     Action.async { implicit request =>
-      val correlationId = validateCorrelationId(request)
 
       val scopes = scopeService.getEndPointScopes("working-tax-credit")
 
       authenticate(scopes, matchId.toString) { authScopes =>
+        val correlationId = validateCorrelationId(request)
+        
         taxCreditsService.getWorkingTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {
