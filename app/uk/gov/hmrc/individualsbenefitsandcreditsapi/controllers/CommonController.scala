@@ -19,10 +19,10 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import javax.inject.Inject
 import org.joda.time.DateTime
 import play.api.mvc.{ControllerComponents, Request, RequestHeader, Result}
-import uk.gov.hmrc.auth.core.AuthorisationException
-import uk.gov.hmrc.http.{BadRequestException, TooManyRequestException}
+import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
+import uk.gov.hmrc.http.{BadRequestException, InternalServerException, TooManyRequestException}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{ErrorInvalidRequest, ErrorNotFound, ErrorTooManyRequests, ErrorUnauthorized, MatchNotFoundException}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{ErrorInternalServer, ErrorInvalidRequest, ErrorNotFound, ErrorTooManyRequests, ErrorUnauthorized, MatchNotFoundException}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Dates.toFormattedLocalDate
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -46,6 +46,10 @@ abstract class CommonController @Inject()(
       auditHelper.auditApiFailure(correlationId, matchId, request, url, "Not Found")
       ErrorNotFound.toHttpResponse
     }
+    case e: InsufficientEnrolments => {
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
+      ErrorUnauthorized("Insufficient Enrolments").toHttpResponse
+    }
     case e: AuthorisationException   => {
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorUnauthorized(e.getMessage).toHttpResponse
@@ -61,6 +65,14 @@ abstract class CommonController @Inject()(
     case e: IllegalArgumentException => {
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInvalidRequest(e.getMessage).toHttpResponse
+    }
+    case e: InternalServerException => {
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
+      ErrorInternalServer("Something went wrong.").toHttpResponse
+    }
+    case e => {
+      auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
+      ErrorInternalServer("Something went wrong.").toHttpResponse
     }
   }
 }
