@@ -166,15 +166,21 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
     "throws an exception when missing CorrelationId Header" in new Fixture {
       when(
-        sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+        liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-      val exception =
-        intercept[BadRequestException](
-          liveRootController.root(testMatchId)(FakeRequest()))
+      val result = liveRootController.root(testMatchId)(FakeRequest())
 
-      exception.message shouldBe "CorrelationId is required"
-      exception.responseCode shouldBe BAD_REQUEST
+      status(result) shouldBe BAD_REQUEST
+      contentAsJson(result) shouldBe Json.parse(
+        """{
+          |    "code": "INVALID_REQUEST",
+          |    "message": "CorrelationId is required"
+          |}""".stripMargin
+      )
+      verify(sandboxRootController.auditHelper, times(1))
+        .auditApiFailure(any(), any(), any(), any(), any())(any())
+
     }
 
     "throws an exception when CorrelationId Header is malformed" in new Fixture {
@@ -182,13 +188,18 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-      val exception =
-        intercept[BadRequestException](
-          liveRootController.root(testMatchId)(
-            FakeRequest().withHeaders("CorrelationId" -> "test")))
+      val result = liveRootController.root(testMatchId)(
+            FakeRequest().withHeaders("CorrelationId" -> "test"))
 
-      exception.message shouldBe "Malformed CorrelationId"
-      exception.responseCode shouldBe BAD_REQUEST
+      status(result) shouldBe BAD_REQUEST
+      contentAsJson(result) shouldBe Json.parse(
+        """{
+          |    "code": "INVALID_REQUEST",
+          |    "message": "Malformed CorrelationId"
+          |}""".stripMargin
+      )
+      verify(liveRootController.auditHelper, times(1))
+        .auditApiFailure(any(), any(), any(), any(), any())(any())
     }
   }
 }
