@@ -56,34 +56,73 @@ trait TestHelpers {
                                           entitlementYTD = Some(22),
                                           paidYTD = Some(22))
 
-  def createValidIfApplications: IfApplications = {
+  val etcPayment = IfPayment(
+    periodStartDate = Some("2020-08-18"),
+    periodEndDate = Some("2020-08-18"),
+    startDate = Some("2020-08-18"),
+    endDate = Some("2020-08-18"),
+    status = Some("A"),
+    postedDate = Some("2020-08-18"),
+    nextDueDate = Some("2020-08-18"),
+    frequency = Some(1),
+    tcType = Some("ETC"),
+    amount = Some(22),
+    method = Some("R")
+  )
 
-    val ifPayments = Seq(
-      IfPayment(
-        periodStartDate = Some("2020-08-18"),
-        periodEndDate = Some("2020-08-18"),
-        startDate = Some("2020-08-18"),
-        endDate = Some("2020-08-18"),
-        status = Some("A"),
-        postedDate = Some("2020-08-18"),
-        nextDueDate = Some("2020-08-18"),
-        frequency = Some(1),
-        tcType = Some("ETC"),
-        amount = Some(22),
-        method = Some("R")
-      )
-    )
+  val iccPayment = IfPayment(
+    periodStartDate = Some("2020-08-17"),
+    periodEndDate = Some("2020-08-17"),
+    startDate = Some("2020-08-17"),
+    endDate = Some("2020-08-17"),
+    status = Some("A"),
+    postedDate = Some("2020-08-17"),
+    nextDueDate = Some("2020-08-17"),
+    frequency = Some(1),
+    tcType = Some("ICC"),
+    amount = Some(22),
+    method = Some("R")
+  )
 
-    val ifAwards = IfAward(
+  def createIfAward(wtc: IfWorkTaxCredit, ctc: IfChildTaxCredit, payments: Seq[IfPayment]):IfAward = {
+    IfAward(
       payProfCalcDate = Some("2020-08-18"),
       startDate = Some("2020-08-18"),
       endDate = Some("2020-08-18"),
       totalEntitlement = Some(22),
-      workTaxCredit = Some(ifWorkTaxCredit),
-      childTaxCredit = Some(ifChildTaxCredit),
+      workTaxCredit = Some(wtc),
+      childTaxCredit = Some(ctc),
       grossTaxYearAmount = Some(22),
-      payments = Some(ifPayments)
+      payments = Some(payments)
     )
+  }
+
+  def createValidIfApplications: IfApplications = {
+
+    val ifPayments = Seq(
+      etcPayment
+    )
+
+    val ifAwards = createIfAward(ifWorkTaxCredit, ifChildTaxCredit, ifPayments)
+
+    val application = IfApplication(
+      id = Some(22),
+      ceasedDate = Some("2020-08-18"),
+      entStartDate = Some("2020-08-18"),
+      entEndDate = Some("2020-08-18"),
+      awards = Some(Seq(ifAwards))
+    )
+
+    IfApplications(Seq(application))
+  }
+
+  def createInvalidIfApplications: IfApplications = {
+
+    val ifPayments = Seq(
+      etcPayment.copy(startDate = Some("Invalid date"))
+    )
+
+    val ifAwards = createIfAward(ifWorkTaxCredit, ifChildTaxCredit, ifPayments)
 
     val application = IfApplication(
       id = Some(22),
@@ -97,56 +136,13 @@ trait TestHelpers {
   }
 
   def createValidIfApplicationsMultiple: IfApplications = {
-    val ifWorkTaxCredit = IfWorkTaxCredit(amount = Some(22),
-                                          entitlementYTD = Some(22),
-                                          paidYTD = Some(22))
-
-    val ifChildTaxCredit = IfChildTaxCredit(childCareAmount = Some(22),
-                                            ctcChildAmount = Some(22),
-                                            familyAmount = Some(22),
-                                            babyAmount = Some(22),
-                                            entitlementYTD = Some(22),
-                                            paidYTD = Some(22))
 
     val ifPayments = Seq(
-      IfPayment(
-        periodStartDate = Some("2020-08-18"),
-        periodEndDate = Some("2020-08-18"),
-        startDate = Some("2020-08-18"),
-        endDate = Some("2020-08-18"),
-        status = Some("A"),
-        postedDate = Some("2020-08-18"),
-        nextDueDate = Some("2020-08-18"),
-        frequency = Some(1),
-        tcType = Some("ETC"),
-        amount = Some(22),
-        method = Some("R")
-      ),
-      IfPayment(
-        periodStartDate = Some("2020-08-17"),
-        periodEndDate = Some("2020-08-17"),
-        startDate = Some("2020-08-17"),
-        endDate = Some("2020-08-17"),
-        status = Some("A"),
-        postedDate = Some("2020-08-17"),
-        nextDueDate = Some("2020-08-17"),
-        frequency = Some(1),
-        tcType = Some("ICC"),
-        amount = Some(22),
-        method = Some("R")
-      )
+      etcPayment,
+      iccPayment
     )
 
-    val ifAwards = IfAward(
-      payProfCalcDate = Some("2020-08-18"),
-      startDate = Some("2020-08-18"),
-      endDate = Some("2020-08-18"),
-      totalEntitlement = Some(22),
-      workTaxCredit = Some(ifWorkTaxCredit),
-      childTaxCredit = Some(ifChildTaxCredit),
-      grossTaxYearAmount = Some(22),
-      payments = Some(ifPayments)
-    )
+    val ifAwards = createIfAward(ifWorkTaxCredit, ifChildTaxCredit, ifPayments)
 
     val application = IfApplication(id = Some(22),
                                     ceasedDate = Some("2020-08-18"),

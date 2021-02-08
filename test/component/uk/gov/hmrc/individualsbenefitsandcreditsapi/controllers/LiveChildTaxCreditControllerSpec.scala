@@ -29,7 +29,7 @@ import scalaj.http.Http
 import testUtils.TestHelpers
 
 class LiveChildTaxCreditControllerSpec
-    extends CommonControllerSpec
+    extends CommonControllerWithIfRequestSpec
     with TestHelpers {
 
   val rootScope = List(
@@ -44,11 +44,9 @@ class LiveChildTaxCreditControllerSpec
 
   val endpoint = "child-tax-credit"
   val matchId = UUID.randomUUID()
-  val nino = "AB123456C"
   val fromDate = "2017-01-01"
   val toDate = "2017-09-25"
 
-  private val applications = createValidIfApplicationsMultiple
 
   feature("Live Child Tax Credit Controller") {
 
@@ -62,7 +60,7 @@ class LiveChildTaxCreditControllerSpec
       IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
 
       And("IF will return benefits and credits applications")
-      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, applications)
+      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, apps)
 
       When("I make a call to child-tax-credit endpoint")
       val response =
