@@ -23,10 +23,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{ApiAuditRequest, ApiIfAuditRequest, ApiIfFailureAuditRequest}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.DefaultHttpExtendedAuditEvent
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events.{ApiResponseEvent, IfApiFailureEvent, IfApiResponseEvent}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.events.{ApiFailureEvent, ApiResponseEvent, IfApiFailureEvent, IfApiResponseEvent, ScopesAuditEvent}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
@@ -40,23 +39,62 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
   val nino = "CS700100A"
   val correlationId = "test"
   val scopes = Some("test")
-  val matchId = Some("80a6bb14-d888-436e-a541-4000674c60aa")
+  val matchId = "80a6bb14-d888-436e-a541-4000674c60aa"
   val request = FakeRequest()
   val response = Json.toJson("some" -> "json")
   val ifUrl =
-    s"host/individuals/benefits-and-credits/working-tax-credit/nino/$nino?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)"
+    s"host/individuals/benefits-and-credits/child-tax-credit/nino/$nino?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)"
+  val endpoint = "/test"
 
   val auditConnector = mock[AuditConnector]
   val httpExtendedAuditEvent = new DefaultHttpExtendedAuditEvent(
     "individuals-benefits-and-credits-api")
 
-  val apiResponseEvent   = new ApiResponseEvent(httpExtendedAuditEvent)
-  val ifApiResponseEvent =  new IfApiResponseEvent(httpExtendedAuditEvent)
-  val ifApiFailureEvent  = new IfApiFailureEvent(httpExtendedAuditEvent)
+  val apiResponseEvent = new ApiResponseEvent(httpExtendedAuditEvent)
+  val apiFailureEvent = new ApiFailureEvent(httpExtendedAuditEvent)
+  val ifApiResponseEvent = new IfApiResponseEvent(httpExtendedAuditEvent)
+  val ifApiFailureEvent = new IfApiFailureEvent(httpExtendedAuditEvent)
+  val scopesAuditEvent = new ScopesAuditEvent(httpExtendedAuditEvent)
 
-  val auditHelper = new AuditHelper(auditConnector, apiResponseEvent, ifApiResponseEvent, ifApiFailureEvent)
+  val auditHelper = new AuditHelper(
+    auditConnector, apiResponseEvent, apiFailureEvent, ifApiResponseEvent, ifApiFailureEvent, scopesAuditEvent
+  )
 
   "Auth helper" should {
+
+    "auditAuthScopes" in {
+
+      Mockito.reset(auditConnector)
+
+      val captor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+
+      auditHelper.auditAuthScopes(matchId, scopes.get, request)
+
+      verify(auditConnector, times(1)).sendExtendedEvent(captor.capture())(any(), any())
+
+      val result = Json.parse(
+        """
+          |{
+          |  "apiVersion": "2.0",
+          |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
+          |  "scopes": "test",
+          |  "method": "GET",
+          |  "deviceID": "-",
+          |  "ipAddress": "-",
+          |  "token": "-",
+          |  "referrer": "-",
+          |  "Authorization": "-",
+          |  "input": "Request to /",
+          |  "userAgentString": "-"
+          |}
+          |""".stripMargin)
+
+      val capturedEvent = captor.getValue
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditSource shouldEqual "individuals-benefits-and-credits-api"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditType shouldEqual "AuthScopesAuditEvent"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].detail shouldBe result
+
+    }
 
     "auditApiResponse" in {
 
@@ -64,70 +102,18 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
 
       val captor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
 
-      val req =
-        ApiAuditRequest(correlationId, scopes, matchId, request, response)
+      auditHelper.auditApiResponse(correlationId, matchId, scopes, request, endpoint, response)
 
-      auditHelper.auditApiResponse(req)
-
-      verify(auditConnector, times(1))
-        .sendExtendedEvent(captor.capture())(any(), any())
-
-      val result =
-        Json.parse("""
-                                |{
-                                |  "apiVersion": "1.0",
-                                |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
-                                |  "correlationId": "test",
-                                |  "scopes": "test",
-                                |  "response": "[\"some\",\"json\"]",
-                                |  "method": "GET",
-                                |  "deviceID": "-",
-                                |  "ipAddress": "-",
-                                |  "token": "-",
-                                |  "referrer": "-",
-                                |  "Authorization": "-",
-                                |  "input": "Request to /",
-                                |  "userAgentString": "-"
-                                |}
-                                |""".stripMargin)
-
-      val capturedEvent = captor.getValue
-      capturedEvent
-        .asInstanceOf[ExtendedDataEvent]
-        .auditSource shouldEqual "individuals-benefits-and-credits-api"
-      capturedEvent
-        .asInstanceOf[ExtendedDataEvent]
-        .auditType shouldEqual "ApiResponseEvent"
-      capturedEvent.asInstanceOf[ExtendedDataEvent].detail shouldBe result
-
-    }
-
-    "auditIfApiResponse" in {
-
-      Mockito.reset(auditConnector)
-
-      val captor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
-
-      val req = ApiIfAuditRequest(correlationId,
-                                  scopes,
-                                  matchId,
-                                  request,
-                                  ifUrl,
-                                  response)
-
-      auditHelper.auditIfApiResponse(req)
-
-      verify(auditConnector, times(1))
-        .sendExtendedEvent(captor.capture())(any(), any())
+      verify(auditConnector, times(1)).sendExtendedEvent(captor.capture())(any(), any())
 
       val result = Json.parse(
         """
           |{
-          |  "apiVersion": "1.0",
+          |  "apiVersion": "2.0",
           |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
           |  "correlationId": "test",
           |  "scopes": "test",
-          |  "requestUrl": "host/individuals/benefits-and-credits/working-tax-credit/nino/CS700100A?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
+          |  "requestUrl":"/test",
           |  "response": "[\"some\",\"json\"]",
           |  "method": "GET",
           |  "deviceID": "-",
@@ -141,17 +127,13 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
           |""".stripMargin)
 
       val capturedEvent = captor.getValue
-      capturedEvent
-        .asInstanceOf[ExtendedDataEvent]
-        .auditSource shouldEqual "individuals-benefits-and-credits-api"
-      capturedEvent
-        .asInstanceOf[ExtendedDataEvent]
-        .auditType shouldEqual "IfApiResponseEvent"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditSource shouldEqual "individuals-benefits-and-credits-api"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditType shouldEqual "ApiResponseEvent"
       capturedEvent.asInstanceOf[ExtendedDataEvent].detail shouldBe result
 
     }
 
-    "auditIfApiFailure" in {
+    "auditApiFailure" in {
 
       Mockito.reset(auditConnector)
 
@@ -159,22 +141,17 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
 
       val captor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
 
-      val req =
-        ApiIfFailureAuditRequest(correlationId, scopes, matchId, request, ifUrl)
+      auditHelper.auditApiFailure(Some(correlationId), matchId, request, "/test", msg)
 
-      auditHelper.auditIfApiFailure(req, msg)
-
-      verify(auditConnector, times(1))
-        .sendExtendedEvent(captor.capture())(any(), any())
+      verify(auditConnector, times(1)).sendExtendedEvent(captor.capture())(any(), any())
 
       val result = Json.parse(
         """
           |{
-          |  "apiVersion": "1.0",
+          |  "apiVersion": "2.0",
           |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
           |  "correlationId": "test",
-          |  "scopes": "test",
-          |  "requestUrl": "host/individuals/benefits-and-credits/working-tax-credit/nino/CS700100A?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
+          |  "requestUrl":"/test",
           |  "response": "Something went wrong",
           |  "method": "GET",
           |  "deviceID": "-",
@@ -188,16 +165,86 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
           |""".stripMargin)
 
       val capturedEvent = captor.getValue
-      capturedEvent
-        .asInstanceOf[ExtendedDataEvent]
-        .auditSource shouldEqual "individuals-benefits-and-credits-api"
-      capturedEvent
-        .asInstanceOf[ExtendedDataEvent]
-        .auditType shouldEqual "IfApiFailureEvent"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditSource shouldEqual "individuals-benefits-and-credits-api"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditType shouldEqual "ApiFailureEvent"
       capturedEvent.asInstanceOf[ExtendedDataEvent].detail shouldBe result
 
     }
 
-  }
+    "auditIfApiResponse" in {
 
+      Mockito.reset(auditConnector)
+
+      val captor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+
+      auditHelper.auditIfApiResponse(correlationId, scopes, matchId, request, ifUrl, response)
+
+      verify(auditConnector, times(1)).sendExtendedEvent(captor.capture())(any(), any())
+
+      val result = Json.parse(
+        """
+          |{
+          |  "apiVersion": "2.0",
+          |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
+          |  "correlationId": "test",
+          |  "scopes": "test",
+          |  "requestUrl": "host/individuals/benefits-and-credits/child-tax-credit/nino/CS700100A?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
+          |  "response": "[\"some\",\"json\"]",
+          |  "method": "GET",
+          |  "deviceID": "-",
+          |  "ipAddress": "-",
+          |  "token": "-",
+          |  "referrer": "-",
+          |  "Authorization": "-",
+          |  "input": "Request to /",
+          |  "userAgentString": "-"
+          |}
+          |""".stripMargin)
+
+      val capturedEvent = captor.getValue
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditSource shouldEqual "individuals-benefits-and-credits-api"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditType shouldEqual "IfApiResponseEvent"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].detail shouldBe result
+
+    }
+
+    "auditIfApiFailure" in {
+
+      Mockito.reset(auditConnector)
+
+      val msg = "Something went wrong"
+
+      val captor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+
+      auditHelper.auditIfApiFailure(correlationId, scopes, matchId, request, ifUrl, msg)
+
+      verify(auditConnector, times(1)).sendExtendedEvent(captor.capture())(any(), any())
+
+      val result = Json.parse(
+        """
+          |{
+          |  "apiVersion": "2.0",
+          |  "matchId": "80a6bb14-d888-436e-a541-4000674c60aa",
+          |  "correlationId": "test",
+          |  "scopes": "test",
+          |  "requestUrl": "host/individuals/benefits-and-credits/child-tax-credit/nino/CS700100A?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)",
+          |  "response": "Something went wrong",
+          |  "method": "GET",
+          |  "deviceID": "-",
+          |  "ipAddress": "-",
+          |  "token": "-",
+          |  "referrer": "-",
+          |  "Authorization": "-",
+          |  "input": "Request to /",
+          |  "userAgentString": "-"
+          |}
+          |""".stripMargin)
+
+      val capturedEvent = captor.getValue
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditSource shouldEqual "individuals-benefits-and-credits-api"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].auditType shouldEqual "IfApiFailureEvent"
+      capturedEvent.asInstanceOf[ExtendedDataEvent].detail shouldBe result
+
+    }
+  }
 }

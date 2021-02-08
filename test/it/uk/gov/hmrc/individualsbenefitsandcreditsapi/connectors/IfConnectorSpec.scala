@@ -130,8 +130,8 @@ class IfConnectorSpec
         )
       }
 
-      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any())(
-        any())
+      verify(underTest.auditHelper, times(1)).
+        auditIfApiFailure(any(), any(), any(), any(), any(), any())(any())
     }
 
     "Fail when IF returns a bad request" in new Setup {
@@ -154,8 +154,8 @@ class IfConnectorSpec
         )
       }
 
-      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any())(
-        any())
+      verify(underTest.auditHelper, times(1)).
+        auditIfApiFailure(any(), any(), any(), any(), any(), any())(any())
     }
 
     "for standard response" in new Setup {
@@ -183,7 +183,8 @@ class IfConnectorSpec
           )
         )
 
-      verify(underTest.auditHelper, times(1)).auditIfApiResponse(any())(any())
+      verify(underTest.auditHelper, times(1)).
+        auditIfApiResponse(any(), any(), any(), any(), any(), any())(any())
 
       result shouldBe applicationsData.applications
 

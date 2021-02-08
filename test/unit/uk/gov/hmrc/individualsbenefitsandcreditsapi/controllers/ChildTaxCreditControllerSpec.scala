@@ -19,33 +19,25 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import akka.stream.Materializer
 import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
-import org.mockito.Mockito.{verifyNoInteractions, when}
+import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.{
-  AuthConnector,
-  Enrolment,
-  Enrolments,
-  InsufficientEnrolments
-}
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.http.BadRequestException
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{
-  LiveChildTaxCreditController,
-  SandboxChildTaxCreditController
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveChildTaxCreditController, SandboxChildTaxCreditController}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{
-  LiveTaxCreditsService,
-  SandboxTaxCreditsService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
-
 import java.util.UUID
+
+import org.mockito.Mockito
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChildTaxCreditControllerSpec
@@ -73,6 +65,7 @@ class ChildTaxCreditControllerSpec
     val liveTaxCreditsService = mock[LiveTaxCreditsService]
     val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
+    val auditHelper: AuditHelper = mock[AuditHelper]
 
     when(
       mockAuthConnector.authorise(
@@ -88,6 +81,7 @@ class ChildTaxCreditControllerSpec
         mockAuthConnector,
         cc,
         scopeService,
+        auditHelper,
         liveTaxCreditsService
       )
 
@@ -96,6 +90,7 @@ class ChildTaxCreditControllerSpec
         mockAuthConnector,
         cc,
         scopeService,
+        auditHelper,
         sandboxTaxCreditsService
       )
 
@@ -107,6 +102,8 @@ class ChildTaxCreditControllerSpec
       "the child tax credit function" should {
         "Return Applications when successful" in new Fixture {
 
+          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
@@ -114,7 +111,7 @@ class ChildTaxCreditControllerSpec
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
                 Seq(createValidCtcApplication(), createValidCtcApplication()))
@@ -125,14 +122,23 @@ class ChildTaxCreditControllerSpec
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe OK
+
+          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+            auditApiResponse(any(), any(), any(), any(), any(), any())(any())
+
+          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+            auditAuthScopes(any(), any(), any())(any())
         }
 
         "return 404 (not found) for an invalid matchId" in new Fixture {
+
+          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+
           when(
             liveTaxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )
@@ -150,6 +156,9 @@ class ChildTaxCreditControllerSpec
             "code" -> "NOT_FOUND",
             "message" -> "The resource can not be found"
           )
+
+          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+            auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
         "return 401 when the bearer token does not have enrolment test-scope" in new Fixture {
@@ -185,44 +194,65 @@ class ChildTaxCreditControllerSpec
         }
 
         "throws an exception when missing CorrelationId Header" in new Fixture {
+
+          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+
+          val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
+
           when(
-            liveTaxCreditsService.getChildTaxCredits(
+            liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
-                Seq(createValidCtcApplication(), createValidCtcApplication()))
+                Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
-          val exception =
-            intercept[BadRequestException](
-              liveChildTaxCreditsController
-                .childTaxCredit(testMatchId, testInterval)(FakeRequest()))
+          val result =
+            liveChildTaxCreditsController
+              .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
-          exception.message shouldBe "CorrelationId is required"
-          exception.responseCode shouldBe BAD_REQUEST
+          status(result) shouldBe BAD_REQUEST
+          contentAsJson(result) shouldBe Json.parse(
+            """{
+              |    "code": "INVALID_REQUEST",
+              |    "message": "CorrelationId is required"
+              |}""".stripMargin
+          )
+          verify(liveChildTaxCreditsController.auditHelper, times(1))
+            .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
         "throws an exception when CorrelationId Header is malformed" in new Fixture {
+
+          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+
+          val fakeRequest = FakeRequest("GET", s"/working-tax-credits/").withHeaders("correlationId" -> "InvalidId")
+
           when(
-            liveTaxCreditsService.getChildTaxCredits(
+            liveTaxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
-              eqTo(List("test-scope")))(any(), any(), any()))
+              eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.successful(
-                Seq(createValidCtcApplication(), createValidCtcApplication()))
+                Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
-          val exception =
-            intercept[BadRequestException](
-              liveChildTaxCreditsController.childTaxCredit(testMatchId,
-                                                           testInterval)(
-                FakeRequest().withHeaders("CorrelationId" -> "test")))
+          val result =
+            liveChildTaxCreditsController
+              .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
-          exception.message shouldBe "Malformed CorrelationId"
-          exception.responseCode shouldBe BAD_REQUEST
+          status(result) shouldBe BAD_REQUEST
+          contentAsJson(result) shouldBe Json.parse(
+            """{
+              |    "code": "INVALID_REQUEST",
+              |    "message": "Malformed CorrelationId"
+              |}""".stripMargin
+          )
+          verify(liveChildTaxCreditsController.auditHelper, times(1))
+            .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
       }
     }
