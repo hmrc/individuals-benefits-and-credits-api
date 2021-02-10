@@ -27,7 +27,7 @@ uses:
 /individuals/benefits-and-credits:
   /:
     get:
-      displayName: Benefits and Credits
+      displayName: Get a list of available endpoints
       description: !include docs/root-description.md
       is: [headers.acceptHeader]
       (annotations.scope): "assigned"
@@ -65,7 +65,7 @@ uses:
                     code: NOT_FOUND
   /child-tax-credit:
     get:
-      displayName: Child Tax Credits
+      displayName: Get Child Tax Credit data
       description: !include docs/child-tax-credits-description.md
       is: [headers.acceptHeader]
       (annotations.scope): "assigned"
@@ -112,7 +112,7 @@ uses:
                     code: NOT_FOUND
   /working-tax-credit:
     get:
-      displayName: Working Tax Credits
+      displayName: Get Working Tax Credit data
       description: !include docs/working-tax-credits-description.md
       is: [headers.acceptHeader]
       (annotations.scope): "assigned"
