@@ -16,14 +16,7 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock.{
-  aResponse,
-  equalTo,
-  equalToJson,
-  get,
-  post,
-  urlEqualTo
-}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, equalToJson, get, post, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.http.{HeaderNames, Status}
@@ -104,6 +97,17 @@ object AuthStub extends MockHost(22000) {
             .withHeader(
               HeaderNames.WWW_AUTHENTICATE,
               """MDTP detail="Bearer token is missing or not authorized"""")))
+
+  def willNotAuthorizePrivilegedAuthTokenNoScopes(authBearerToken: String): StubMapping =
+    mock.register(
+      post(urlEqualTo("/auth/authorise"))
+        .withHeader(AUTHORIZATION, equalTo(authBearerToken))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.UNAUTHORIZED)
+            .withHeader(
+              HeaderNames.WWW_AUTHENTICATE,
+              """MDTP detail="InsufficientEnrolments"""")))
 
   def willAuthorizeNinoWithAuthToken(nino: String, authBearerToken: String) =
     mock.register(

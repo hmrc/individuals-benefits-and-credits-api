@@ -17,14 +17,7 @@
 package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.{
-  aResponse,
-  configureFor,
-  equalTo,
-  get,
-  stubFor,
-  urlPathMatching
-}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, configureFor, equalTo, get, stubFor, urlPathMatching}
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -36,12 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import testUtils.{TestDates, TestHelpers}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{
-  BadRequestException,
-  HeaderCarrier,
-  HttpClient,
-  Upstream5xxResponse
-}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, InternalServerException, Upstream5xxResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IfConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -120,7 +108,7 @@ class IfConnectorSpec
           .withQueryParam("endDate", equalTo(endDate))
           .willReturn(aResponse().withStatus(500)))
 
-      intercept[Upstream5xxResponse] {
+      intercept[InternalServerException] {
         await(
           underTest.fetchTaxCredits(nino, interval, None, matchId)(
             hc,
@@ -144,7 +132,7 @@ class IfConnectorSpec
           .withQueryParam("endDate", equalTo(endDate))
           .willReturn(aResponse().withStatus(400)))
 
-      intercept[BadRequestException] {
+      intercept[InternalServerException] {
         await(
           underTest.fetchTaxCredits(nino, interval, None, matchId)(
             hc,

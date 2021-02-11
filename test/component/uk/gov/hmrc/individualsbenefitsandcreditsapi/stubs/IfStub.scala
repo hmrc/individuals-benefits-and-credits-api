@@ -17,7 +17,7 @@
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplications
 
@@ -34,6 +34,17 @@ object IfStub extends MockHost(22004) {
         .willReturn(aResponse()
           .withStatus(OK)
           .withBody(Json.toJson(ifApplications).toString())))
+
+  def customResponse(nino: String, fromDate: String,
+                     toDate: String, status: Int, response: JsValue) =
+    mock.register(
+      get(urlPathEqualTo(s"/individuals/tax-credits/nino/$nino"))
+        .withQueryParam("startDate", equalTo(fromDate))
+        .withQueryParam("endDate", equalTo(toDate))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withBody(response.toString())))
 
   def enforceRateLimit(nino: String, fromDate: String, toDate: String): Unit =
     mock.register(

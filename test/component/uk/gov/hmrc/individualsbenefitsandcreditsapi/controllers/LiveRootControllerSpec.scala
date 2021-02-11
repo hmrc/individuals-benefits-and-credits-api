@@ -18,11 +18,7 @@ package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import java.util.UUID
 
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  BaseSpec,
-  IndividualsMatchingApiStub
-}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, BaseSpec, IfStub, IndividualsMatchingApiStub}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
@@ -132,6 +128,26 @@ class LiveRootControllerSpec extends BaseSpec {
             "title" -> "Get Child Tax Credit details"
           )
         )
+      )
+    }
+
+    scenario(s"user does not have valid scopes") {
+      Given("A valid auth token but invalid scopes")
+      AuthStub.willNotAuthorizePrivilegedAuthTokenNoScopes(authToken)
+
+      And("a valid record in the matching API")
+      IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
+
+
+      When(
+        s"I make a call to root endpoint")
+      val response = invokeEndpoint(s"$serviceUrl/?matchId=$matchId")
+
+      Then("The response status should be 401")
+      response.code shouldBe UNAUTHORIZED
+      Json.parse(response.body) shouldBe Json.obj(
+        "code" -> "UNAUTHORIZED",
+        "message" ->"Insufficient Enrolments"
       )
     }
   }
