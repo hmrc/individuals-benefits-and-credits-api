@@ -86,8 +86,6 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig,
                   (implicit hc: HeaderCarrier, request: RequestHeader, ec: ExecutionContext) =
     recover[IfApplication](http.GET[IfApplications](url)(implicitly, header(), ec) map {
       response =>
-        Logger.debug(s"$endpoint - Response: $response")
-
         auditHelper.auditIfApiResponse(extractCorrelationId(request), None,
           matchId, request, url, Json.toJson(response))
 
