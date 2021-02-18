@@ -76,7 +76,7 @@ abstract class CommonController @Inject()(
       ErrorInternalServer("Something went wrong.").toHttpResponse
     }
     case e: Exception => {
-      Logger.warn("Controllers InternalServerException encountered")
+      Logger.warn("Controllers Exception encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInternalServer("Something went wrong.").toHttpResponse
     }
