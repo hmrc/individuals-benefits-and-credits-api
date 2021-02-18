@@ -18,6 +18,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import javax.inject.Inject
 import org.joda.time.DateTime
+import play.api.Logger
 import play.api.mvc.{ControllerComponents, Request, RequestHeader, Result}
 import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
 import uk.gov.hmrc.http.{BadRequestException, InternalServerException, TooManyRequestException}
@@ -43,34 +44,42 @@ abstract class CommonController @Inject()(
                                    (implicit request: RequestHeader,
                                     auditHelper: AuditHelper): PartialFunction[Throwable, Result] = {
     case _: MatchNotFoundException   => {
+      Logger.warn("Common Controller MatchNotFoundException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, "Not Found")
       ErrorNotFound.toHttpResponse
     }
     case e: InsufficientEnrolments => {
+      Logger.warn("Common Controller InsufficientEnrolments encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorUnauthorized("Insufficient Enrolments").toHttpResponse
     }
     case e: AuthorisationException   => {
+      Logger.warn("Common Controller AuthorisationException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorUnauthorized(e.getMessage).toHttpResponse
     }
     case tmr: TooManyRequestException  => {
+      Logger.warn("Common Controller TooManyRequestException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, tmr.getMessage)
       ErrorTooManyRequests.toHttpResponse
     }
     case br: BadRequestException  => {
+      Logger.warn("Common Controller BadRequestException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, br.getMessage)
       ErrorInvalidRequest(br.getMessage).toHttpResponse
     }
     case e: IllegalArgumentException => {
+      Logger.warn("Common Controller IllegalArgumentException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInvalidRequest(e.getMessage).toHttpResponse
     }
     case e: InternalServerException => {
+      Logger.warn("Common Controller InternalServerException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInternalServer("Something went wrong.").toHttpResponse
     }
-    case e => {
+    case e: Exception => {
+      Logger.warn("Controllers InternalServerException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInternalServer("Something went wrong.").toHttpResponse
     }
