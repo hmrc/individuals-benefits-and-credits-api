@@ -76,8 +76,6 @@ object RequestHeaderUtils {
     } getOrElse "1.0"
 
   private def versionedUri(urlPath: String, version: String) = {
-    Logger.debug(s"MOJDS - $version$urlPath")
-
     urlPath match {
       case "/" => s"/v$version"
       case uri => s"/v$version$urlPath"
