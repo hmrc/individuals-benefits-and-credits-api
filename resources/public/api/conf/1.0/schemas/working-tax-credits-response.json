@@ -39,9 +39,8 @@
               "type": "object",
               "properties": {
                 "payProfCalcDate": {
-                  "type": "string",
-                  "description": "The date the payment profile was calculated.\nDate in the format YYYY-MM-DD",
-                  "example": "1996-08-01"
+                  "description": "The date the payment profile was calculated.",
+                  "$ref": "#/definitions/Pay-Prof-Date"
                 },
                 "totalEntitlement": {
                   "type": "number",
@@ -82,14 +81,12 @@
                     "type": "object",
                     "properties": {
                       "startDate": {
-                        "type": "string",
-                        "description": "The start date of the payment. \nDate in the format YYYY-MM-DD",
-                        "example": "1996-08-01"
+                        "description": "The start date of the payment.",
+                        "$ref": "#/definitions/Start-Date"
                       },
                       "endDate": {
-                        "type": "string",
-                        "description": "The end date of the payment.\nDate in the format YYYY-MM-DD",
-                        "example": "1996-08-07"
+                        "description": "The end date of the payment.",
+                        "$ref": "#/definitions/End-Date"
                       },
                       "frequency": {
                         "type": "integer",
@@ -119,5 +116,26 @@
   "required": [
     "_links",
     "applications"
-  ]
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Pay-Prof-Date": {
+      "id": "full-date",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "example": "1996-08-01"
+    },
+    "Start-Date": {
+      "id": "full-date",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "example": "1996-08-01"
+    },
+    "End-Date": {
+      "id": "full-date",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "example": "1996-08-07"
+    }
+  }
 }
