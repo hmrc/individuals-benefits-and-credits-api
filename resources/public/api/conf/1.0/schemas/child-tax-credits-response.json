@@ -42,12 +42,12 @@
               "properties": {
                 "payProfCalcDate": {
                   "type": "string",
-                  "description": "The date the Payment Profile was calculated.",
+                  "description": "The date the payment profile was calculated. \nDate in the format  YYYY-MM-DD",
                   "example": "1996-08-01"
                 },
                 "totalEntitlement": {
                   "type": "number",
-                  "description": "The sum of all the award entitlements for an award version. The net amount that will be received.",
+                  "description": "The sum of all the entitlements for an award version. The net amount that will be received.",
                   "example": "18765.23"
                 },
                 "childTaxCredit": {
@@ -56,7 +56,7 @@
                   "properties": {
                     "childCareAmount": {
                       "type": "number",
-                      "description": "The amount for childcare",
+                      "description": "The amount for childcare.",
                       "example": "930.98"
                     },
                     "ctcChildAmount": {
@@ -76,7 +76,7 @@
                     },
                     "paidYTD": {
                       "type": "number",
-                      "description": "The actual payment amount both direct and payment via employer (PVE) from the start of the tax credit period up to the calculated date of the payment profile.",
+                      "description": "The actual payment amount, both direct and payment via employer (PVE). This is from the start of the tax credit period up to the calculated date of the payment profile.",
                       "example": "8976.34"
                     }
                   }
@@ -89,12 +89,12 @@
                     "properties": {
                       "startDate": {
                         "type": "string",
-                        "description": "The start date of the payment. Date in the format YYYY-MM-DD",
+                        "description": "The start date of the payment. \nDate in the format YYYY-MM-DD",
                         "example": "1996-08-01"
                       },
                       "endDate": {
                         "type": "string",
-                        "description": "The end date of the payment. Date in the format YYYY-MM-DD",
+                        "description": "The end date of the payment. \nDate in the format YYYY-MM-DD",
                         "example": "1996-08-07"
                       },
                       "frequency": {

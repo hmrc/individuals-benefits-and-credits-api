@@ -75,15 +75,17 @@ uses:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
           type: string
+          required: true
           example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
         fromDate:
-          description: The date that Child Tax Credit data is requested from.
+          description: !include docs/descriptions/child-tax-credit-from-date-query-param-description.md
           type: string
           required: true
           example: 2019-01-01
         toDate:
-         description: The date that Child Tax Credit data is requested to. If missing, it defaults to today's date.
+         description: !include docs/descriptions/child-tax-credit-to-date-query-param-description.md
          type: string
+         required: false
          example: 2020-03-01
       responses:
         200:
@@ -125,13 +127,14 @@ uses:
           required: true
           example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
         fromDate:
-          description: The date that Working Tax Credit data is requested from.
+          description: !include docs/descriptions/working-tax-credit-from-date-query-param-description.md
           type: string
           required: true
           example: 2019-01-01
         toDate:
-         description: The date that Working Tax Credit data is requested to. If missing, it defaults to today's date.
+         description: !include docs/descriptions/working-tax-credit-to-date-query-param-description.md
          type: string
+         required: false
          example: 2020-03-01
       responses:
         200:
