@@ -124,7 +124,7 @@ class ChildTaxCreditControllerSpec
           status(result) shouldBe OK
 
           verify(liveChildTaxCreditsController.auditHelper, times(1)).
-            auditApiResponse(any(), any(), any(), any(), any(), any())(any())
+            childTaxCreditAuditApiResponse(any(), any(), any(), any(), any(), any())(any())
 
           verify(liveChildTaxCreditsController.auditHelper, times(1)).
             auditAuthScopes(any(), any(), any())(any())

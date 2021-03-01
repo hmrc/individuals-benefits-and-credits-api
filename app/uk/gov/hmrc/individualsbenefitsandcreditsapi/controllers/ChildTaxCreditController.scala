@@ -57,8 +57,8 @@ abstract class ChildTaxCreditController @Inject()(
               val selfLink = HalLink("self", urlWithInterval(s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId", interval.getStart))
               val response = Json.obj("applications" -> Json.toJson(applications))
 
-              auditHelper.auditApiResponse(correlationId.toString, matchId.toString, Some(authScopes.mkString(",")),
-                request, selfLink.toString, Json.toJson(response))
+              auditHelper.childTaxCreditAuditApiResponse(correlationId.toString, matchId.toString, authScopes.mkString(","),
+                request, response.toString(), applications)
 
               Ok(state(response) ++ selfLink)
             }
