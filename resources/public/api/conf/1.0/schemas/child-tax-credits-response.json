@@ -41,13 +41,12 @@
               "type": "object",
               "properties": {
                 "payProfCalcDate": {
-                  "type": "string",
-                  "description": "The date the Payment Profile was calculated.",
-                  "example": "1996-08-01"
+                  "description": "The date the payment profile was calculated.",
+                  "$ref": "#/definitions/Pay-Prof-Date"
                 },
                 "totalEntitlement": {
                   "type": "number",
-                  "description": "The sum of all the award entitlements for an award version. The net amount that will be received.",
+                  "description": "The sum of all the entitlements for an award version. The net amount that will be received.",
                   "example": "18765.23"
                 },
                 "childTaxCredit": {
@@ -56,7 +55,7 @@
                   "properties": {
                     "childCareAmount": {
                       "type": "number",
-                      "description": "The amount for childcare",
+                      "description": "The amount for childcare.",
                       "example": "930.98"
                     },
                     "ctcChildAmount": {
@@ -76,7 +75,7 @@
                     },
                     "paidYTD": {
                       "type": "number",
-                      "description": "The actual payment amount both direct and payment via employer (PVE) from the start of the tax credit period up to the calculated date of the payment profile.",
+                      "description": "The actual payment amount, both direct and payment via employer (PVE). This is from the start of the tax credit period up to the calculated date of the payment profile.",
                       "example": "8976.34"
                     }
                   }
@@ -88,14 +87,12 @@
                     "type": "object",
                     "properties": {
                       "startDate": {
-                        "type": "string",
-                        "description": "The start date of the payment. Date in the format YYYY-MM-DD",
-                        "example": "1996-08-01"
+                        "description": "The start date of the payment.",
+                        "$ref": "#/definitions/Start-Date"
                       },
                       "endDate": {
-                        "type": "string",
-                        "description": "The end date of the payment. Date in the format YYYY-MM-DD",
-                        "example": "1996-08-07"
+                        "description": "The end date of the payment.",
+                        "$ref": "#/definitions/End-Date"
                       },
                       "frequency": {
                         "type": "integer",
@@ -125,5 +122,26 @@
   "required": [
     "_links",
     "applications"
-  ]
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Pay-Prof-Date": {
+      "id": "full-date",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "example": "1996-08-01"
+    },
+    "Start-Date": {
+      "id": "full-date",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "example": "1996-08-01"
+    },
+    "End-Date": {
+      "id": "full-date",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "example": "1996-08-07"
+    }
+  }
 }
