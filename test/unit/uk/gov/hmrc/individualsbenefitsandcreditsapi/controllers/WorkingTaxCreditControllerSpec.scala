@@ -124,7 +124,7 @@ class WorkingTaxCreditControllerSpec
           status(result) shouldBe OK
 
           verify(liveWorkingTaxCreditsController.auditHelper, times(1)).
-            auditApiResponse(any(), any(), any(), any(), any(), any())(any())
+            workingTaxCreditAuditApiResponse(any(), any(), any(), any(), any(), any())(any())
 
           verify(liveWorkingTaxCreditsController.auditHelper, times(1)).
             auditAuthScopes(any(), any(), any())(any())
