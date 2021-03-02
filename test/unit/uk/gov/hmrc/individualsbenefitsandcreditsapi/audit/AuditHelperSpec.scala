@@ -24,7 +24,6 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.DefaultHttpExtendedAuditEvent
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{ApiFailureResponseEventModel, ChildTaxApiResponseEventModel, IfApiResponseEventModel, ScopesAuditEventModel, WorkingTaxApiResponseEventModel}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.{CtcApplication, CtcAward}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
@@ -50,8 +49,6 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
   val endpoint = "/test"
 
   val auditConnector = mock[AuditConnector]
-  val httpExtendedAuditEvent = new DefaultHttpExtendedAuditEvent(
-    "individuals-benefits-and-credits-api")
 
   val workingTaxCreditResponse = Seq(WtcApplication(None, Seq(WtcAward(None, None, None, None, None))))
   val childTaxCreditResponse = Seq(CtcApplication(None, Seq(CtcAward(None, None, None, None))))
