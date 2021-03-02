@@ -58,7 +58,7 @@ abstract class ChildTaxCreditController @Inject()(
               val response = Json.obj("applications" -> Json.toJson(applications))
 
               auditHelper.childTaxCreditAuditApiResponse(correlationId.toString, matchId.toString, authScopes.mkString(","),
-                request, response.toString(), applications)
+                request, selfLink.toString, applications)
 
               Ok(state(response) ++ selfLink)
             }
