@@ -18,9 +18,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 
 import play.api.libs.json.Json
 
-case class RootApiResponseEventModel(ipAddress: String,
-                                     authorisation: String,
-                                     deviceId: String,
+case class RootApiResponseEventModel(deviceId: String,
                                      input: String,
                                      method: String,
                                      userAgent: String,
