@@ -19,9 +19,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 
-case class ChildTaxApiResponseEventModel(ipAddress: String,
-                                         authorisation: String,
-                                         deviceId: String,
+case class ChildTaxApiResponseEventModel(deviceId: String,
                                          input: String,
                                          method: String,
                                          userAgent: String,

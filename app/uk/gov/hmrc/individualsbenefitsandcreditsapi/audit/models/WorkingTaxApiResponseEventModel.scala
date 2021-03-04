@@ -19,9 +19,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 
-case class WorkingTaxApiResponseEventModel(ipAddress: String,
-                                         authorisation: String,
-                                         deviceId: String,
+case class WorkingTaxApiResponseEventModel(deviceId: String,
                                          input: String,
                                          method: String,
                                          userAgent: String,
