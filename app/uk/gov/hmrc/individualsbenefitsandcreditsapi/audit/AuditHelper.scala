@@ -122,10 +122,10 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                          matchId: String,
                          request: RequestHeader,
                          requestUrl: String,
-                         ifApplications: IfApplications)
+                         integrationFrameworkApplications: IfApplications)
                         (implicit hc: HeaderCarrier) =
     auditConnector.sendExplicitAudit(
-      "IfApiResponseEvent",
+      "IntegrationFrameworkApiResponseEvent",
       IfApiResponseEventModel(
         deviceId = hc.deviceID.getOrElse("-"),
         input = s"Request to ${request.path}",
@@ -135,7 +135,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
         matchId = matchId,
         correlationId = correlationId,
         requestUrl = requestUrl,
-        ifApplications
+        integrationFrameworkApplications
       )
     )
 
@@ -146,7 +146,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                         msg: String)
                        (implicit hc: HeaderCarrier) =
     auditConnector.sendExplicitAudit(
-      "IfApiFailureEvent",
+      "IntegrationFrameworkApiFailureEvent",
       ApiFailureResponseEventModel(
         deviceId = hc.deviceID.getOrElse("-"),
         input = s"Request to ${request.path}",
