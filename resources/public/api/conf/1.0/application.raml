@@ -33,6 +33,11 @@ uses:
       (annotations.scope): "assigned"
       securedBy: [ sec.oauth_2_0: { scopes: [ "assigned" ] } ]
       (annotations.sandboxData): !include sandbox/root-response.md
+      headers:
+        CorrelationId:
+          description: !include ./docs/descriptions/correlation-id-description.md
+          type: string
+          example: 58072660-1df9-4deb-b4ca-cd2d7f96e480
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
@@ -71,6 +76,11 @@ uses:
       (annotations.scope): "assigned"
       securedBy: [ sec.oauth_2_0: { scopes: [ "assigned" ] } ]
       (annotations.sandboxData): !include sandbox/child-tax-credits-response.md
+      headers:
+        CorrelationId:
+          description: !include ./docs/descriptions/correlation-id-description.md
+          type: string
+          example: 58072660-1df9-4deb-b4ca-cd2d7f96e480
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
@@ -120,6 +130,11 @@ uses:
       (annotations.scope): "assigned"
       securedBy: [ sec.oauth_2_0: { scopes: [ "assigned" ] } ]
       (annotations.sandboxData): !include sandbox/working-tax-credits-response.md
+      headers:
+        CorrelationId:
+          description: !include ./docs/descriptions/correlation-id-description.md
+          type: string
+          example: 58072660-1df9-4deb-b4ca-cd2d7f96e480
       queryParameters:
         matchId:
           description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
