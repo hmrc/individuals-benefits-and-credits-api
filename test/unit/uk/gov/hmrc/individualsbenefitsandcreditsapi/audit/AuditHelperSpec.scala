@@ -42,7 +42,8 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
   val correlationId = "test"
   val scopes = "test"
   val matchId = "80a6bb14-d888-436e-a541-4000674c60aa"
-  val request = FakeRequest()
+  val clientId = "80a6bb14-d888-436e-a541-4000674c60bb"
+  val request = FakeRequest().withHeaders("X-Client-Id" -> clientId)
   val response = Json.toJson("some" -> "json")
   val ifUrl =
     s"host/individuals/benefits-and-credits/child-tax-credit/nino/$nino?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)"
@@ -73,6 +74,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       capturedEvent.apiVersion shouldEqual "1.0"
       capturedEvent.matchId shouldEqual matchId
       capturedEvent.scopes shouldBe scopes
+      capturedEvent.asInstanceOf[ScopesAuditEventModel].clientId shouldBe clientId
 
     }
 
@@ -91,6 +93,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       capturedEvent.matchId shouldEqual matchId
       capturedEvent.correlationId shouldEqual Some(correlationId)
       capturedEvent.scopes shouldBe scopes
+      capturedEvent.clientId shouldBe clientId
       capturedEvent.returnLinks shouldBe endpoint
       capturedEvent.childTaxCredit shouldBe childTaxCreditResponse
       capturedEvent.apiVersion shouldBe "1.0"
@@ -112,6 +115,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       capturedEvent.matchId shouldEqual matchId
       capturedEvent.correlationId shouldEqual Some(correlationId)
       capturedEvent.scopes shouldBe scopes
+      capturedEvent.clientId shouldBe clientId
       capturedEvent.returnLinks shouldBe endpoint
       capturedEvent.workingTaxCredit shouldBe workingTaxCreditResponse
       capturedEvent.apiVersion shouldBe "1.0"
@@ -134,6 +138,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       val capturedEvent = captor.getValue.asInstanceOf[ApiFailureResponseEventModel]
       capturedEvent.matchId shouldEqual matchId
       capturedEvent.correlationId shouldEqual Some(correlationId)
+      capturedEvent.clientId shouldBe clientId
       capturedEvent.requestUrl shouldEqual endpoint
       capturedEvent.response shouldEqual msg
 
@@ -153,6 +158,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       val capturedEvent = captor.getValue.asInstanceOf[IfApiResponseEventModel]
       capturedEvent.matchId shouldEqual matchId
       capturedEvent.correlationId shouldEqual correlationId
+      capturedEvent.clientId shouldBe clientId
       capturedEvent.requestUrl shouldBe ifUrl
       capturedEvent.integrationFrameworkApplications shouldBe ifResponse
 
@@ -174,6 +180,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
       val capturedEvent = captor.getValue.asInstanceOf[ApiFailureResponseEventModel]
       capturedEvent.matchId shouldEqual matchId
       capturedEvent.correlationId shouldEqual Some(correlationId)
+      capturedEvent.clientId shouldBe clientId
       capturedEvent.requestUrl shouldEqual ifUrl
       capturedEvent.response shouldEqual msg
 

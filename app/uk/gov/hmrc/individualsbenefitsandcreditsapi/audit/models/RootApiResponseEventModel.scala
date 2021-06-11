@@ -25,6 +25,7 @@ case class RootApiResponseEventModel(deviceId: String,
                                      apiVersion: String,
                                      matchId: String,
                                      correlationId: Option[String],
+                                     clientId: String,
                                      scopes: String,
                                      returnLinks: String)
 

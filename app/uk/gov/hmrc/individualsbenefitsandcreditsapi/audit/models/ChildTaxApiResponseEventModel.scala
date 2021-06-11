@@ -26,6 +26,7 @@ case class ChildTaxApiResponseEventModel(deviceId: String,
                                          apiVersion: String,
                                          matchId: String,
                                          correlationId: Option[String],
+                                         clientId: String,
                                          scopes: String,
                                          returnLinks: String,
                                          childTaxCredit: Seq[CtcApplication])
