@@ -20,16 +20,16 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 
 case class WorkingTaxApiResponseEventModel(deviceId: String,
-                                         input: String,
-                                         method: String,
-                                         userAgent: String,
-                                         apiVersion: String,
-                                         matchId: String,
-                                         correlationId: Option[String],
-                                         clientId: String,
-                                         scopes: String,
-                                         returnLinks: String,
-                                         workingTaxCredit: Seq[WtcApplication])
+                                           input: String,
+                                           method: String,
+                                           userAgent: String,
+                                           apiVersion: String,
+                                           matchId: String,
+                                           correlationId: Option[String],
+                                           applicationId: String,
+                                           scopes: String,
+                                           returnLinks: String,
+                                           workingTaxCredit: Seq[WtcApplication])
 
 object WorkingTaxApiResponseEventModel {
   implicit val formatApiResponseEventModel = Json.format[WorkingTaxApiResponseEventModel]
