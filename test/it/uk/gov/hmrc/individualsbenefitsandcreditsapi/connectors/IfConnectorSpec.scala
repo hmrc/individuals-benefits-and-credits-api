@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import testUtils.{TestDates, TestHelpers}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, InternalServerException, NotFoundException, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HeaderNames, HttpClient, InternalServerException, NotFoundException, Upstream5xxResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IfConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -55,7 +55,7 @@ class IfConnectorSpec
   override lazy val fakeApplication = new GuiceApplicationBuilder()
     .bindings(bindModules: _*)
     .configure(
-      "microservice.services.integration-framework.host" -> "localhost",
+      "microservice.services.integration-framework.host" -> "127.0.0.1",
       "microservice.services.integration-framework.port" -> "11122",
       "microservice.services.integration-framework.authorization-token" -> integrationFrameworkAuthorizationToken,
       "microservice.services.integration-framework.environment" -> integrationFrameworkEnvironment
@@ -198,7 +198,7 @@ class IfConnectorSpec
           .withQueryParam("startDate", equalTo(startDate))
           .withQueryParam("endDate", equalTo(endDate))
           .withHeader(
-            "Authorization",
+            HeaderNames.authorisation,
             equalTo(s"Bearer $integrationFrameworkAuthorizationToken"))
           .withHeader("Environment", equalTo(integrationFrameworkEnvironment))
           .willReturn(aResponse()

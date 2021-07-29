@@ -17,15 +17,12 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
 import java.util.UUID
-
 import javax.inject.Inject
 import org.joda.time.Interval
 import play.api.Logger
-import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HeaderNames, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, Upstream4xxResponse, Upstream5xxResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -74,17 +71,14 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig,
       case None => throw new BadRequestException("CorrelationId is required")
     }
 
-  private def header(extraHeaders: (String, String)*)
-                    (implicit hc: HeaderCarrier) =
-    hc.copy(
-        authorization =
-          Option(Authorization(s"Bearer $integrationFrameworkBearerToken")))
-      .withExtraHeaders(
-        Seq("Environment" -> integrationFrameworkEnvironment) ++ extraHeaders: _*)
+  def setHeaders = Seq(
+    HeaderNames.authorisation -> s"Bearer $integrationFrameworkBearerToken",
+    "Environment"             -> integrationFrameworkEnvironment
+  )
 
   private def call(url: String, endpoint: String, matchId: String)
                   (implicit hc: HeaderCarrier, request: RequestHeader, ec: ExecutionContext) =
-    recover[IfApplication](http.GET[IfApplications](url)(implicitly, header(), ec) map {
+    recover[IfApplication](http.GET[IfApplications](url, headers = setHeaders) map {
       response =>
         auditHelper.auditIfApiResponse(extractCorrelationId(request),
           matchId, request, url, response)
