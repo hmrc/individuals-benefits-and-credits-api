@@ -40,7 +40,7 @@
           <p>{ &quot;code&quot; : &quot;BAD_REQUEST&quot;,<br/>&quot;message&quot; : &quot;Invalid time period requested" }</p></td>
     </tr>
     <tr>
-          <td><p>fromDate earlier than current tax year minus 6</p></td>
+          <td><p>fromDate earlier than the current tax year minus 6</p></td>
           <td>
             <p>The fromDate is earlier than the current tax year minus 6.</p>
             <p>For example:<br>fromDate=2014-01-01</p></td>
