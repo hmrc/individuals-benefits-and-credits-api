@@ -71,14 +71,15 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig,
       case None => throw new BadRequestException("CorrelationId is required")
     }
 
-  def setHeaders = Seq(
+  def setHeaders(requestHeader: RequestHeader) = Seq(
     HeaderNames.authorisation -> s"Bearer $integrationFrameworkBearerToken",
-    "Environment"             -> integrationFrameworkEnvironment
+    "Environment"             -> integrationFrameworkEnvironment,
+    "CorrelationId"           -> extractCorrelationId(requestHeader)
   )
 
   private def call(url: String, endpoint: String, matchId: String)
                   (implicit hc: HeaderCarrier, request: RequestHeader, ec: ExecutionContext) =
-    recover[IfApplication](http.GET[IfApplications](url, headers = setHeaders) map {
+    recover[IfApplication](http.GET[IfApplications](url, headers = setHeaders(request)) map {
       response =>
         auditHelper.auditIfApiResponse(extractCorrelationId(request),
           matchId, request, url, response)
