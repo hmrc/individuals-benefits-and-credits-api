@@ -31,8 +31,12 @@ class ScopesHelper @Inject()(scopesService: ScopesService) {
     * @param endpoint The endpoint that the user has called
     * @return A google fields-style query string with the fields determined by the provided endpoint and scopes
     */
-  def getQueryStringFor(scopes: Seq[String], endpoint: String): String =
-    PathTree(scopesService.getValidItemsFor(scopes, endpoint)).toString
+  def getQueryStringFor(scopes: Iterable[String], endpoints: List[String]): String = {
+    val filters = scopesService.getValidFilters(scopes, endpoints)
+    s"${PathTree(scopesService.getIfDataPaths(scopes, endpoints)).toString}${if (filters.nonEmpty)
+      s"&filter=${filters.mkString("&filter=")}"
+    else ""}"
+  }
 
   /**
     * @param endpoint The endpoint that the user has called
