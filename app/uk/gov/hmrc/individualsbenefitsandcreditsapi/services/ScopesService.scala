@@ -18,42 +18,38 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
 import javax.inject.Inject
 import play.api.Configuration
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.{
-  ApiConfig,
-  InternalEndpointConfig,
-  ExternalEndpointConfig
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.{ApiConfig, InternalEndpointConfig, ExternalEndpointConfig}
 
 class ScopesService @Inject()(configuration: Configuration) {
 
-  private[services] lazy val apiConfig =
+  private[service] lazy val apiConfig =
     configuration.get[ApiConfig]("api-config")
 
-  private[services] def getScopeFieldKeys(scope: String): List[String] =
+  private[service] def getScopeFieldKeys(scope: String): List[String] =
     apiConfig
       .getScope(scope)
       .map(s => s.fields)
       .getOrElse(List())
 
-  private[services] def getScopeFilterKeys(scope: String): List[String] =
+  private[service] def getScopeFilterKeys(scope: String): List[String] =
     apiConfig
       .getScope(scope)
       .map(s => s.filters)
       .getOrElse(List())
 
-  private[services] def getScopeEndpointKeys(scope: String): Iterable[String] =
+  private[service] def getScopeEndpointKeys(scope: String): Iterable[String] =
     apiConfig
       .getScope(scope)
       .map(s => s.endpoints)
       .getOrElse(List())
 
-  private[services] def getFieldPaths(keys: Iterable[String]): Iterable[String] =
+  private[service] def getFieldPaths(keys: Iterable[String]): Iterable[String] =
     apiConfig.internalEndpoints
       .map(e => e.fields)
       .flatMap(value => keys.map(value.get))
       .flatten
 
-  private[services] def getEndpointFieldKeys(endpointKey: String): Iterable[String] =
+  private[service] def getEndpointFieldKeys(endpointKey: String): Iterable[String] =
     apiConfig
       .getInternalEndpoint(endpointKey)
       .map(endpoint => endpoint.fields.keys.toList.sorted)

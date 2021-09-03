@@ -27,7 +27,7 @@ case class ApiConfig(scopes: List[ScopeConfig], internalEndpoints: List[Internal
   def getScope(scope: String): Option[ScopeConfig] =
     scopes.find(c => c.name == scope)
 
-  def getInternalEndpoint(endpoint: String): Option[InteralEndpointConfig] =
+  def getInternalEndpoint(endpoint: String): Option[InternalEndpointConfig] =
     internalEndpoints.find(e => e.name == endpoint)
 
   def getExternalEndpoint(endpoint:String): Option[ExternalEndpointConfig] =

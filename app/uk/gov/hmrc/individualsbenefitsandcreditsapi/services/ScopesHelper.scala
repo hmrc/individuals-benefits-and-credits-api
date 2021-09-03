@@ -20,6 +20,7 @@ import play.api.hal.Hal.{linksSeq, state}
 import play.api.hal.{HalLink, HalResource}
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.JsValue
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.EndpointConfig
 
 import java.util.UUID
 import javax.inject.Inject
@@ -64,15 +65,36 @@ class ScopesHelper @Inject()(scopesService: ScopesService) {
     state(data) ++ linksSeq(hateoasLinks)
   }
 
-  def getHalLinks(matchId: UUID, scopes: Iterable[String]): HalResource =
-    linksSeq(
-      scopesService
-        .getEndpoints(scopes)
-        .map(
-          endpoint =>
-            HalLink(rel = endpoint.name,
-                    href = endpoint.link.replaceAllLiterally("<matchId>",
-                                                             s"$matchId"),
-                    title = Some(endpoint.title)))
-        .toSeq)
+  def getHalLinks(matchId: UUID,
+                  excludeList: Option[List[String]],
+                  scopes: Iterable[String],
+                  allowedList: Option[List[String]],
+                  excludeInternal: Boolean = false): HalResource = {
+
+    val links = excludeInternal match {
+      case true  => getAllHalLinks(matchId, excludeList, allowedList, () => scopesService.getExternalEndpoints(scopes))
+      case false => getAllHalLinks(matchId, excludeList, allowedList, () => scopesService.getInternalEndpoints(scopes)) ++
+        getAllHalLinks(matchId, excludeList, allowedList, () => scopesService.getExternalEndpoints(scopes))
+    }
+
+    linksSeq(links)
+  }
+
+  private def getAllHalLinks(
+                              matchId: UUID,
+                              excludeList: Option[List[String]],
+                              allowedList: Option[List[String]],
+                              getEndpoints: () => Iterable[EndpointConfig]): Seq[HalLink] =
+
+    getEndpoints()
+      .filter(c =>
+        !excludeList.getOrElse(List()).contains(c.name) &&
+          allowedList.getOrElse(getEndpoints().map(e => e.name).toList).contains(c.name))
+      .map(endpoint =>
+        HalLink(
+          rel = endpoint.name,
+          href = endpoint.link.replaceAllLiterally("<matchId>", s"$matchId"),
+          title = Some(endpoint.title)))
+      .toSeq
+
 }
