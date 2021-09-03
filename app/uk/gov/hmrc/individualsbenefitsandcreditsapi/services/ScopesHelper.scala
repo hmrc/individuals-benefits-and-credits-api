@@ -47,10 +47,18 @@ class ScopesHelper @Inject()(scopesService: ScopesService) {
   def getHalResponse(endpoint: String,
                      scopes: List[String],
                      data: JsValue): HalResource = {
-    val hateoasLinks = scopesService
-      .getLinks(scopes)
-      .map(link => HalLink(link._1, link._2))
-      .toList ++
+
+    val internalEndpoints = scopesService
+      .getInternalEndpoints(scopes)
+      .map(link => HalLink(rel = link.name, href = link.link, name = Some(link.title)))
+      .toList
+
+    val externalEndpoints = scopesService
+      .getExternalEndpoints(scopes)
+      .map(link => HalLink(rel = link.name, href = link.link, name = Some(link.title)))
+      .toList
+
+    val hateoasLinks = internalEndpoints ++ externalEndpoints ++
       Seq(HalLink("self", scopesService.getEndpointLink(endpoint).get))
 
     state(data) ++ linksSeq(hateoasLinks)
