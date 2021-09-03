@@ -18,21 +18,20 @@ package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
 import it.uk.gov.hmrc.individualsbenefitsandcreditsapi.suite.MongoSuite
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{FreeSpec, MustMatchers, OptionValues}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.OptionValues
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Json, OFormat}
 import play.api.test.Helpers.running
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
-  CacheIdBase,
-  CacheService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheIdBase, CacheService}
 
 import scala.concurrent.Future
 
 class CacheServiceSpec
-    extends FreeSpec
-    with MustMatchers
+    extends AnyFreeSpec
+    with Matchers
     with ScalaFutures
     with OptionValues
     with MongoSuite

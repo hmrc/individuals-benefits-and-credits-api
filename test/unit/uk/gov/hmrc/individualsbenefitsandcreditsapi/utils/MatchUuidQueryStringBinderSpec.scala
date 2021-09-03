@@ -16,14 +16,15 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils
 
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.{FlatSpec, Matchers}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.MatchUuidQueryStringBinder
 
 import java.util.UUID.{fromString => uuid}
 
 class MatchUuidQueryStringBinderSpec
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with TableDrivenPropertyChecks {
 

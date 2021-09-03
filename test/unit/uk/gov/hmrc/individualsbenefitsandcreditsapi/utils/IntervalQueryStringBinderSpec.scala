@@ -17,13 +17,15 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils
 
 import org.joda.time.LocalDateTime
+import org.scalatest.EitherValues
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.{EitherValues, FlatSpec, Matchers}
 import testUtils.TestDates
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.IntervalQueryStringBinder
 
 class IntervalQueryStringBinderSpec
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with EitherValues
     with TestDates {

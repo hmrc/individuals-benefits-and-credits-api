@@ -16,9 +16,9 @@
 
 package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
-import java.util.UUID
-
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsString, Json, OFormat}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.ShortLivedCache
@@ -26,10 +26,11 @@ import uk.gov.hmrc.integration.ServiceSpec
 import uk.gov.hmrc.mongo.MongoSpecSupport
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.TestSupport
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ShortLivedCacheSpec
-    extends WordSpec
+    extends AnyWordSpec
     with Matchers
     with MongoSpecSupport
     with ServiceSpec

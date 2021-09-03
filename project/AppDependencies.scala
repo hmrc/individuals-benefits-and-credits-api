@@ -7,8 +7,8 @@ object AppDependencies {
   val hmrc = "uk.gov.hmrc"
   val akka = "com.typesafe.akka"
 
-  val akkaVersion = "2.5.23"
-  val akkaHttpVersion = "10.0.15"
+  val akkaVersion = "2.6.15"
+  val akkaHttpVersion = "10.2.6"
 
   val overrides = Seq(
     akka %% "akka-stream" % akkaVersion,
@@ -20,25 +20,26 @@ object AppDependencies {
 
   val compile = Seq(
     ws,
-    hmrc                %% "bootstrap-backend-play-26"  % "5.7.0",
-    hmrc                %% "domain"                     % "6.1.0-play-26",
-    hmrc                %% "play-hal"                   % "2.1.0-play-26",
-    hmrc                %% "play-hmrc-api"              % "6.4.0-play-26",
-    hmrc                %% "mongo-caching"              % "7.0.0-play-26",
-    hmrc                %% "json-encryption"            % "4.10.0-play-26",
-    "com.typesafe.play" %% "play-json-joda"             % "2.7.4"
+    hmrc                %% "bootstrap-backend-play-28"  % "5.12.0",
+    hmrc                %% "domain"                     % "6.2.0-play-28",
+    hmrc                %% "play-hal"                   % "2.1.0-play-27",
+    hmrc                %% "play-hmrc-api"              % "6.4.0-play-28",
+    hmrc                %% "mongo-caching"              % "7.0.0-play-28",
+    hmrc                %% "json-encryption"            % "4.10.0-play-28",
+    "com.typesafe.play" %% "play-json-joda"             % "2.9.2"
   )
 
   def test(scope: String = "test,it") = Seq(
-    "org.scalatestplus.play" %% "scalatestplus-play"       % "3.1.3"             % scope,
-    "org.scalatest"          %% "scalatest"                % "3.0.8"             % scope,
+    "org.scalatestplus.play" %% "scalatestplus-play"       % "5.1.0"             % scope,
+    "org.scalatestplus"      %% "mockito-3-4"              % "3.2.9.0"           % "test",
+    "org.scalatest"          %% "scalatest"                % "3.2.9"             % scope,
     "org.scalaj"             %% "scalaj-http"              % "2.4.2"             % scope,
-    "org.mockito"            % "mockito-core"              % "3.5.9"             % scope,
+    //"org.mockito"            % "mockito-core"              % "3.12.4"             % scope,
     "org.pegdown"            % "pegdown"                   % "1.6.0"             % scope,
     "com.typesafe.play"      %% "play-test"                % PlayVersion.current % scope,
-    "com.github.tomakehurst" % "wiremock-jre8"             % "2.27.2"            % scope,
-    hmrc                     %% "reactivemongo-test"       % "5.0.0-play-26"     % scope,
-    hmrc                     %% "service-integration-test" % "1.1.0-play-26"     % scope
+    "com.github.tomakehurst" % "wiremock-jre8"             % "2.30.1"            % scope,
+    hmrc                     %% "reactivemongo-test"       % "5.0.0-play-28"     % scope,
+    hmrc                     %% "service-integration-test" % "1.1.0-play-28"     % scope
   )
 
 }

@@ -16,9 +16,9 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.play
 
-import java.util.UUID
+import org.scalatest.matchers.should.Matchers
 
-import org.scalatest.Matchers
+import java.util.UUID
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{ACCEPT, GET}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils._

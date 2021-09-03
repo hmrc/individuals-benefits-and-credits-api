@@ -19,18 +19,13 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.{verify, verifyNoInteractions}
-import org.scalatest.{BeforeAndAfterEach, Matchers}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{
-  CacheConfiguration,
-  ShortLivedCache
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
-  CacheIdBase,
-  CacheService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{CacheConfiguration, ShortLivedCache}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheIdBase, CacheService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import scala.concurrent.ExecutionContext.Implicits.global
