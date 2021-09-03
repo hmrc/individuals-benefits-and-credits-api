@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import org.scalatest._
+import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
@@ -33,7 +34,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 import scala.concurrent.duration.Duration
 
 trait BaseSpec
-    extends FeatureSpec
+    extends AnyFeatureSpec
     with BeforeAndAfterAll
     with BeforeAndAfterEach
     with Matchers
@@ -41,7 +42,7 @@ trait BaseSpec
     with ScopesConfig
     with GivenWhenThen {
 
-  override lazy val port = 9000
+  //override lazy val port = 9000
 
   val cacheEnabled = false;
 

@@ -15,6 +15,8 @@ object AppDependencies {
     akka %% "akka-protobuf" % akkaVersion,
     akka %% "akka-slf4j" % akkaVersion,
     akka %% "akka-actor" % akkaVersion,
+    akka %% "akka-actor-typed" % akkaVersion,
+    akka %% "akka-serialization-jackson" % akkaVersion,
     akka %% "akka-http-core" % akkaHttpVersion
   )
 
@@ -31,15 +33,12 @@ object AppDependencies {
 
   def test(scope: String = "test,it") = Seq(
     "org.scalatestplus.play" %% "scalatestplus-play"       % "5.1.0"             % scope,
-    "org.scalatestplus"      %% "mockito-3-4"              % "3.2.9.0"           % "test",
-    "org.scalatest"          %% "scalatest"                % "3.2.9"             % scope,
+    "org.scalatestplus"      %% "mockito-3-4"              % "3.2.1.0"           % scope,
+    "com.vladsch.flexmark"    % "flexmark-all"               % "0.35.10"           % scope,
     "org.scalaj"             %% "scalaj-http"              % "2.4.2"             % scope,
-    //"org.mockito"            % "mockito-core"              % "3.12.4"             % scope,
     "org.pegdown"            % "pegdown"                   % "1.6.0"             % scope,
-    "com.typesafe.play"      %% "play-test"                % PlayVersion.current % scope,
-    "com.github.tomakehurst" % "wiremock-jre8"             % "2.30.1"            % scope,
+    "com.github.tomakehurst" % "wiremock-jre8"             % "2.27.2"            % scope,
     hmrc                     %% "reactivemongo-test"       % "5.0.0-play-28"     % scope,
     hmrc                     %% "service-integration-test" % "1.1.0-play-28"     % scope
   )
-
 }
