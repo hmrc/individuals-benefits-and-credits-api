@@ -42,7 +42,6 @@ trait BaseSpec
     with ScopesConfig
     with GivenWhenThen {
 
-  //override lazy val port = 9000
 
   val cacheEnabled = false;
 
