@@ -17,24 +17,19 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
 import java.util.UUID
-
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import org.scalatest.{BeforeAndAfterEach, Matchers}
+import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, Upstream5xxResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IndividualsMatchingApiConnector
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  MatchNotFoundException,
-  MatchedCitizen
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 class IndividualsMatchingApiConnectorSpec
     extends SpecBase
-    with Matchers
     with BeforeAndAfterEach {
 
   val stubPort = sys.env.getOrElse("WIREMOCK", "11121").toInt

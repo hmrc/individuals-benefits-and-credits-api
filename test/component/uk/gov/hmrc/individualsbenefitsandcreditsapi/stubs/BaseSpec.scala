@@ -17,11 +17,12 @@
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs
 
 import java.util.concurrent.TimeUnit
-
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import org.scalatest._
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE}
@@ -33,7 +34,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 import scala.concurrent.duration.Duration
 
 trait BaseSpec
-    extends FeatureSpec
+    extends AnyFeatureSpec
     with BeforeAndAfterAll
     with BeforeAndAfterEach
     with Matchers
@@ -41,7 +42,6 @@ trait BaseSpec
     with ScopesConfig
     with GivenWhenThen {
 
-  override lazy val port = 9000
 
   val cacheEnabled = false;
 
