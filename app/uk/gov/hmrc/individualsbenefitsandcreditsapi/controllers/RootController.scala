@@ -52,7 +52,7 @@ abstract class RootController @Inject()(
 
             taxCreditsService.resolve(matchId) map { _ =>
               val selfLink = HalLink("self",s"/individuals/benefits-and-credits/?matchId=$matchId")
-              val response = scopesHelper.getHalLinks(matchId, authScopes) ++ selfLink
+              val response = scopesHelper.getHalLinks(matchId, None, authScopes, None) ++ selfLink
 
               auditHelper.auditApiResponse(correlationId.toString, matchId.toString,
                 authScopes.mkString(","), request, response.toString)

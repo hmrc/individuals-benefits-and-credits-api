@@ -17,54 +17,38 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config
 
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.Configuration
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ApiConfig
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class ApiConfigTest extends UnitSpec with MockitoSugar {
+class ApiConfigTest extends UnitSpec with MockitoSugar with ScopesConfig {
 
-  val config: Configuration = Configuration(
-    ("api-config.scopes.scope1.fields", List("A", "B")),
-    ("api-config.scopes.scope2.fields", List("C")),
-    ("api-config.endpoints.endpoint1.endpoint", "a/b/c"),
-    ("api-config.endpoints.endpoint1.title", "Endpoint 1"),
-    ("api-config.endpoints.endpoint1.fields.A", "field1"),
-    ("api-config.endpoints.endpoint2.endpoint", "d/e/f"),
-    ("api-config.endpoints.endpoint2.title", "Endpoint 2"),
-    ("api-config.endpoints.endpoint2.fields.B", "field2"),
-    ("api-config.endpoints.endpoint2.fields.C", "field3"),
-  )
-
-  val apiConfig: ApiConfig = config.get[ApiConfig]("api-config")
+  val apiConfig: ApiConfig = mockConfig.get[ApiConfig]("api-config")
 
   "ApiConfig" should {
 
     "parse scopes correctly" in {
-      apiConfig.scopes.map(s => s.name).toSet shouldBe Set("scope1", "scope2")
+      apiConfig.scopes.map(s => s.name).toSet shouldBe Set(mockScopeOne, mockScopeTwo)
       apiConfig
-        .getScope("scope1")
+        .getScope(mockScopeOne)
         .map(c => c.fields)
-        .getOrElse(List()) shouldBe List("A", "B")
+        .getOrElse(List()) shouldBe List("A", "B", "C", "D")
       apiConfig
-        .getScope("scope2")
+        .getScope(mockScopeTwo)
         .map(c => c.fields)
-        .getOrElse(List()) shouldBe List("C")
+        .getOrElse(List()) shouldBe List("E", "F", "G", "H", "I")
     }
 
     "parse endpoints correctly" in {
-      apiConfig.endpoints.map(e => e.name).toSet shouldBe Set("endpoint1",
-                                                              "endpoint2")
-      val endpoint1 = apiConfig.getEndpoint("endpoint1").get
-      endpoint1.fields.keys shouldBe Set("A")
-      endpoint1.fields.values.toSet shouldBe Set("field1")
-      val endpoint2 = apiConfig.getEndpoint("endpoint2").get
-      endpoint2.fields.keys shouldBe Set("B", "C")
-      endpoint2.fields.values.toSet shouldBe Set("field2", "field3")
+      apiConfig.internalEndpoints.map(e => e.name).toSet shouldBe Set(endpointOne, endpointTwo, endpointThree)
+      val endpoint1 = apiConfig.getInternalEndpoint(endpointOne).get
+      endpoint1.fields.keys shouldBe Set("A", "B", "C")
+      endpoint1.fields.values.toSet shouldBe  Set("path/to/a", "path/to/b", "path/to/c")
     }
 
     "parse endpoint links correctly" in {
-      apiConfig.getEndpoint("endpoint1").map(c => c.link).get shouldBe "a/b/c"
-      apiConfig.getEndpoint("endpoint2").map(c => c.link).get shouldBe "d/e/f"
+      apiConfig.getInternalEndpoint(endpointOne).map(c => c.link).get shouldBe "/internal/1"
+      apiConfig.getExternalEndpoint(endpointTwo).map(c => c.link).get shouldBe "/external/2"
     }
   }
 }

@@ -90,7 +90,7 @@ class LiveTaxCreditsService @Inject()(cacheService: CacheService,
           resolve(matchId)
             .flatMap(ninoMatch => {
               val fieldsQuery =
-                scopesHelper.getQueryStringFor(scopes.toList, Seq(endpoint))
+                scopesHelper.getQueryStringFor(scopes.toList, Seq(endpoint).toList)
               ifConnector
                 .fetchTaxCredits(ninoMatch.nino,
                                  interval,
@@ -126,7 +126,7 @@ class LiveTaxCreditsService @Inject()(cacheService: CacheService,
           resolve(matchId)
             .flatMap(ninoMatch => {
               val fieldsQuery =
-                scopesHelper.getQueryStringFor(scopes.toList, Seq(endpoint))
+                scopesHelper.getQueryStringFor(scopes.toList, List(endpoint))
               ifConnector.fetchTaxCredits(
                 ninoMatch.nino,
                 interval,

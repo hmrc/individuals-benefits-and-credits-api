@@ -24,6 +24,8 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
 
+// $COVERAGE-OFF$
+
 @Singleton
 class APIDocumentationController @Inject()(cc: ControllerComponents,
                                            assets: Assets,
@@ -65,3 +67,5 @@ class APIDocumentationController @Inject()(cc: ControllerComponents,
     assets.at(s"/public/api/conf/$version", file)
 
 }
+
+// $COVERAGE-ON$
