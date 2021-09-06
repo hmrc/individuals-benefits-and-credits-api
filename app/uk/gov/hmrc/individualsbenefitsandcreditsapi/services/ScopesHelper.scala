@@ -28,18 +28,6 @@ import javax.inject.Inject
 class ScopesHelper @Inject()(scopesService: ScopesService) {
   /**
    * @param scopes The list of scopes associated with the user
-   * @param endpoint The endpoint for which to construct the query string
-   * @return A google fields-style query string with the fields determined by the provided endpoint and scopes
-   */
-//  def getQueryStringFor(scopes: Iterable[String], endpoint: String): String = {
-//    val filters = scopesService.getValidFilters(scopes, List(endpoint))
-//    s"${PathTree(scopesService.getIfDataPaths(scopes, List(endpoint))).toString}${if (filters.nonEmpty)
-//      s"&filter=${filters.mkString("&filter=")}"
-//    else ""}"
-//  }
-
-  /**
-   * @param scopes The list of scopes associated with the user
    * @param endpoints The endpoints for which to construct the query string
    * @return A google fields-style query string with the fields determined by the provided endpoint(s) and scopes
    */
