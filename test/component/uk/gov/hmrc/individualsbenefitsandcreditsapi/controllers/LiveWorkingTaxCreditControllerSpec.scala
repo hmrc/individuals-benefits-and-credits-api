@@ -17,12 +17,7 @@
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import java.util.UUID
-
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  IfStub,
-  IndividualsMatchingApiStub
-}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, IfStub, IndividualsMatchingApiStub}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
@@ -47,9 +42,9 @@ class LiveWorkingTaxCreditControllerSpec
   val fromDate = "2017-01-01"
   val toDate = "2017-09-25"
 
-  feature("Live working tax credit route") {
+  Feature("Live working tax credit route") {
 
-    scenario("Valid Request to working-tax-credits endpoint") {
+    Scenario("Valid Request to working-tax-credits endpoint") {
 
       Given("A valid auth token ")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
@@ -123,7 +118,7 @@ class LiveWorkingTaxCreditControllerSpec
 
     }
 
-    scenario(
+    Scenario(
       "Valid Request to working-tax-credits endpoint when IF return no rewards") {
 
       Given("A valid auth token ")
@@ -167,7 +162,7 @@ class LiveWorkingTaxCreditControllerSpec
 
     }
 
-    scenario("invalid token") {
+    Scenario("invalid token") {
       Given("an invalid token")
       AuthStub.willNotAuthorizePrivilegedAuthToken(authToken, rootScope)
 
