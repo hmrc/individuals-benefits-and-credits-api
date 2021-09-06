@@ -16,31 +16,25 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, Matchers}
 import play.api.libs.json.Json
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
-  ScopesHelper,
-  ScopesService
-}
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.{UnitSpec}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class ScopesHelperSpec
-    extends UnitSpec
+  extends UnitSpec
     with ScopesConfig
-    with BeforeAndAfterEach {
+    with BeforeAndAfterEach
+    with Matchers {
 
   "Scopes helper" should {
 
-    val scopesService = new ScopesService(mockConfig) {
-      override lazy val apiConfig = mockApiConfig
-    }
-
+    val scopesService = new ScopesService(mockConfig)
     val scopesHelper = new ScopesHelper(scopesService)
 
     "return correct query string" in {
-      val result =
-        scopesHelper.getQueryStringFor(List(mockScope2), mockEndpoint1)
-      result shouldBe "employer(employerAddress(line1,line2,line3),employerDistrictNumber,employerName,employerSchemeReference),payments"
+      val result = scopesHelper.getQueryStringFor(List(mockScopeOne, mockScopeTwo), List(endpointOne, endpointTwo, endpointThree))
+      result shouldBe "path(to(a,b,c,d,e,f,g,h,i))"
     }
 
     "generate Hal response" in {
@@ -53,35 +47,34 @@ class ScopesHelperSpec
       )
 
       val response = scopesHelper.getHalResponse(
-        endpoint = mockEndpoint1,
-        scopes = List(mockScope1),
-        data = mockData
+        endpoint = endpointOne,
+        scopes = List(mockScopeOne),
+        data = Some(mockData)
       )
 
-      response.links.links.size shouldBe 2
+      response.links.links.size shouldBe 5
 
       response.links.links.exists(halLink =>
-        halLink.rel == mockEndpoint1 && halLink.href == "/a/b/c?matchId=<matchId>{&fromDate,toDate}") shouldBe true
+        halLink.rel == endpointOne && halLink.href == "/internal/1") shouldBe true
 
       response.links.links.exists(halLink =>
-        halLink.rel == "self" && halLink.href == "/a/b/c?matchId=<matchId>{&fromDate,toDate}") shouldBe true
+        halLink.rel == "self" && halLink.href == "/internal/1") shouldBe true
 
       val response2 = scopesHelper.getHalResponse(
-        endpoint = mockEndpoint2,
-        scopes = List(mockScope4, mockScope5),
-        data = mockData
+        endpoint = endpointTwo,
+        scopes = List(mockScopeOne, mockScopeTwo),
+        data = Some(mockData)
       )
 
-      response2.links.links.size shouldBe 3
+      response2.links.links.size shouldBe 7
 
       response2.links.links.exists(halLink =>
-        halLink.rel == mockEndpoint2 && halLink.href == "/a/b/d?matchId=<matchId>{&fromDate,toDate}") shouldBe true
+        halLink.rel == endpointTwo && halLink.href == "/external/2") shouldBe true
 
       response2.links.links.exists(halLink =>
-        halLink.rel == mockEndpoint3 && halLink.href == "/a/b/e?matchId=<matchId>{&fromDate,toDate}") shouldBe true
+        halLink.rel == endpointThree && halLink.href == "/external/3") shouldBe true
 
-      response2.links.links.exists(halLink =>
-        halLink.rel == "self" && halLink.href == "/a/b/d?matchId=<matchId>{&fromDate,toDate}") shouldBe true
+      response2.links.links.exists(halLink => halLink.rel == "self" && halLink.href == "/internal/2") shouldBe true
 
     }
   }
