@@ -31,10 +31,10 @@ import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, Insufficient
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveRootController, SandboxRootController}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.RootController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ScopesConfigHelper
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
@@ -57,8 +57,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
     lazy val scopeService: ScopesService = new ScopesService(mockScopesConfig)
     lazy val scopesHelper: ScopesHelper = new ScopesHelper(scopeService)
 
-    val liveTaxCreditsService = mock[LiveTaxCreditsService]
-    val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
+    val taxCreditsService = mock[TaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
     val auditHelper: AuditHelper = mock[AuditHelper]
 
@@ -70,37 +69,27 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         refEq(Retrievals.allEnrolments))(any(), any()))
       .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
-    val liveRootController =
-      new LiveRootController(
+    val rootController =
+      new RootController(
         mockAuthConnector,
         cc,
         scopeService,
         scopesHelper,
         auditHelper,
-        liveTaxCreditsService
-      )
-
-    val sandboxRootController =
-      new SandboxRootController(
-        mockAuthConnector,
-        cc,
-        scopeService,
-        scopesHelper,
-        auditHelper,
-        sandboxTaxCreditsService
+        taxCreditsService
       )
 
   }
 
   "Root" should {
-    "return a 404 (not found) when a match id does not match live data" in new Fixture {
+    "return a 404 (not found) when a match id does not match tdata" in new Fixture {
 
-      Mockito.reset(liveRootController.auditHelper)
+      Mockito.reset(rootController.auditHelper)
 
-      when(liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+      when(taxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.failed(new MatchNotFoundException))
 
-      val eventualResult = liveRootController.root(testMatchId)(
+      val eventualResult = rootController.root(testMatchId)(
         FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe NOT_FOUND
@@ -109,16 +98,16 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
         "message" -> "The resource can not be found"
       )
 
-      verify(liveRootController.auditHelper, times(1)).
+      verify(rootController.auditHelper, times(1)).
         auditApiFailure(any(), any(), any(), any(), any())(any())
     }
 
-    "return a 200 (ok) when a match id matches live data" in new Fixture {
+    "return a 200 (ok) when a match id matches tdata" in new Fixture {
 
-      when(liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
+      when(taxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-      val eventualResult = liveRootController.root(testMatchId)(
+      val eventualResult = rootController.root(testMatchId)(
         FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe OK
@@ -144,62 +133,11 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(mockAuthConnector.authorise(any(), any())(any(), any()))
         .thenReturn(Future.failed(InsufficientEnrolments()))
 
-      val result = liveRootController.root(testMatchId)(
+      val result = rootController.root(testMatchId)(
         FakeRequest().withHeaders(correlationIdHeader))
 
       status(result) shouldBe UNAUTHORIZED
-      verifyNoInteractions(liveTaxCreditsService)
-    }
-
-    "not require bearer token authentication for sandbox" in new Fixture {
-
-      when(
-        sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
-
-      val result = sandboxRootController.root(testMatchId)(
-        FakeRequest().withHeaders(correlationIdHeader))
-
-      status(result) shouldBe OK
-      verifyNoInteractions(mockAuthConnector)
-    }
-
-    "throws an exception when missing CorrelationId Header" in new Fixture {
-      when(
-        liveTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
-
-      val result = liveRootController.root(testMatchId)(FakeRequest())
-
-      status(result) shouldBe BAD_REQUEST
-      contentAsJson(result) shouldBe Json.parse(
-        """{
-          |    "code": "INVALID_REQUEST",
-          |    "message": "CorrelationId is required"
-          |}""".stripMargin
-      )
-      verify(sandboxRootController.auditHelper, times(1))
-        .auditApiFailure(any(), any(), any(), any(), any())(any())
-
-    }
-
-    "throws an exception when CorrelationId Header is malformed" in new Fixture {
-      when(
-        sandboxTaxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
-
-      val result = liveRootController.root(testMatchId)(
-            FakeRequest().withHeaders("CorrelationId" -> "test"))
-
-      status(result) shouldBe BAD_REQUEST
-      contentAsJson(result) shouldBe Json.parse(
-        """{
-          |    "code": "INVALID_REQUEST",
-          |    "message": "Malformed CorrelationId"
-          |}""".stripMargin
-      )
-      verify(liveRootController.auditHelper, times(1))
-        .auditApiFailure(any(), any(), any(), any(), any())(any())
+      verifyNoInteractions(taxCreditsService)
     }
   }
 }

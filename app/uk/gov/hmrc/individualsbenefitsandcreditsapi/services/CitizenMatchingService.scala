@@ -20,36 +20,15 @@ import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IndividualsMatchingApiConnector
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  MatchNotFoundException,
-  MatchedCitizen,
-  SandboxBenefitsCreditsData
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
 
 import scala.concurrent.Future
-import scala.concurrent.Future.{failed, successful}
 import uk.gov.hmrc.http.HeaderCarrier
 
-trait CitizenMatchingService {
+@Singleton
+class CitizenMatchingService @Inject()(
+    individualsMatchingApiConnector: IndividualsMatchingApiConnector) {
   def matchCitizen(matchId: UUID)(
-      implicit hc: HeaderCarrier): Future[MatchedCitizen]
-}
-
-@Singleton
-class SandboxCitizenMatchingService extends CitizenMatchingService {
-  override def matchCitizen(matchId: UUID)(
-      implicit hc: HeaderCarrier): Future[MatchedCitizen] =
-    SandboxBenefitsCreditsData.matchedCitizen(matchId) match {
-      case Some(matchedCitizen) => successful(matchedCitizen)
-      case None                 => failed(new MatchNotFoundException)
-    }
-}
-
-@Singleton
-class LiveCitizenMatchingService @Inject()(
-    individualsMatchingApiConnector: IndividualsMatchingApiConnector)
-    extends CitizenMatchingService {
-  override def matchCitizen(matchId: UUID)(
       implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     individualsMatchingApiConnector.resolve(matchId)
 }

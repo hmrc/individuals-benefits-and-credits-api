@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import scalaj.http.Http
 import testUtils.TestHelpers
 
-class LiveChildTaxCreditControllerSpec
+class ChildTaxCreditControllerSpec
     extends CommonControllerWithIfRequestSpec
     with TestHelpers {
 

@@ -27,10 +27,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.http.BadRequestException
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveChildTaxCreditController, SandboxChildTaxCreditController}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.ChildTaxCreditController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import java.util.UUID
@@ -62,8 +62,7 @@ class ChildTaxCreditControllerSpec
   trait Fixture {
 
     val scopeService = mock[ScopesService]
-    val liveTaxCreditsService = mock[LiveTaxCreditsService]
-    val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
+    val taxCreditsService = mock[TaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
     val auditHelper: AuditHelper = mock[AuditHelper]
 
@@ -76,39 +75,30 @@ class ChildTaxCreditControllerSpec
     val scopes: Iterable[String] =
       Iterable("test-scope")
 
-    val liveChildTaxCreditsController =
-      new LiveChildTaxCreditController(
+    val childTaxCreditsController =
+      new ChildTaxCreditController(
         mockAuthConnector,
         cc,
         scopeService,
         auditHelper,
-        liveTaxCreditsService
-      )
-
-    val sandboxChildTaxCreditsController =
-      new SandboxChildTaxCreditController(
-        mockAuthConnector,
-        cc,
-        scopeService,
-        auditHelper,
-        sandboxTaxCreditsService
+        taxCreditsService
       )
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
   }
 
   "child tax credits controller" when {
-    "the live controller" should {
+    "the tcontroller" should {
       "the child tax credit function" should {
         "Return Applications when successful" in new Fixture {
 
-          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+          Mockito.reset(childTaxCreditsController.auditHelper)
 
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
           when(
-            liveTaxCreditsService.getChildTaxCredits(
+            taxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
               eqTo(Set("test-scope")))(any(), any(), any()))
@@ -118,24 +108,24 @@ class ChildTaxCreditControllerSpec
             )
 
           val result =
-            liveChildTaxCreditsController
+            childTaxCreditsController
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe OK
 
-          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+          verify(childTaxCreditsController.auditHelper, times(1)).
             childTaxCreditAuditApiResponse(any(), any(), any(), any(), any(), any())(any())
 
-          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+          verify(childTaxCreditsController.auditHelper, times(1)).
             auditAuthScopes(any(), any(), any())(any())
         }
 
         "return 404 (not found) for an invalid matchId" in new Fixture {
 
-          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+          Mockito.reset(childTaxCreditsController.auditHelper)
 
           when(
-            liveTaxCreditsService.getChildTaxCredits(
+            taxCreditsService.getChildTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
               eqTo(Set("test-scope")))(any(), any(), any()))
@@ -146,7 +136,7 @@ class ChildTaxCreditControllerSpec
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
-          val result = liveChildTaxCreditsController.childTaxCredit(
+          val result = childTaxCreditsController.childTaxCredit(
             testMatchId,
             testInterval)(fakeRequest)
 
@@ -157,7 +147,7 @@ class ChildTaxCreditControllerSpec
             "message" -> "The resource can not be found"
           )
 
-          verify(liveChildTaxCreditsController.auditHelper, times(1)).
+          verify(childTaxCreditsController.auditHelper, times(1)).
             auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
@@ -169,12 +159,12 @@ class ChildTaxCreditControllerSpec
           val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
-          val result = liveChildTaxCreditsController.childTaxCredit(
+          val result = childTaxCreditsController.childTaxCredit(
             testMatchId,
             testInterval)(fakeRequest)
 
           status(result) shouldBe UNAUTHORIZED
-          verifyNoInteractions(liveTaxCreditsService)
+          verifyNoInteractions(taxCreditsService)
         }
 
         "return error when no scopes" in new Fixture {
@@ -187,7 +177,7 @@ class ChildTaxCreditControllerSpec
           val result =
             intercept[Exception] {
               await(
-                liveChildTaxCreditsController
+                childTaxCreditsController
                   .childTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
@@ -195,12 +185,12 @@ class ChildTaxCreditControllerSpec
 
         "throws an exception when missing CorrelationId Header" in new Fixture {
 
-          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+          Mockito.reset(childTaxCreditsController.auditHelper)
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
 
           when(
-            liveTaxCreditsService.getWorkingTaxCredits(
+            taxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
               eqTo(Set("test-scope")))(any(), any(), any()))
@@ -210,7 +200,7 @@ class ChildTaxCreditControllerSpec
             )
 
           val result =
-            liveChildTaxCreditsController
+            childTaxCreditsController
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe BAD_REQUEST
@@ -220,18 +210,18 @@ class ChildTaxCreditControllerSpec
               |    "message": "CorrelationId is required"
               |}""".stripMargin
           )
-          verify(liveChildTaxCreditsController.auditHelper, times(1))
+          verify(childTaxCreditsController.auditHelper, times(1))
             .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
         "throws an exception when CorrelationId Header is malformed" in new Fixture {
 
-          Mockito.reset(liveChildTaxCreditsController.auditHelper)
+          Mockito.reset(childTaxCreditsController.auditHelper)
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/").withHeaders("correlationId" -> "InvalidId")
 
           when(
-            liveTaxCreditsService.getWorkingTaxCredits(
+            taxCreditsService.getWorkingTaxCredits(
               eqTo(testMatchId),
               eqTo(testInterval),
               eqTo(Set("test-scope")))(any(), any(), any()))
@@ -241,7 +231,7 @@ class ChildTaxCreditControllerSpec
             )
 
           val result =
-            liveChildTaxCreditsController
+            childTaxCreditsController
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe BAD_REQUEST
@@ -251,7 +241,7 @@ class ChildTaxCreditControllerSpec
               |    "message": "Malformed CorrelationId"
               |}""".stripMargin
           )
-          verify(liveChildTaxCreditsController.auditHelper, times(1))
+          verify(childTaxCreditsController.auditHelper, times(1))
             .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
       }

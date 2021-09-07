@@ -33,12 +33,9 @@ import org.mockito.Mockito.{verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Format
 import play.api.test.FakeRequest
-import play.api.{Application, Configuration}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.CacheConfiguration
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.LiveTaxCreditsService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
   CacheId,
   CacheIdBase,
@@ -69,7 +66,7 @@ class LiveTaxCreditsServiceSpec
     val matchingConnector = mock[IndividualsMatchingApiConnector]
 
     val taxCreditsService =
-      new LiveTaxCreditsService(
+      new TaxCreditsService(
         cacheService,
         ifConnector,
         scopeService,

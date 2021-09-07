@@ -86,6 +86,5 @@ abstract class CommonController @Inject()(
 }
 
 object Environment {
-  val SANDBOX = "SANDBOX"
   val PRODUCTION = "PRODUCTION"
 }

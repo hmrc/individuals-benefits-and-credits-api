@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import scalaj.http.Http
 import testUtils.TestHelpers
 
-class LiveWorkingTaxCreditControllerSpec
+class WorkingTaxCreditControllerSpec
     extends CommonControllerWithIfRequestSpec
     with TestHelpers {
 

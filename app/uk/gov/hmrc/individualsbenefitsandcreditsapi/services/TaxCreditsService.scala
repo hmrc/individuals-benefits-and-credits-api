@@ -28,7 +28,6 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
   MatchNotFoundException,
   MatchedCitizen
 }
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.sandbox.SandboxData._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
   ScopesHelper,
   ScopesService
@@ -45,32 +44,12 @@ import play.api.mvc.RequestHeader
 import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 
-trait TaxCreditsService {
-
-  def resolve(matchId: UUID)(implicit hc: HeaderCarrier): Future[MatchedCitizen]
-
-  def getWorkingTaxCredits(matchId: UUID,
-                           interval: Interval,
-                           scopes: Iterable[String])
-                          (implicit hc: HeaderCarrier,
-                           request: RequestHeader,
-                           ec: ExecutionContext): Future[Seq[WtcApplication]]
-
-  def getChildTaxCredits(matchId: UUID,
-                         interval: Interval,
-                         scopes: Iterable[String])
-                        (implicit hc: HeaderCarrier,
-                         request: RequestHeader,
-                         ec: ExecutionContext): Future[Seq[CtcApplication]]
-}
-
-class LiveTaxCreditsService @Inject()(cacheService: CacheService,
+class TaxCreditsService @Inject()(cacheService: CacheService,
                                       ifConnector: IfConnector,
                                       scopesService: ScopesService,
                                       scopesHelper: ScopesHelper,
-                                      individualsMatchingApiConnector: IndividualsMatchingApiConnector)
-  extends TaxCreditsService {
-  override def getWorkingTaxCredits(matchId: UUID,
+                                      individualsMatchingApiConnector: IndividualsMatchingApiConnector) {
+  def getWorkingTaxCredits(matchId: UUID,
                                     interval: Interval,
                                     scopes: Iterable[String])
                                    (implicit hc: HeaderCarrier,
@@ -102,11 +81,11 @@ class LiveTaxCreditsService @Inject()(cacheService: CacheService,
       .map(applications => applications.map(WtcApplication.create))
   }
 
-  override def resolve(matchId: UUID)
+  def resolve(matchId: UUID)
                       (implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     individualsMatchingApiConnector.resolve(matchId)
 
-  override def getChildTaxCredits(matchId: UUID,
+  def getChildTaxCredits(matchId: UUID,
                                   interval: Interval,
                                   scopes: Iterable[String])
                                  (implicit hc: HeaderCarrier,
@@ -136,42 +115,5 @@ class LiveTaxCreditsService @Inject()(cacheService: CacheService,
         }
       )
       .map(applications => applications.map(CtcApplication.create))
-  }
-}
-
-class SandboxTaxCreditsService @Inject()() extends TaxCreditsService {
-
-  override def resolve(matchId: UUID)(
-      implicit hc: HeaderCarrier): Future[MatchedCitizen] =
-    if (matchId.equals(sandboxMatchId))
-      successful(MatchedCitizen(sandboxMatchId, sandboxNino))
-    else failed(new MatchNotFoundException)
-
-  override def getWorkingTaxCredits(matchId: UUID,
-                                    interval: Interval,
-                                    scopes: Iterable[String])
-                                   (implicit hc: HeaderCarrier,
-                                    request: RequestHeader,
-                                    ec: ExecutionContext): Future[Seq[WtcApplication]] = {
-
-    resolve(matchId).flatMap(
-      _ =>
-        Future.successful(
-          WorkingTaxCredits.Applications.applications
-      ))
-
-  }
-
-  override def getChildTaxCredits(matchId: UUID,
-                                  interval: Interval,
-                                  scopes: Iterable[String])
-                                 (implicit hc: HeaderCarrier,
-                                  request: RequestHeader,
-                                  ec: ExecutionContext): Future[Seq[CtcApplication]] = {
-    resolve(matchId).flatMap(
-      _ =>
-        Future.successful(
-          ChildTaxCredits.Applications.applications
-      ))
   }
 }
