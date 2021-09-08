@@ -64,5 +64,4 @@ class WorkingTaxCreditController @Inject()(
           )
       } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits/working-tax-credits")
     }
-  val environment = Environment.PRODUCTION
 }

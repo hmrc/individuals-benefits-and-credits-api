@@ -63,5 +63,4 @@ class RootController @Inject()(
         } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits")
       }
   }
-  val environment = Environment.PRODUCTION
 }

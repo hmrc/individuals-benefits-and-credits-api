@@ -66,6 +66,4 @@ class ChildTaxCreditController @Inject()(
           )
       } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits/child-tax-credits")
     }
-
-  val environment = Environment.PRODUCTION
 }

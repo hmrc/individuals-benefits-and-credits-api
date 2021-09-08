@@ -28,8 +28,6 @@ import scala.concurrent.Future
 
 trait PrivilegedAuthentication extends AuthorisedFunctions {
 
-  val environment: String
-
   def authPredicate(scopes: Iterable[String]): Predicate =
     scopes.map(Enrolment(_): Predicate).reduce(_ or _)
 
