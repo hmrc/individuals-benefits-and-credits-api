@@ -27,10 +27,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{LiveWorkingTaxCreditController, SandboxWorkingTaxCreditController}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.WorkingTaxCreditController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{LiveTaxCreditsService, SandboxTaxCreditsService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import java.util.UUID
@@ -57,8 +57,7 @@ class WorkingTaxCreditControllerSpec
   trait Fixture {
 
     val scopeService = mock[ScopesService]
-    val liveTaxCreditsService = mock[LiveTaxCreditsService]
-    val sandboxTaxCreditsService = mock[SandboxTaxCreditsService]
+    val liveTaxCreditsService = mock[TaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
     val auditHelper: AuditHelper = mock[AuditHelper]
 
@@ -71,22 +70,13 @@ class WorkingTaxCreditControllerSpec
     val scopes: Iterable[String] =
       Iterable("test-scope")
 
-    val liveWorkingTaxCreditsController =
-      new LiveWorkingTaxCreditController(
+    val workingTaxCreditsController =
+      new WorkingTaxCreditController(
         mockAuthConnector,
         cc,
         scopeService,
         auditHelper,
         liveTaxCreditsService
-      )
-
-    val sandboxWorkingTaxCreditsController =
-      new SandboxWorkingTaxCreditController(
-        mockAuthConnector,
-        cc,
-        scopeService,
-        auditHelper,
-        sandboxTaxCreditsService
       )
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
@@ -102,7 +92,7 @@ class WorkingTaxCreditControllerSpec
       "the working tax credit function" should {
         "Return Applications when successful" in new Fixture {
 
-          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+          Mockito.reset(workingTaxCreditsController.auditHelper)
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
             .withHeaders(correlationIdHeader)
@@ -118,21 +108,21 @@ class WorkingTaxCreditControllerSpec
             )
 
           val result =
-            liveWorkingTaxCreditsController
+            workingTaxCreditsController
               .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe OK
 
-          verify(liveWorkingTaxCreditsController.auditHelper, times(1)).
+          verify(workingTaxCreditsController.auditHelper, times(1)).
             workingTaxCreditAuditApiResponse(any(), any(), any(), any(), any(), any())(any())
 
-          verify(liveWorkingTaxCreditsController.auditHelper, times(1)).
+          verify(workingTaxCreditsController.auditHelper, times(1)).
             auditAuthScopes(any(), any(), any())(any())
         }
 
         "return 404 (not found) for an invalid matchId" in new Fixture {
 
-          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+          Mockito.reset(workingTaxCreditsController.auditHelper)
 
           when(
             liveTaxCreditsService.getWorkingTaxCredits(
@@ -146,7 +136,7 @@ class WorkingTaxCreditControllerSpec
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
             .withHeaders(correlationIdHeader)
 
-          val result = liveWorkingTaxCreditsController.workingTaxCredit(
+          val result = workingTaxCreditsController.workingTaxCredit(
             testMatchId,
             testInterval)(fakeRequest)
 
@@ -157,7 +147,7 @@ class WorkingTaxCreditControllerSpec
             "message" -> "The resource can not be found"
           )
 
-          verify(liveWorkingTaxCreditsController.auditHelper, times(1))
+          verify(workingTaxCreditsController.auditHelper, times(1))
             .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
@@ -169,7 +159,7 @@ class WorkingTaxCreditControllerSpec
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
             .withHeaders(correlationIdHeader)
 
-          val result = liveWorkingTaxCreditsController.workingTaxCredit(
+          val result = workingTaxCreditsController.workingTaxCredit(
             testMatchId,
             testInterval)(fakeRequest)
 
@@ -187,14 +177,14 @@ class WorkingTaxCreditControllerSpec
           val result =
             intercept[Exception] {
               await(
-                liveWorkingTaxCreditsController
+                workingTaxCreditsController
                   .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
             }
           assert(result.getMessage == "No scopes defined")
         }
         "throws an exception when missing CorrelationId Header" in new Fixture {
 
-          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+          Mockito.reset(workingTaxCreditsController.auditHelper)
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
 
@@ -209,7 +199,7 @@ class WorkingTaxCreditControllerSpec
             )
 
           val result =
-            liveWorkingTaxCreditsController
+            workingTaxCreditsController
               .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe BAD_REQUEST
@@ -219,13 +209,13 @@ class WorkingTaxCreditControllerSpec
               |    "message": "CorrelationId is required"
               |}""".stripMargin
           )
-          verify(liveWorkingTaxCreditsController.auditHelper, times(1))
+          verify(workingTaxCreditsController.auditHelper, times(1))
             .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
 
         "throws an exception when CorrelationId Header is malformed" in new Fixture {
 
-          Mockito.reset(liveWorkingTaxCreditsController.auditHelper)
+          Mockito.reset(workingTaxCreditsController.auditHelper)
 
           val fakeRequest = FakeRequest("GET", s"/working-tax-credits/").withHeaders("correlationId" -> "InvalidId")
 
@@ -240,7 +230,7 @@ class WorkingTaxCreditControllerSpec
             )
 
           val result =
-            liveWorkingTaxCreditsController
+            workingTaxCreditsController
               .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe BAD_REQUEST
@@ -250,7 +240,7 @@ class WorkingTaxCreditControllerSpec
               |    "message": "Malformed CorrelationId"
               |}""".stripMargin
           )
-          verify(liveWorkingTaxCreditsController.auditHelper, times(1))
+          verify(workingTaxCreditsController.auditHelper, times(1))
             .auditApiFailure(any(), any(), any(), any(), any())(any())
         }
       }

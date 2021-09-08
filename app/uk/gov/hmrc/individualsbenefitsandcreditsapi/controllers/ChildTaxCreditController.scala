@@ -34,7 +34,8 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
 import scala.concurrent.ExecutionContext
 
-abstract class ChildTaxCreditController @Inject()(
+class ChildTaxCreditController @Inject()(
+    val authConnector: AuthConnector,
     cc: ControllerComponents,
     scopeService: ScopesService,
     implicit val auditHelper: AuditHelper,
@@ -65,29 +66,4 @@ abstract class ChildTaxCreditController @Inject()(
           )
       } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits/child-tax-credits")
     }
-
-}
-
-@Singleton
-class LiveChildTaxCreditController @Inject()(
-    val authConnector: AuthConnector,
-    cc: ControllerComponents,
-    scopeService: ScopesService,
-    auditHelper:AuditHelper,
-    liveTaxCreditsService: LiveTaxCreditsService
-)(implicit override val ec: ExecutionContext)
-    extends ChildTaxCreditController(cc, scopeService, auditHelper, liveTaxCreditsService) {
-  override val environment = Environment.PRODUCTION
-}
-
-@Singleton
-class SandboxChildTaxCreditController @Inject()(
-    val authConnector: AuthConnector,
-    cc: ControllerComponents,
-    scopeService: ScopesService,
-    auditHelper:AuditHelper,
-    sandboxTaxCreditsService: SandboxTaxCreditsService
-)(implicit override val ec: ExecutionContext)
-    extends ChildTaxCreditController(cc, scopeService, auditHelper, sandboxTaxCreditsService) {
-  override val environment = Environment.SANDBOX
 }

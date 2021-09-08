@@ -28,8 +28,6 @@ import scala.concurrent.Future
 
 trait PrivilegedAuthentication extends AuthorisedFunctions {
 
-  val environment: String
-
   def authPredicate(scopes: Iterable[String]): Predicate =
     scopes.map(Enrolment(_): Predicate).reduce(_ or _)
 
@@ -42,8 +40,6 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
 
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
 
-    if (environment == Environment.SANDBOX)
-      f(endpointScopes.toList)
     else {
       authorised(authPredicate(endpointScopes)).retrieve(Retrievals.allEnrolments) {
         case scopes => {

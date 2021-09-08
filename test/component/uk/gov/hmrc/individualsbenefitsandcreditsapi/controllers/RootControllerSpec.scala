@@ -22,7 +22,7 @@ import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, B
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class LiveRootControllerSpec extends BaseSpec {
+class RootControllerSpec extends BaseSpec {
 
   private val matchId = UUID.randomUUID().toString
   private val nino = "AB123456C"

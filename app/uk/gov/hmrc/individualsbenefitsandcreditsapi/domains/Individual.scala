@@ -29,33 +29,3 @@ case class Individual(matchId: UUID,
                       firstName: String,
                       lastName: String,
                       dateOfBirth: LocalDate)
-
-object SandboxBenefitsCreditsData {
-
-  def findByMatchId(matchId: UUID) = individuals.find(_.matchId == matchId)
-
-  def matchedCitizen(matchId: UUID) = matchId match {
-    case `sandboxMatchId` => Some(MatchedCitizen(sandboxMatchId, sandboxNino))
-    case _                => None
-  }
-
-  private lazy val individuals = Seq(amanda())
-
-  val sandboxNino = Nino("NA000799C")
-
-  val sandboxMatchId = UUID.fromString("57072660-1df9-4aeb-b4ea-cd2d7f96e430")
-
-  val acmeEmployerReference = EmpRef.fromIdentifiers("123/AI45678")
-
-  val disneyEmployerReference = EmpRef.fromIdentifiers("123/DI45678")
-
-  val sandboxUtr = SaUtr("2432552635")
-
-  private def amanda() = Individual(
-    sandboxMatchId,
-    sandboxNino.nino,
-    "Amanda",
-    "Joseph",
-    parse("1960-01-15")
-  )
-}

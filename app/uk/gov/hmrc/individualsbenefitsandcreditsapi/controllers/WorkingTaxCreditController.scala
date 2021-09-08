@@ -33,7 +33,8 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-abstract class WorkingTaxCreditController @Inject()(
+class WorkingTaxCreditController @Inject()(
+    val authConnector: AuthConnector,
     cc: ControllerComponents,
     scopeService: ScopesService,
     implicit val auditHelper: AuditHelper,
@@ -63,27 +64,4 @@ abstract class WorkingTaxCreditController @Inject()(
           )
       } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits/working-tax-credits")
     }
-
-}
-
-@Singleton
-class LiveWorkingTaxCreditController @Inject()(
-    val authConnector: AuthConnector,
-    cc: ControllerComponents,
-    scopeService: ScopesService,
-    auditHelper:AuditHelper,
-    taxCreditsService: LiveTaxCreditsService
-) extends WorkingTaxCreditController(cc, scopeService, auditHelper, taxCreditsService) {
-  override val environment = Environment.PRODUCTION
-}
-
-@Singleton
-class SandboxWorkingTaxCreditController @Inject()(
-    val authConnector: AuthConnector,
-    cc: ControllerComponents,
-    scopeService: ScopesService,
-    auditHelper:AuditHelper,
-    taxCreditsService: SandboxTaxCreditsService
-) extends WorkingTaxCreditController(cc, scopeService, auditHelper, taxCreditsService) {
-  override val environment = Environment.SANDBOX
 }
