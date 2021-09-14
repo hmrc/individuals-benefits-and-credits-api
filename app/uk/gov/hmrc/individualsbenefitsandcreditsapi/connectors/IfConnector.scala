@@ -25,6 +25,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HeaderNames, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, Upstream4xxResponse, Upstream5xxResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -64,14 +65,7 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig,
   }
 
   private def extractCorrelationId(requestHeader: RequestHeader) =
-    requestHeader.headers.get("CorrelationId") match {
-      case Some(uuidString) =>
-        Try(UUID.fromString(uuidString)) match {
-          case Success(_) => uuidString
-          case _          => throw new BadRequestException("Malformed CorrelationId")
-        }
-      case None => throw new BadRequestException("CorrelationId is required")
-    }
+    RequestHeaderUtils.validateCorrelationId(requestHeader).toString
 
   def setHeaders(requestHeader: RequestHeader) = Seq(
     HeaderNames.authorisation -> s"Bearer $integrationFrameworkBearerToken",

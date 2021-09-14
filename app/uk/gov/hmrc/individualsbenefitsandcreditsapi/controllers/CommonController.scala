@@ -84,7 +84,3 @@ abstract class CommonController @Inject()(
     }
   }
 }
-
-object Environment {
-  val PRODUCTION = "PRODUCTION"
-}
