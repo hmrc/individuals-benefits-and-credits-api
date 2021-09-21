@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
+package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.suite
 
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsString, Json, OFormat}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.ShortLivedCache
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.CacheRepository
 import uk.gov.hmrc.integration.ServiceSpec
-import uk.gov.hmrc.mongo.MongoSpecSupport
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.TestSupport
 
 import java.util.UUID
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class ShortLivedCacheSpec
+class CacheRepositorySpec
     extends AnyWordSpec
     with Matchers
-    with MongoSpecSupport
     with ServiceSpec
     with BeforeAndAfterEach
     with TestSupport {
@@ -42,18 +39,21 @@ class ShortLivedCacheSpec
   val cachekey = "test-class-key"
   val testValue = TestClass("one", "two")
 
+  protected def databaseName: String = "test-" + this.getClass.getSimpleName
+  protected def mongoUri: String     = s"mongodb://localhost:27017/$databaseName"
+
   override lazy val fakeApplication = new GuiceApplicationBuilder()
     .configure("mongodb.uri" -> mongoUri, "cache.ttlInSeconds" -> cacheTtl)
     .bindings(bindModules: _*)
     .build()
 
-  val shortLivedCache = fakeApplication.injector.instanceOf[ShortLivedCache]
+  val cacheRepository = fakeApplication.injector.instanceOf[CacheRepository]
 
   def externalServices: Seq[String] = Seq.empty
 
   override def beforeEach() {
     super.beforeEach()
-    await(shortLivedCache.drop)
+    await(cacheRepository.collection.drop().toFuture())
   }
 
   override def afterEach() {
