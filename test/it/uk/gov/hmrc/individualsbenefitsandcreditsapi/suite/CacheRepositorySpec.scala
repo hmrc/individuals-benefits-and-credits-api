@@ -28,6 +28,7 @@ import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.TestSupport
 
 import java.util.UUID
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CacheRepositorySpec
     extends AnyWordSpec
