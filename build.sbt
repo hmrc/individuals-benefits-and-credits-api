@@ -8,6 +8,11 @@ import uk.gov.hmrc.DefaultBuildSettings.{
 import uk.gov.hmrc.ExternalService
 import uk.gov.hmrc.ServiceManagerPlugin.Keys.itDependenciesList
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import play.sbt.routes.RoutesKeys
+
+RoutesKeys.routesImport := Seq(
+  "uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._"
+)
 
 val appName = "individuals-benefits-and-credits-api"
 
@@ -22,12 +27,6 @@ lazy val scoverageSettings = {
     ScoverageKeys.coverageHighlighting := true
   )
 }
-
-lazy val playSettings: Seq[Setting[_]] = Seq(
-  routesImport ++= Seq(
-    "uk.gov.hmrc.domain._",
-    "uk.gov.hmrc.individualsbenefitsandcreditsapi.domains._",
-    "uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._"))
 
 lazy val plugins: Seq[Plugins] = Seq.empty
 lazy val externalServices =
@@ -46,7 +45,6 @@ lazy val microservice =
                        SbtGitVersioning,
                        SbtDistributablesPlugin,
                        SbtArtifactory) ++ plugins: _*)
-    .settings(playSettings: _*)
     .settings(scalaSettings: _*)
     .settings(scoverageSettings: _*)
     .settings(useSuperShell in ThisBuild := false)

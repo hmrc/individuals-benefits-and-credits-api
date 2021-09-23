@@ -16,11 +16,11 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import java.util.UUID
-
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, BaseSpec, IfStub, IndividualsMatchingApiStub}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, BaseSpec, IndividualsMatchingApiStub}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+
+import java.util.UUID
 
 class RootControllerSpec extends BaseSpec {
 
@@ -37,9 +37,9 @@ class RootControllerSpec extends BaseSpec {
     "read:individuals-benefits-and-credits-lsani-c3"
   )
 
-  feature("Root (hateoas) entry point is accessible") {
+  Feature("Root (hateoas) entry point is accessible") {
 
-    scenario("invalid token") {
+    Scenario("invalid token") {
       Given("an invalid token")
       AuthStub.willNotAuthorizePrivilegedAuthToken(authToken, allScopes)
 
@@ -54,7 +54,7 @@ class RootControllerSpec extends BaseSpec {
       )
     }
 
-    scenario("missing match id") {
+    Scenario("missing match id") {
       Given("a valid privileged Auth bearer token")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, allScopes)
 
@@ -69,7 +69,7 @@ class RootControllerSpec extends BaseSpec {
       )
     }
 
-    scenario("malformed match id") {
+    Scenario("malformed match id") {
       Given("a valid privileged Auth bearer token")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, allScopes)
 
@@ -86,7 +86,7 @@ class RootControllerSpec extends BaseSpec {
       )
     }
 
-    scenario("invalid match id") {
+    Scenario("invalid match id") {
       Given("a valid privileged Auth bearer token")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, allScopes)
 
@@ -102,7 +102,7 @@ class RootControllerSpec extends BaseSpec {
       )
     }
 
-    scenario("valid request to the live root endpoint implementation") {
+    Scenario("valid request to the live root endpoint implementation") {
       Given("a valid privileged Auth bearer token")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, allScopes)
 
@@ -131,7 +131,7 @@ class RootControllerSpec extends BaseSpec {
       )
     }
 
-    scenario(s"user does not have valid scopes") {
+    Scenario(s"user does not have valid scopes") {
       Given("A valid auth token but invalid scopes")
       AuthStub.willNotAuthorizePrivilegedAuthTokenNoScopes(authToken)
 

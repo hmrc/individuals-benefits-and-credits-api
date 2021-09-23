@@ -17,7 +17,7 @@
 package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, configureFor, equalTo, get, stubFor, urlPathMatching}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import testUtils.{TestDates, TestHelpers}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HeaderNames, HttpClient, InternalServerException, NotFoundException, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, InternalServerException, NotFoundException}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IfConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig

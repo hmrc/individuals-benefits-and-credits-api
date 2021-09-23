@@ -24,12 +24,11 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{ApiFailureResponseEventModel, ChildTaxApiResponseEventModel, IfApiResponseEventModel, ScopesAuditEventModel, WorkingTaxApiResponseEventModel}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.{CtcApplication, CtcAward}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{WtcApplication, WtcAward}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global

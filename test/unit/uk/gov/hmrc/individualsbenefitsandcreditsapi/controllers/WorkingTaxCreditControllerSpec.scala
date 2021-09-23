@@ -19,24 +19,24 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import akka.stream.Materializer
 import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
+import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.test.FakeRequest
 import play.api.libs.json.Json
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.WorkingTaxCreditController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
-import java.util.UUID
-import org.mockito.Mockito
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorkingTaxCreditControllerSpec

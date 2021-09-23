@@ -16,17 +16,18 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
-import java.util.UUID
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IndividualsMatchingApiConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
+
+import java.util.UUID
 
 class IndividualsMatchingApiConnectorSpec
     extends SpecBase
@@ -65,7 +66,7 @@ class IndividualsMatchingApiConnectorSpec
 
     "fail when upstream service fails" in new Fixture {
       stubWithResponseStatus(INTERNAL_SERVER_ERROR)
-      a[Upstream5xxResponse] should be thrownBy {
+      a[UpstreamErrorResponse.Upstream5xxResponse.type] should be thrownBy {
         await(individualsMatchingApiConnector.resolve(matchId))
       }
     }

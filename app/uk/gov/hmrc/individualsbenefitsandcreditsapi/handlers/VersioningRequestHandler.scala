@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.handlers
 
-import javax.inject.Inject
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{Handler, RequestHeader}
 import play.api.routing.Router
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils._
 import uk.gov.hmrc.play.bootstrap.http.RequestHandler
 
+import javax.inject.Inject
 import scala.util.Try
 
 class VersioningRequestHandler @Inject()(config: Configuration,
@@ -44,7 +44,6 @@ class VersioningRequestHandler @Inject()(config: Configuration,
     if (unversionedContexts.contains(requestContext)) {
       super.routeRequest(request)
     } else {
-      val vr = getVersionedRequest(request)
       super.routeRequest(getVersionedRequest(request))
     }
 

@@ -16,21 +16,17 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import play.api.mvc.hal._
 import play.api.hal.HalLink
-import javax.inject.{Inject, Singleton}
+import play.api.mvc.hal._
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.validateCorrelationId
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.maybeCorrelationId
-import java.util.UUID
-
-import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.{maybeCorrelationId, validateCorrelationId}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
+import java.util.UUID
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class RootController @Inject()(

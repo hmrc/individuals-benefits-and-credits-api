@@ -16,8 +16,6 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import java.util.UUID
-
 import akka.stream.Materializer
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
 import org.mockito.Mockito
@@ -29,7 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.RootController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
@@ -38,6 +36,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ScopesConfigHelper
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class RootControllerSpec extends SpecBase with MockitoSugar {

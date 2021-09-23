@@ -19,19 +19,17 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 import org.joda.time.Interval
 import play.api.hal.Hal._
 import play.api.hal.HalLink
-import play.api.mvc.hal._
 import play.api.libs.json.Json
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.ControllerComponents
+import play.api.mvc.hal._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.validateCorrelationId
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.maybeCorrelationId
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.{maybeCorrelationId, validateCorrelationId}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
+
 import java.util.UUID
-
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
-
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ChildTaxCreditController @Inject()(

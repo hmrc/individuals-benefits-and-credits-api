@@ -16,34 +16,24 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
-import java.util.UUID
-
-import com.typesafe.config.Config
 import org.joda.time.{Interval, LocalDate}
-import org.scalatestplus.mockito.MockitoSugar
-import testUtils.TestHelpers
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
-  IfConnector,
-  IndividualsMatchingApiConnector
-}
-import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
-import org.mockito.Mockito.{verifyNoInteractions, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Format
 import play.api.test.FakeRequest
+import testUtils.TestHelpers
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
-  CacheId,
-  CacheIdBase,
-  CacheService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheIdBase, CacheService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class LiveTaxCreditsServiceSpec

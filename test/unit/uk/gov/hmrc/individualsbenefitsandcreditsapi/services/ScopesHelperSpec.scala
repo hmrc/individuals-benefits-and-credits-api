@@ -16,7 +16,8 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import org.scalatest.{BeforeAndAfterEach, Matchers}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec

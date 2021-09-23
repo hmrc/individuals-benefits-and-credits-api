@@ -34,7 +34,7 @@ object MongoSuite {
   }
 
   lazy val connection =
-    parsedUri.map(MongoDriver().connection)
+    parsedUri.map(uri => MongoDriver().connection(uri, strictUri = true)).map(x => x.getOrElse(throw new Exception("Mongo Connection Failed")))
 }
 
 trait MongoSuite {

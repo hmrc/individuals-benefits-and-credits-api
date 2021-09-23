@@ -16,7 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
 
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
