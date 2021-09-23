@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
+package it.uk.gov.hmrc.individualsbenefitsandcreditsapi.suite
 
+import org.mongodb.scala.model.Filters
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsString, Json, OFormat}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.ShortLivedCache
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.CacheRepository
 import uk.gov.hmrc.integration.ServiceSpec
-import uk.gov.hmrc.mongo.MongoSpecSupport
+import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.TestSupport
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ShortLivedCacheSpec
+class CacheRepositorySpec
     extends AnyWordSpec
     with Matchers
-    with MongoSpecSupport
     with ServiceSpec
     with BeforeAndAfterEach
     with TestSupport {
@@ -42,63 +42,58 @@ class ShortLivedCacheSpec
   val cachekey = "test-class-key"
   val testValue = TestClass("one", "two")
 
+  protected def databaseName: String = "test-" + this.getClass.getSimpleName
+  protected def mongoUri: String     = s"mongodb://localhost:27017/$databaseName"
+
   override lazy val fakeApplication = new GuiceApplicationBuilder()
     .configure("mongodb.uri" -> mongoUri, "cache.ttlInSeconds" -> cacheTtl)
     .bindings(bindModules: _*)
     .build()
 
-  val shortLivedCache = fakeApplication.injector.instanceOf[ShortLivedCache]
+  val cacheRepository = fakeApplication.injector.instanceOf[CacheRepository]
 
   def externalServices: Seq[String] = Seq.empty
 
   override def beforeEach() {
     super.beforeEach()
-    await(shortLivedCache.drop)
+    await(cacheRepository.collection.drop().toFuture())
   }
 
   override def afterEach() {
     super.afterEach()
-    await(shortLivedCache.drop)
+    await(cacheRepository.collection.drop().toFuture())
   }
 
   "cache" should {
     "store the encrypted version of a value" in {
-      await(shortLivedCache.cache(id, cachekey, testValue)(TestClass.format))
-      retrieveRawCachedValue(id, cachekey) shouldBe JsString(
+      await(cacheRepository.cache(id, testValue)(TestClass.format))
+      retrieveRawCachedValue(id) shouldBe JsString(
         "JsmkF4A8qI/c0Ly4gEKw1nnwDMicSkMk7zfnYaL9tXo=")
-    }
-
-    "update a cached value for a given id and key" in {
-      val newValue = TestClass("three", "four")
-
-      await(shortLivedCache.cache(id, cachekey, testValue)(TestClass.format))
-      retrieveRawCachedValue(id, cachekey) shouldBe JsString(
-        "JsmkF4A8qI/c0Ly4gEKw1nnwDMicSkMk7zfnYaL9tXo=")
-
-      await(shortLivedCache.cache(id, cachekey, newValue)(TestClass.format))
-      retrieveRawCachedValue(id, cachekey) shouldBe JsString(
-        "r4uGlFRapPo/p60YRhB/UnzjrNGddwYw+ID9BJC5hrc=")
     }
   }
 
   "fetch" should {
     "retrieve the unencrypted cached value for a given id and key" in {
-      await(shortLivedCache.cache(id, cachekey, testValue)(TestClass.format))
+      await(cacheRepository.cache(id, testValue)(TestClass.format))
       await(
-        shortLivedCache.fetchAndGetEntry[TestClass](id, cachekey)(
+        cacheRepository.fetchAndGetEntry[TestClass](id)(
           TestClass.format)) shouldBe Some(testValue)
     }
 
     "return None if no cached value exists for a given id and key" in {
       await(
-        shortLivedCache.fetchAndGetEntry[TestClass](id, cachekey)(
+        cacheRepository.fetchAndGetEntry[TestClass](id)(
           TestClass.format)) shouldBe None
     }
   }
 
-  private def retrieveRawCachedValue(id: String, key: String) = {
-    val storedValue = await(shortLivedCache.findById(id)).get
-    (storedValue.data.get \ cachekey).get
+  private def retrieveRawCachedValue(id: String) = {
+    await(cacheRepository.collection.find(Filters.equal("id", toBson(id)))
+      .headOption
+      .map {
+        case Some(entry) => entry.data.individualsBenefitsAndCredits
+        case None => None
+      })
   }
 
   case class TestClass(one: String, two: String)

@@ -18,18 +18,16 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
 import org.joda.time.Interval
 import play.api.libs.json.Format
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{
-  CacheConfiguration,
-  ShortLivedCache
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{CacheRepositoryConfiguration, CacheRepository}
+
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CacheService @Inject()(
-    cachingClient: ShortLivedCache,
-    conf: CacheConfiguration)(implicit ec: ExecutionContext) {
+    cachingClient: CacheRepository,
+    conf: CacheRepositoryConfiguration)(implicit ec: ExecutionContext) {
 
   lazy val cacheEnabled: Boolean = conf.cacheEnabled
 
@@ -37,12 +35,12 @@ class CacheService @Inject()(
                      fallbackFunction: => Future[T]): Future[T] = {
 
     if (cacheEnabled)
-      cachingClient.fetchAndGetEntry[T](cacheId.id, conf.key) flatMap {
+      cachingClient.fetchAndGetEntry[T](cacheId.id) flatMap {
         case Some(value) =>
           Future.successful(value)
         case None =>
           fallbackFunction map { result =>
-            cachingClient.cache(cacheId.id, conf.key, result)
+            cachingClient.cache(cacheId.id, result)
             result
           }
       } else {
