@@ -19,8 +19,6 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.cache
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json.{Format, JsPath}
 
-import java.time.LocalDateTime
-
 case class Entry(id: String, data: Data, modifiedDetails: ModifiedDetails)
 
 object Entry {

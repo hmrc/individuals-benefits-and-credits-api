@@ -16,11 +16,10 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.{verify, verifyNoInteractions}
-import org.scalatest.matchers.should.Matchers
+import org.mockito.Mockito.verifyNoInteractions
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.http.HeaderCarrier
