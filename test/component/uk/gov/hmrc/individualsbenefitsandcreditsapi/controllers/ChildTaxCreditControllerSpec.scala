@@ -48,9 +48,9 @@ class ChildTaxCreditControllerSpec
   val toDate = "2017-09-25"
 
 
-  feature("Live Child Tax Credit Controller") {
+  Feature("Live Child Tax Credit Controller") {
 
-    scenario("Valid request to child-tax-credits endpoint") {
+    Scenario("Valid request to child-tax-credits endpoint") {
 
       Given("A valid auth token")
 
@@ -127,7 +127,7 @@ class ChildTaxCreditControllerSpec
 
     }
 
-    scenario(
+    Scenario(
       "Valid request to child-tax-credits endpoint when there are no rewards") {
 
       Given("A valid auth token")
@@ -172,7 +172,7 @@ class ChildTaxCreditControllerSpec
       )
     }
 
-    scenario("Invalid token") {
+    Scenario("Invalid token") {
       Given("an invalid token")
       AuthStub.willNotAuthorizePrivilegedAuthToken(authToken, rootScope)
 

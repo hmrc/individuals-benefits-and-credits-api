@@ -16,11 +16,10 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.{verify, verifyNoInteractions}
-import org.scalatest.matchers.should.Matchers
+import org.mockito.Mockito.verifyNoInteractions
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,14 +36,14 @@ class CacheServiceSpec
     with Matchers
     with BeforeAndAfterEach {
 
-  val cacheId = TestCacheId("someid")
-  val cachedValue = TestClass("cached value")
-  val newValue = TestClass("new value")
+  val cacheId: TestCacheId = TestCacheId("someid")
+  val cachedValue: TestClass = TestClass("cached value")
+  val newValue: TestClass = TestClass("new value")
 
   trait Setup {
 
-    val mockClient = mock[CacheRepository]
-    val mockCacheConfig = mock[CacheRepositoryConfiguration]
+    val mockClient: CacheRepository = mock[CacheRepository]
+    val mockCacheConfig: CacheRepositoryConfiguration = mock[CacheRepositoryConfiguration]
     val cacheService = new CacheService(mockClient, mockCacheConfig)
 
     implicit val hc: HeaderCarrier = HeaderCarrier()

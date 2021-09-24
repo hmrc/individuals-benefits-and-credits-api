@@ -22,7 +22,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class IfPaymentSpec extends UnitSpec {
 
-  val payments = IfPayment(
+  val payments: IfPayment = IfPayment(
     Some("2020-08-18"),
     Some("2020-08-18"),
     Some("2020-08-18"),
@@ -36,7 +36,7 @@ class IfPaymentSpec extends UnitSpec {
     Some("R")
   )
 
-  val invalidPayments = IfPayment(
+  val invalidPayments: IfPayment = IfPayment(
     Some("asd"),
     Some("abcdefghijklmnopqrstuvwxyz0123456789"),
     Some("a"),

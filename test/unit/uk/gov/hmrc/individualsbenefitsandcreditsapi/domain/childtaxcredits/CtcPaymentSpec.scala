@@ -23,7 +23,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class CtcPaymentSpec extends UnitSpec {
   "Create correctly from If Payment" in {
-    val ifPaymemnt = IfPayment(
+    val ifPayment = IfPayment(
       Some("2017-09-09"),
       Some("2017-10-10"),
       Some("2017-08-08"),
@@ -37,9 +37,8 @@ class CtcPaymentSpec extends UnitSpec {
       Some("test9")
     )
 
-    val result = CtcPayment.create(ifPaymemnt)
+    val result = CtcPayment.create(ifPayment)
 
-    //result.startDate shouldBe Some(LocalDate.parse("2017-08-08"))
     result.endDate shouldBe Some(LocalDate.parse("2017-09-09"))
     result.amount shouldBe Some(10.0)
     result.frequency shouldBe Some(10)

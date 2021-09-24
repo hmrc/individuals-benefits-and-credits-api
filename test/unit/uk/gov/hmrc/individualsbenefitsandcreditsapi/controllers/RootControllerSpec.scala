@@ -16,20 +16,19 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import java.util.UUID
-
 import akka.stream.Materializer
 import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.RootController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
@@ -38,12 +37,13 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ScopesConfigHelper
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class RootControllerSpec extends SpecBase with MockitoSugar {
 
   val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
-  val correlationIdHeader = "CorrelationId" -> sampleCorrelationId
+  val correlationIdHeader: (String, String) = "CorrelationId" -> sampleCorrelationId
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
@@ -57,11 +57,11 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
     lazy val scopeService: ScopesService = new ScopesService(mockScopesConfig)
     lazy val scopesHelper: ScopesHelper = new ScopesHelper(scopeService)
 
-    val taxCreditsService = mock[TaxCreditsService]
+    val taxCreditsService: TaxCreditsService = mock[TaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
     val auditHelper: AuditHelper = mock[AuditHelper]
 
-    val testNino = Nino("AB123456C")
+    val testNino: Nino = Nino("AB123456C")
 
     when(
       mockAuthConnector.authorise(
@@ -89,7 +89,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(taxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.failed(new MatchNotFoundException))
 
-      val eventualResult = rootController.root(testMatchId)(
+      val eventualResult: Future[Result] = rootController.root(testMatchId)(
         FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe NOT_FOUND
@@ -107,7 +107,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(taxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-      val eventualResult = rootController.root(testMatchId)(
+      val eventualResult: Future[Result] = rootController.root(testMatchId)(
         FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe OK
@@ -133,7 +133,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(mockAuthConnector.authorise(any(), any())(any(), any()))
         .thenReturn(Future.failed(InsufficientEnrolments()))
 
-      val result = rootController.root(testMatchId)(
+      val result: Future[Result] = rootController.root(testMatchId)(
         FakeRequest().withHeaders(correlationIdHeader))
 
       status(result) shouldBe UNAUTHORIZED

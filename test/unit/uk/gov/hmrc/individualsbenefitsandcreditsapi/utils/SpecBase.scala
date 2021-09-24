@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 trait SpecBase extends TestSupport with GuiceOneAppPerSuite {
 
-  lazy val additionalConfig = Configuration()
+  lazy val additionalConfig: Configuration = Configuration()
 
   def buildFakeApplication(extraConfig: Configuration): Application =
     new GuiceApplicationBuilder()
@@ -35,7 +35,7 @@ trait SpecBase extends TestSupport with GuiceOneAppPerSuite {
                                       | metrics.jvm = false
                                       | metrics.enabled = true
           """.stripMargin)
-        ) ++ extraConfig)
+        ) withFallback extraConfig)
       .build()
 
   override lazy val fakeApplication: Application = buildFakeApplication(

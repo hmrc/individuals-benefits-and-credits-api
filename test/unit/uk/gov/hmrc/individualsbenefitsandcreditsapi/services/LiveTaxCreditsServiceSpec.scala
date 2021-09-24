@@ -16,35 +16,27 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
-import java.util.UUID
-
-import com.typesafe.config.Config
 import org.joda.time.{Interval, LocalDate}
-import org.scalatestplus.mockito.MockitoSugar
-import testUtils.TestHelpers
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
-  IfConnector,
-  IndividualsMatchingApiConnector
-}
-import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
-import org.mockito.Mockito.{verifyNoInteractions, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Format
 import play.api.test.FakeRequest
+import testUtils.TestHelpers
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
-  CacheId,
-  CacheIdBase,
-  CacheService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheIdBase, CacheService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-import scala.concurrent.{ExecutionContext, Future}
+import java.util.UUID
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 class LiveTaxCreditsServiceSpec
     extends UnitSpec
@@ -54,16 +46,16 @@ class LiveTaxCreditsServiceSpec
 
   trait Setup {
 
-    val cacheService = new CacheService(null, null)(null) {
+    val cacheService: CacheService = new CacheService(null, null)(null) {
       override def get[T: Format](cacheId: CacheIdBase,
-                                  functionToCache: => Future[T]) =
+                                  functionToCache: => Future[T]): Future[T] =
         functionToCache
     }
 
-    val ifConnector = mock[IfConnector]
-    val scopeService = mock[ScopesService]
-    val scopesHelper = mock[ScopesHelper]
-    val matchingConnector = mock[IndividualsMatchingApiConnector]
+    val ifConnector: IfConnector = mock[IfConnector]
+    val scopeService: ScopesService = mock[ScopesService]
+    val scopesHelper: ScopesHelper = mock[ScopesHelper]
+    val matchingConnector: IndividualsMatchingApiConnector = mock[IndividualsMatchingApiConnector]
 
     val taxCreditsService =
       new TaxCreditsService(
@@ -74,14 +66,14 @@ class LiveTaxCreditsServiceSpec
         matchingConnector
       )
 
-    val nino = Nino("AB123456C")
+    val nino: Nino = Nino("AB123456C")
     private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
     private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
     val testInterval = new Interval(fromDate, toDate)
-    val testMatchId = UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
+    val testMatchId: UUID = UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
 
-    implicit val ec = ExecutionContext.global
-    implicit val hc = HeaderCarrier()
+    implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     when(scopeService.getValidFieldsForCacheKey(any(), any()))
       .thenReturn("test")
@@ -99,7 +91,7 @@ class LiveTaxCreditsServiceSpec
                                                                 any(),
                                                                 any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
-      val response = await(
+      val response: Seq[WtcApplication] = await(
         taxCreditsService
           .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(
             hc,
@@ -117,7 +109,7 @@ class LiveTaxCreditsServiceSpec
                            eqTo(testMatchId.toString))(any(), any(), any()))
         .thenReturn(
           Future.successful(createValidIfApplicationsMultiple.applications))
-      val response = await(
+      val response: Seq[WtcApplication] = await(
         taxCreditsService
           .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(
             hc,
@@ -132,7 +124,7 @@ class LiveTaxCreditsServiceSpec
                                                                 any(),
                                                                 any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
-      val response = await(
+      val response: Seq[CtcApplication] = await(
         taxCreditsService
           .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(
             hc,
@@ -150,7 +142,7 @@ class LiveTaxCreditsServiceSpec
                            eqTo(testMatchId.toString))(any(), any(), any()))
         .thenReturn(
           Future.successful(createValidIfApplicationsMultiple.applications))
-      val response = await(
+      val response: Seq[CtcApplication] = await(
         taxCreditsService
           .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(
             hc,

@@ -16,25 +16,23 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
-import java.util.UUID
-import javax.inject.Inject
 import org.joda.time.Interval
 import play.api.Logger
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HeaderNames, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, Upstream4xxResponse, Upstream5xxResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 class IfConnector @Inject()(servicesConfig: ServicesConfig,
                             http: HttpClient,
-                            val auditHelper: AuditHelper)
-                           (implicit ec: ExecutionContext) {
+                            val auditHelper: AuditHelper) {
 
   private val logger = Logger(getClass)
 
@@ -95,14 +93,14 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig,
       auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, s"Error parsing IF response: ${validationError.errors}")
       Future.failed(new InternalServerException("Something went wrong."))
     }
-    case notFound: NotFoundException => {
-      auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, notFound.getMessage)
+    case Upstream4xxResponse(msg, 404, _, _) => {
+      auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, msg)
       
-      notFound.message.contains("NO_DATA_FOUND") match {
+      msg.contains("NO_DATA_FOUND") match {
         case true => Future.successful(Seq.empty)
         case _    => {
           logger.warn("Integration Framework NotFoundException encountered")
-          Future.failed(notFound)
+          Future.failed(new NotFoundException(msg))
         }
       }
     }

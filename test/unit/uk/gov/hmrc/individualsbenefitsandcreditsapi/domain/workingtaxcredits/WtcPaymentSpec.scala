@@ -23,7 +23,7 @@ import org.joda.time.LocalDate
 
 class WtcPaymentSpec extends UnitSpec {
   "Create correctly from If Payment" in {
-    val ifPaymemnt = IfPayment(
+    val ifPayment = IfPayment(
       Some("2017-09-09"),
       Some("2017-10-10"),
       Some("2017-08-08"),
@@ -37,7 +37,7 @@ class WtcPaymentSpec extends UnitSpec {
       Some("test9")
     )
 
-    val result = WtcPayment.create(ifPaymemnt)
+    val result = WtcPayment.create(ifPayment)
 
     result.startDate shouldBe Some(LocalDate.parse("2017-08-08"))
     result.endDate shouldBe Some(LocalDate.parse("2017-09-09"))

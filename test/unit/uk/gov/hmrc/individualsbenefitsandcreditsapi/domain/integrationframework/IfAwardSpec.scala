@@ -24,7 +24,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class IfAwardSpec extends UnitSpec {
 
-  val awards = IfAward(Some("2020-08-18"),
+  val awards: IfAward = IfAward(Some("2020-08-18"),
                        Some("2020-08-18"),
                        Some("2020-08-18"),
                        Some(20),
@@ -32,7 +32,7 @@ class IfAwardSpec extends UnitSpec {
                        None,
                        Some(20),
                        None)
-  val invalidAwards = IfAward(Some("asd"),
+  val invalidAwards: IfAward = IfAward(Some("asd"),
                               Some("abcdefghijklmnopqrstuvwxyz0123456789"),
                               Some("a"),
                               Some(0),

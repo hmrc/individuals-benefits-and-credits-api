@@ -17,31 +17,17 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
 import org.joda.time.Interval
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{
-  IfConnector,
-  IndividualsMatchingApiConnector
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{
-  MatchNotFoundException,
-  MatchedCitizen
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{
-  ScopesHelper,
-  ScopesService
-}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{
-  CacheId,
-  CacheService
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheId, CacheService}
+
 import java.util.UUID
-
 import javax.inject.Inject
-import play.api.mvc.RequestHeader
-
-import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxCreditsService @Inject()(cacheService: CacheService,

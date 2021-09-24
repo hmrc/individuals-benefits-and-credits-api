@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit
 
-import javax.inject.Inject
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.{ApiFailureResponseEventModel, ChildTaxApiResponseEventModel, IfApiResponseEventModel, RootApiResponseEventModel, ScopesAuditEventModel, WorkingTaxApiResponseEventModel}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models._
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplications
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.{CtcApplication, CtcChildTaxCredit}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{WtcApplication, WtcChildTaxCredit}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AuditHelper @Inject()(auditConnector: AuditConnector)
@@ -35,7 +35,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                        scopes: String,
                        request: RequestHeader,
                        selfLink: String)
-                      (implicit hc: HeaderCarrier) =
+                      (implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "ApiResponseEvent",
       RootApiResponseEventModel(
@@ -58,7 +58,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                        request: RequestHeader,
                        selfLink: String,
                        response: Seq[CtcApplication])
-                      (implicit hc: HeaderCarrier) =
+                      (implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "ApiResponseEvent",
       ChildTaxApiResponseEventModel(
@@ -82,7 +82,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                                      request: RequestHeader,
                                      selfLink: String,
                                      response: Seq[WtcApplication])
-                                    (implicit hc: HeaderCarrier) =
+                                    (implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "ApiResponseEvent",
       WorkingTaxApiResponseEventModel(
@@ -105,7 +105,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                       request: RequestHeader,
                       requestUrl: String,
                       msg: String)
-                     (implicit hc: HeaderCarrier) =
+                     (implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "ApiFailureEvent",
       ApiFailureResponseEventModel(
@@ -127,7 +127,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                          request: RequestHeader,
                          requestUrl: String,
                          integrationFrameworkApplications: IfApplications)
-                        (implicit hc: HeaderCarrier) =
+                        (implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "IntegrationFrameworkApiResponseEvent",
       IfApiResponseEventModel(
@@ -149,7 +149,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
                         request: RequestHeader,
                         requestUrl: String,
                         msg: String)
-                       (implicit hc: HeaderCarrier) =
+                       (implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "IntegrationFrameworkApiFailureEvent",
       ApiFailureResponseEventModel(
@@ -169,7 +169,7 @@ class AuditHelper @Inject()(auditConnector: AuditConnector)
   def auditAuthScopes(matchId: String,
                       scopes:  String,
                       request: RequestHeader)
-                     (implicit hc: HeaderCarrier) =
+                     (implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "AuthScopesAuditEvent",
       ScopesAuditEventModel(

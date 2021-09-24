@@ -38,7 +38,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{
 }
 
 trait DomainHelpers {
-  def createValidIfChildTaxCredit() = {
+  def createValidIfChildTaxCredit(): IfChildTaxCredit = {
     IfChildTaxCredit(
       Some(10.0),
       Some(20.0),
@@ -49,11 +49,11 @@ trait DomainHelpers {
     )
   }
 
-  def createValidIfWorkingTaxCredit = {
+  def createValidIfWorkingTaxCredit: IfWorkTaxCredit = {
     IfWorkTaxCredit(Some(10.0), Some(20.0), Some(30.0))
   }
 
-  def createValidIfWtcPayment() = {
+  def createValidIfWtcPayment(): IfPayment = {
     IfPayment(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -70,7 +70,7 @@ trait DomainHelpers {
   }
 
 
-  def createValidIfCtcPayment() = {
+  def createValidIfCtcPayment(): IfPayment = {
     IfPayment(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -86,7 +86,7 @@ trait DomainHelpers {
     )
   }
 
-  def createValidIfAward(payments: Seq[IfPayment]) = {
+  def createValidIfAward(payments: Seq[IfPayment]): IfAward = {
     IfAward(
       Some("2020-08-18"),
       Some("2020-08-18"),

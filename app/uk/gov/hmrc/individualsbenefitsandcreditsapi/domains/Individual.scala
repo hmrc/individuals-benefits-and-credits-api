@@ -17,8 +17,7 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
 
 import org.joda.time.LocalDate
-import org.joda.time.LocalDate.parse
-import uk.gov.hmrc.domain.{EmpRef, Nino, SaUtr}
+import uk.gov.hmrc.domain.Nino
 
 import java.util.UUID
 
