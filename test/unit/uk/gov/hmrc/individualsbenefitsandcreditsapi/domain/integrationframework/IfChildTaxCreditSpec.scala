@@ -24,9 +24,9 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class IfChildTaxCreditSpec extends UnitSpec {
 
-  val childTaxCredit =
+  val childTaxCredit: IfChildTaxCredit =
     IfChildTaxCredit(Some(20), Some(20), Some(20), Some(20), Some(20), Some(20))
-  val invalidChildTaxCredit =
+  val invalidChildTaxCredit: IfChildTaxCredit =
     IfChildTaxCredit(Some(-20),
                      Some(-20),
                      Some(-20),

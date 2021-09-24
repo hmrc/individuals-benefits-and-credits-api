@@ -30,7 +30,7 @@ class CtcChildTaxCreditSpec extends UnitSpec {
     Some(60.0)
   )
 
-  val result = CtcChildTaxCredit.create(ifChildTaxCredit)
+  val result: CtcChildTaxCredit = CtcChildTaxCredit.create(ifChildTaxCredit)
   result.childCareAmount shouldBe Some(10.0)
   result.ctcChildAmount shouldBe Some(20.0)
   result.familyAmount shouldBe Some(30.0)

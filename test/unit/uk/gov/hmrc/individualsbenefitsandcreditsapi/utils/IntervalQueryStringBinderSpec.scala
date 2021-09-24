@@ -20,7 +20,7 @@ import org.joda.time.LocalDateTime
 import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 import testUtils.TestDates
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.IntervalQueryStringBinder
 
@@ -33,7 +33,7 @@ class IntervalQueryStringBinderSpec
   lazy val intervalQueryStringBinder = new IntervalQueryStringBinder
 
   "Interval query string binder" should "fail to bind a missing or malformed fromDate or a malformed toDate parameter" in new TableDrivenPropertyChecks {
-    val fixtures = Table(
+    val fixtures: TableFor2[Map[String, Seq[String]], String] = Table(
       ("parameters", "response"),
       (Map[String, Seq[String]]().empty, "fromDate is required"),
       (Map("fromDate" -> Seq.empty[String]), "fromDate is required"),

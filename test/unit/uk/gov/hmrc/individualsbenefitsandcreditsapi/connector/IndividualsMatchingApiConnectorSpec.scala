@@ -32,14 +32,14 @@ class IndividualsMatchingApiConnectorSpec
     extends SpecBase
     with BeforeAndAfterEach {
 
-  val stubPort = sys.env.getOrElse("WIREMOCK", "11121").toInt
+  val stubPort: Int = sys.env.getOrElse("WIREMOCK", "11121").toInt
   val stubHost = "localhost"
   val wireMockServer = new WireMockServer(wireMockConfig().port(stubPort))
 
   trait Fixture {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
-    val individualsMatchingApiConnector =
+    val individualsMatchingApiConnector: IndividualsMatchingApiConnector =
       new IndividualsMatchingApiConnector(
         servicesConfig,
         fakeApplication.injector.instanceOf[HttpClient]) {
@@ -49,7 +49,7 @@ class IndividualsMatchingApiConnectorSpec
 
   def externalServices: Seq[String] = Seq("Stub")
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     wireMockServer.start()
     configureFor(stubHost, stubPort)
   }
@@ -92,7 +92,7 @@ class IndividualsMatchingApiConnectorSpec
 
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     wireMockServer.stop()
   }
 

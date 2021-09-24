@@ -21,7 +21,7 @@ import play.api.Configuration
 trait ScopesConfigHelper {
 
   // @formatter:off
-  val mockScopesConfig = Configuration(
+  val mockSco\pesConfig: Configuration = Configuration(
     (s"api-config.scopes.test-scope.fields", List("A", "D", "M")),
 
     (s"api-config.endpoints.internal.child-tax-credit.endpoint",

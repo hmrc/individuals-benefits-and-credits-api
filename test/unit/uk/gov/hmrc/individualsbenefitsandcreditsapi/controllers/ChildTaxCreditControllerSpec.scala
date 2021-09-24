@@ -23,6 +23,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -44,7 +45,7 @@ class ChildTaxCreditControllerSpec
     with DomainHelpers {
 
   val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
-  val correlationIdHeader = "CorrelationId" -> sampleCorrelationId
+  val correlationIdHeader: (String, String) = "CorrelationId" -> sampleCorrelationId
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
@@ -59,8 +60,8 @@ class ChildTaxCreditControllerSpec
 
   trait Fixture {
 
-    val scopeService = mock[ScopesService]
-    val taxCreditsService = mock[TaxCreditsService]
+    val scopeService: ScopesService = mock[ScopesService]
+    val taxCreditsService: TaxCreditsService = mock[TaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
     val auditHelper: AuditHelper = mock[AuditHelper]
 
@@ -92,7 +93,7 @@ class ChildTaxCreditControllerSpec
 
           Mockito.reset(childTaxCreditsController.auditHelper)
 
-          val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
           when(
@@ -105,7 +106,7 @@ class ChildTaxCreditControllerSpec
                 Seq(createValidCtcApplication(), createValidCtcApplication()))
             )
 
-          val result =
+          val result: Future[Result] =
             childTaxCreditsController
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
@@ -131,10 +132,10 @@ class ChildTaxCreditControllerSpec
               Future.failed(new MatchNotFoundException)
             )
 
-          val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
-          val result = childTaxCreditsController.childTaxCredit(
+          val result: Future[Result] = childTaxCreditsController.childTaxCredit(
             testMatchId,
             testInterval)(fakeRequest)
 
@@ -154,10 +155,10 @@ class ChildTaxCreditControllerSpec
           when(mockAuthConnector.authorise(any(), any())(any(), any()))
             .thenReturn(Future.failed(InsufficientEnrolments()))
 
-          val fakeRequest = FakeRequest("GET", s"/child-tax-credits/")
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/child-tax-credits/")
             .withHeaders(correlationIdHeader)
 
-          val result = childTaxCreditsController.childTaxCredit(
+          val result: Future[Result] = childTaxCreditsController.childTaxCredit(
             testMatchId,
             testInterval)(fakeRequest)
 
@@ -168,11 +169,11 @@ class ChildTaxCreditControllerSpec
         "return error when no scopes" in new Fixture {
           when(scopeService.getEndPointScopes(any())).thenReturn(None)
 
-          val fakeRequest =
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest("GET", s"/child-tax-credits/")
               .withHeaders(correlationIdHeader)
 
-          val result =
+          val result: Exception =
             intercept[Exception] {
               await(
                 childTaxCreditsController
@@ -185,7 +186,7 @@ class ChildTaxCreditControllerSpec
 
           Mockito.reset(childTaxCreditsController.auditHelper)
 
-          val fakeRequest = FakeRequest("GET", s"/working-tax-credits/")
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/working-tax-credits/")
 
           when(
             taxCreditsService.getWorkingTaxCredits(
@@ -197,7 +198,7 @@ class ChildTaxCreditControllerSpec
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
-          val result =
+          val result: Future[Result] =
             childTaxCreditsController
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 
@@ -216,7 +217,7 @@ class ChildTaxCreditControllerSpec
 
           Mockito.reset(childTaxCreditsController.auditHelper)
 
-          val fakeRequest = FakeRequest("GET", s"/working-tax-credits/").withHeaders("correlationId" -> "InvalidId")
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/working-tax-credits/").withHeaders("correlationId" -> "InvalidId")
 
           when(
             taxCreditsService.getWorkingTaxCredits(
@@ -228,7 +229,7 @@ class ChildTaxCreditControllerSpec
                 Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
-          val result =
+          val result: Future[Result] =
             childTaxCreditsController
               .childTaxCredit(testMatchId, testInterval)(fakeRequest)
 

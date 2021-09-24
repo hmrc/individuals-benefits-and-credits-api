@@ -24,9 +24,9 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class IfWorkTaxCreditSpec extends UnitSpec {
 
-  val workTaxCredit =
+  val workTaxCredit: IfWorkTaxCredit =
     IfWorkTaxCredit(Some(20), Some(20), Some(20))
-  val invalidWorkTaxCredit =
+  val invalidWorkTaxCredit: IfWorkTaxCredit =
     IfWorkTaxCredit(Some(-20), Some(-20), Some(-20))
 
   "Contact details" should {
