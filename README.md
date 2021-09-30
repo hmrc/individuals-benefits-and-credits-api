@@ -1,8 +1,6 @@
 
 # individuals-benefits-and-credits-api
 
-[ ![Download](https://api.bintray.com/packages/hmrc/releases/individuals-benefits-and-credits-api/images/download.svg) ](https://bintray.com/hmrc/releases/individuals-benefits-and-credits-api/_latestVersion)
-
 This API allows users to check HMRC records to find information about an individual.
 
 ### Documentation
