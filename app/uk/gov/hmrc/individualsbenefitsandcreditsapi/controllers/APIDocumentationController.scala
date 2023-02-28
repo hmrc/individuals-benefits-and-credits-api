@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,16 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import akka.stream.Materializer
 import controllers.Assets
 import play.api.Configuration
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.filters.cors.CORSActionBuilder
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.views._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 // $COVERAGE-OFF$
 
@@ -30,6 +33,7 @@ import javax.inject.{Inject, Singleton}
 class APIDocumentationController @Inject()(cc: ControllerComponents,
                                            assets: Assets,
                                            config: Configuration)
+                                          (implicit materializer: Materializer, executionContext: ExecutionContext)
     extends BackendController(cc) {
 
   private lazy val privilegedWhitelistedApplicationIds =
@@ -65,6 +69,11 @@ class APIDocumentationController @Inject()(cc: ControllerComponents,
 
   def raml(version: String, file: String) =
     assets.at(s"/public/api/conf/$version", file)
+
+  def yaml(version: String, file: String): Action[AnyContent] =
+    CORSActionBuilder(config).async { implicit request =>
+      assets.at(s"/public/api/conf/$version", file)(request)
+    }
 
 }
 

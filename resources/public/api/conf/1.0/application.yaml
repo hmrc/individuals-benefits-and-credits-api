@@ -1,0 +1,833 @@
+openapi: 3.0.3
+info:
+  title: Individuals Benefits and Credits
+  description: "\n#### Overview:
+                \nThis API allows government departments to get information from HM Revenue and Customs (HMRC) about an individual’s benefits. This includes payment amounts and frequencies of:\n\n- Working Tax Credit\n- Child Tax Credit\n\nData will be filtered using scopes so that only relevant data is shared. We’ll assign scopes\nbased on your data requirements.\n\nThe responses exclude fields when they do not have a value.\n\nThis API is a HAL HATEOAS RESTful API. It has been designed to promote discoverability and to be self documenting.\n\nA HATEOAS API makes it clear to client software what further actions are available when an action is completed. Responses from an endpoint include URLs to further endpoints you can call. New functionality can be added without breaking your client software.\n\nThis API is still under development and further enhancements are planned. We recommend following the HATEOAS approach from the start, so that your work is not affected by future changes.\n\nFollow URLs as they are presented to you in the API at runtime. This will prevent you from building state into your client, and will decouple you from changes to the API.\n\nThe default Media Type for responses is hal+json.
+                \n#### Data availability
+                \n\nFor individuals who receive tax credits, data is only available for their latest tax credits application. Data will be returned for a 3 month period within the requested time period, if available.\n\nNo data is available before 6 April 2015. From 6 April 2021, data will be available for the current and previous 6 tax years.\nWhen an API changes in a way that is backwards-incompatible, we increase the version number of the API. \nSee our [reference guide](/api-documentation/docs/reference-guide#versioning) for more on\nversioning.\nWe use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:\n* 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action\n* 400 to 499 if it failed because of a client error by your application\n* 500 to 599 if it failed because of an error on our server\n\nErrors specific to each API are shown in the Endpoints section, under Response. \nSee our [reference guide](/api-documentation/docs/reference-guide#errors) for more on errors.\nYou can use the sandbox environment to [test this API](https://developer.service.hmrc.gov.uk/api-documentation/docs/testing). \n\nIt supports [stateful behaviour](https://developer.service.hmrc.gov.uk/api-documentation/docs/testing/stateful-behaviour).\n\nYou can set up a test user which is an individual using the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0).\n\nYou can also set up test data for this API using the [Integration Framework Test Support API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individuals-if-api-stub/1.0)."
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://api.service.hmrc.gov.uk/
+  variables: {}
+paths:
+  /individuals/benefits-and-credits/:
+    get:
+      tags:
+        - individuals
+      summary: Get a list of available endpoints
+      description: "
+        \nUse this endpoint to get a list of all available endpoints for Individuals Benefits and Credits.
+
+        \nFor individuals who receive tax credits, data is only available for their latest tax credits application. Data will be returned for a 3 month period within the requested time period, if available.
+
+        \nNo data is available before 6 April 2015. From 6 April 2021, data will be available for the current and previous 6 tax years.
+
+        \nYou will get a subset of the JSON response shown below based on your assigned scopes."
+      operationId: get '/individuals/benefits-and-credits/'
+      security:
+        - userRestricted: [ "assigned" ]
+      parameters:
+        - name: matchId
+          in: query
+          description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+        - name: CorrelationId
+          in: header
+          description: >-
+            <p>A UUID, used for traceability purposes.</p>
+  
+            <p>Must conform to the regular expression <code class="code--slim">^[0-9a-fA-F]{8}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{12}$</code></p>
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: 58072660-1df9-4deb-b4ca-cd2d7f96e480
+        - $ref: '#/components/parameters/acceptHeader'
+      responses:
+        '200':
+          description: Use this endpoint to get a list of all available endpoints for Individuals Benefits and Credits.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/IndividualsBenefitsAndCreditsResponse'
+                - example:
+                    _links:
+                      childTaxCredit:
+                        href: /individuals/benefits-and-credits/child-tax-credit/57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                        title: Get Child Tax Credit details
+                        name: GET
+                      workingTaxCredit:
+                        href: /individuals/benefits-and-credits/working-tax-credit/57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                        title: Get Working Tax Credit details
+                        name: GET
+                      self:
+                        href: /individuals/benefits-and-credits/57072660-1df9-4aeb-b4ea-cd2d7f96e430
+              example:
+                _links:
+                  childTaxCredit:
+                    href: /individuals/benefits-and-credits/child-tax-credit/57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                    title: Get Child Tax Credit details
+                    name: GET
+                  workingTaxCredit:
+                    href: /individuals/benefits-and-credits/working-tax-credit/57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                    title: Get Working Tax Credit details
+                    name: GET
+                  self:
+                    href: /individuals/benefits-and-credits/57072660-1df9-4aeb-b4ea-cd2d7f96e430
+        '400':
+          description: Bad Request
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/errorResponse'
+                  description: Invalid request
+                  example:
+                    code: INVALID_REQUEST
+              example:
+                code: INVALID_REQUEST
+        '404':
+          description: Not Found
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/errorResponse'
+                  description: Not Found
+                  example:
+                    code: NOT_FOUND
+              example:
+                code: NOT_FOUND
+      deprecated: false
+  /individuals/benefits-and-credits/child-tax-credit:
+    get:
+      tags:
+        - individuals
+      summary: Get Child Tax Credit data
+      description: "
+        \nUse this endpoint to get an individual’s Child Tax Credit details for the requested time period.</p>
+
+        \nFor individuals who receive tax credits, data is only available for their latest tax credits application. Data will be returned for a 3 month period within the requested time period, if available.
+
+        \nNo data is available before 6 April 2015. From 6 April 2021, data will be available for the current and previous 6 tax years.
+
+        \nYou will get a subset of the JSON response shown below based on your assigned scopes."
+      operationId: get '/individuals/benefits-and-credits/child-tax-credit'
+      security:
+        - userRestricted: [ "assigned" ]
+      parameters:
+        - name: matchId
+          in: query
+          description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+        - name: fromDate
+          in: query
+          description: >-
+            <p>The date that Child Tax Credit data is requested from.</p>
+  
+            Date in the format `YYYY-MM-DD`
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: 2019-01-01
+        - name: toDate
+          in: query
+          description: >-
+            <p>The date that Child Tax Credit data is requested to. If missing, it defaults to today's date.</p>
+  
+            Date in the format  `YYYY-MM-DD`
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: 2020-03-01
+        - name: CorrelationId
+          in: header
+          description: >-
+            <p>A UUID, used for traceability purposes.</p>
+  
+            <p>Must conform to the regular expression <code class="code--slim">^[0-9a-fA-F]{8}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{12}$</code></p>
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: 58072660-1df9-4deb-b4ca-cd2d7f96e480
+        - $ref: '#/components/parameters/acceptHeader'
+      responses:
+        '200':
+          description: Use this endpoint to get an individual’s Child Tax Credit details for the requested time period. Data is not available before 2015.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/IndividualsBenefitsAndCreditsChildTaxCreditResponse'
+                - example:
+                    _links:
+                      self:
+                        href: /individuals/benefits-and-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                    applications:
+                    - id: 123
+                      awards:
+                      - payProfCalcDate: 1996-08-01
+                        totalEntitlement: 18765.23
+                        childTaxCredit:
+                          childCareAmount: 930.98
+                          ctcChildAmount: 730.49
+                          familyAmount: 100.49
+                          babyAmount: 100
+                          paidYTD: 8976.34
+                        payments:
+                        - startDate: 1996-08-01
+                          endDate: 1996-08-07
+                          frequency: 7
+                          tcType: ETC
+                          amount: 76.34
+                        - startDate: 1996-08-08
+                          endDate: 1996-08-14
+                          frequency: 7
+                          tcType: ETC
+                          amount: 76.34
+                      - totalEntitlement: 18765.23
+                        childTaxCredit:
+                          childCareAmount: 930.98
+                          ctcChildAmount: 730.49
+                          familyAmount: 100.49
+                          babyAmount: 100
+                          paidYTD: 8976.34
+                        payments:
+                        - startDate: 1997-08-01
+                          endDate: 1997-08-07
+                          frequency: 7
+                          tcType: ICC
+                          amount: 76.34
+                        - startDate: 1997-08-08
+                          endDate: 1997-08-14
+                          frequency: 7
+                          tcType: ICC
+                          amount: 76.34
+              example:
+                _links:
+                  self:
+                    href: /individuals/benefits-and-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                applications:
+                - id: 123
+                  awards:
+                  - payProfCalcDate: 1996-08-01
+                    totalEntitlement: 18765.23
+                    childTaxCredit:
+                      childCareAmount: 930.98
+                      ctcChildAmount: 730.49
+                      familyAmount: 100.49
+                      babyAmount: 100
+                      paidYTD: 8976.34
+                    payments:
+                    - startDate: 1996-08-01
+                      endDate: 1996-08-07
+                      frequency: 7
+                      tcType: ETC
+                      amount: 76.34
+                    - startDate: 1996-08-08
+                      endDate: 1996-08-14
+                      frequency: 7
+                      tcType: ETC
+                      amount: 76.34
+                  - totalEntitlement: 18765.23
+                    childTaxCredit:
+                      childCareAmount: 930.98
+                      ctcChildAmount: 730.49
+                      familyAmount: 100.49
+                      babyAmount: 100
+                      paidYTD: 8976.34
+                    payments:
+                    - startDate: 1997-08-01
+                      endDate: 1997-08-07
+                      frequency: 7
+                      tcType: ICC
+                      amount: 76.34
+                    - startDate: 1997-08-08
+                      endDate: 1997-08-14
+                      frequency: 7
+                      tcType: ICC
+                      amount: 76.34
+        '400':
+          description: Bad Request
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Invalid request
+                  example:
+                    code: INVALID_REQUEST
+              example:
+                code: INVALID_REQUEST
+        '404':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Not found
+                  example:
+                    code: NOT_FOUND
+              example:
+                code: NOT_FOUND
+      deprecated: false
+  /individuals/benefits-and-credits/working-tax-credit:
+    get:
+      tags:
+        - individuals
+      summary: Get Working Tax Credit data
+      description: "
+        \nUse this endpoint to get an individual’s Working Tax Credit details for the requested time period.
+
+        \nFor individuals who receive tax credits, data is only available for their latest tax credits application. Data will be returned for a 3 month period within the requested time period, if available.
+
+        \nNo data is available before 6 April 2015. From 6 April 2021, data will be available for the current and previous 6 tax years.
+
+        \nYou will get a subset of the JSON response shown below based on your assigned scopes."
+      operationId: get '/individuals/benefits-and-credits/working-tax-credit'
+      security:
+        - userRestricted: [ "assigned" ]
+      parameters:
+      - name: matchId
+        in: query
+        description: A short-lived universally unique identifier (UUID), typically valid for several hours. Generated through the Individuals Matching API.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 57072660-1df9-4aeb-b4ea-cd2d7f96e430
+      - name: fromDate
+        in: query
+        description: >-
+          <p>The date that Working Tax Credit data is requested from.</p>
+
+          Date in the format `YYYY-MM-DD`
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 2019-01-01
+      - name: toDate
+        in: query
+        description: >-
+          <p>The date that Working Tax Credit data is requested to. If missing, it defaults to today's date.</p>
+
+          Date in the format `YYYY-MM-DD`
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 2020-03-01
+      - name: CorrelationId
+        in: header
+        description: >-
+          <p>A UUID, used for traceability purposes.</p>
+
+          <p>Must conform to the regular expression <code class="code--slim">^[0-9a-fA-F]{8}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{12}$</code></p>
+        required: true
+        style: simple
+        schema:
+          type: string
+          example: 58072660-1df9-4deb-b4ca-cd2d7f96e480
+      - $ref: '#/components/parameters/acceptHeader'
+      responses:
+        '200':
+          description: Use this endpoint to get an individual’s Working Tax Credit details for the requested time period. Data is not available before 2015.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/IndividualsBenefitsAndCreditsWorkingTaxCreditResponse'
+                - example:
+                    _links:
+                      self:
+                        href: /individuals/working-tax-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                    applications:
+                    - id: 123
+                      awards:
+                      - payProfCalcDate: 1996-08-01
+                        totalEntitlement: 18765.23
+                        workingTaxCredit:
+                          amount: 930.98
+                          paidYTD: 8976.34
+                        childTaxCredit:
+                          childCareAmount: 930.98
+                        payments:
+                        - startDate: 1996-08-01
+                          endDate: 1996-08-07
+                          frequency: 7
+                          tcType: ETC
+                          amount: 76.34
+                        - startDate: 1996-08-01
+                          endDate: 1996-08-07
+                          frequency: 7
+                          tcType: ETC
+                          amount: 76.34
+                      - payProfCalcDate: 1996-08-01
+                        totalEntitlement: 18765.23
+                        workingTaxCredit:
+                          amount: 930.98
+                          paidYTD: 8976.34
+                        childTaxCredit:
+                          childCareAmount: 930.98
+                        payments:
+                        - startDate: 1996-08-01
+                          endDate: 1996-08-07
+                          frequency: 7
+                          tcType: ETC
+                          amount: 76.34
+                        - startDate: 1996-08-01
+                          endDate: 1996-08-07
+                          frequency: 7
+                          tcType: ETC
+                          amount: 76.34
+              example:
+                _links:
+                  self:
+                    href: /individuals/working-tax-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430
+                applications:
+                - id: 123
+                  awards:
+                  - payProfCalcDate: 1996-08-01
+                    totalEntitlement: 18765.23
+                    workingTaxCredit:
+                      amount: 930.98
+                      paidYTD: 8976.34
+                    childTaxCredit:
+                      childCareAmount: 930.98
+                    payments:
+                    - startDate: 1996-08-01
+                      endDate: 1996-08-07
+                      frequency: 7
+                      tcType: ETC
+                      amount: 76.34
+                    - startDate: 1996-08-01
+                      endDate: 1996-08-07
+                      frequency: 7
+                      tcType: ETC
+                      amount: 76.34
+                  - payProfCalcDate: 1996-08-01
+                    totalEntitlement: 18765.23
+                    workingTaxCredit:
+                      amount: 930.98
+                      paidYTD: 8976.34
+                    childTaxCredit:
+                      childCareAmount: 930.98
+                    payments:
+                    - startDate: 1996-08-01
+                      endDate: 1996-08-07
+                      frequency: 7
+                      tcType: ETC
+                      amount: 76.34
+                    - startDate: 1996-08-01
+                      endDate: 1996-08-07
+                      frequency: 7
+                      tcType: ETC
+                      amount: 76.34
+        '400':
+          description: Bad Request
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Invalid request
+                  example:
+                    code: INVALID_REQUEST
+              example:
+                code: INVALID_REQUEST
+        '404':
+          description: Not found
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Not found
+                  example:
+                    code: NOT_FOUND
+              example:
+                code: NOT_FOUND
+      deprecated: false
+components:
+  parameters:
+    acceptHeader:
+      name: Accept
+      in: header
+      description: >-
+        Specifies the response format and the
+        [version](/api-documentation/docs/reference-guide#versioning) of the API
+        to be used.
+      required: true
+      schema:
+        type: string
+        enum: [
+          "application/vnd.hmrc.2.0+json"
+        ]
+  securitySchemes:
+    userRestricted:
+      type: oauth2
+      description: |
+        HMRC supports OAuth 2.0 for authenticating user restricted API requests using an OAuth 2.0 Bearer Token in the AUTHORIZATION header.
+        See https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/user-restricted-endpoints for details.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.service.hmrc.gov.uk/oauth/authorize
+          tokenUrl: https://api.service.hmrc.gov.uk/oauth/token
+          refreshUrl: https://api.service.hmrc.gov.uk/oauth/refresh
+          scopes:
+            "assigned": "Grants read access"
+  schemas:
+    errorResponse:
+      title: errorResponse
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          type: string
+    Application:
+      title: Application
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for the household application that the individual is active on. Multiple individuals can be active on the same application id.
+          format: int32
+          example: 123
+        awards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Award'
+          description: The awards that were active for this application during the time period.
+    Application1:
+      title: Application1
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The identifier for the household application that the individual is active on. Multiple individuals can be active on the same application id.
+          format: int32
+          example: 123
+        awards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Award1'
+          description: The awards that were active for this application during the time period.
+    Award:
+      title: Award
+      type: object
+      properties:
+        payProfCalcDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          example: 1996-08-01
+        totalEntitlement:
+          type: number
+          description: The sum of all the entitlements for an award version. The net amount that will be received.
+          example: 18765.23
+        childTaxCredit:
+          allOf:
+          - $ref: '#/components/schemas/ChildTaxCredit1'
+          - description: Child Tax Credit (CTC) amounts.
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+          description: All payments made to the individual during the time period. If there were no payments to this individual, an empty array will be returned.
+    Award1:
+      title: Award1
+      type: object
+      properties:
+        payProfCalcDate:
+          type: string
+          description: The date the payment profile was calculated.
+          example: 1996-08-01
+        totalEntitlement:
+          type: number
+          description: The sum of all the award entitlements for an award version. The net amount that will be received.
+          example: 18765.23
+        workingTaxCredit:
+          allOf:
+          - $ref: '#/components/schemas/WorkingTaxCredit1'
+          - description: Working Tax Credit (WTC) amounts.
+        childTaxCredit:
+          allOf:
+          - $ref: '#/components/schemas/ChildTaxCredit2'
+          - description: Child Tax Credit (CTC) amounts.
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment1'
+          description: All payments made to the individual during the time period. If there were no payments to this individual, an empty array will be returned.
+    ChildTaxCredit:
+      title: ChildTaxCredit
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL of the endpoint.
+          example: /individuals/benefits-and-credits/child-tax-credit?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430{&fromDate,toDate}
+        title:
+          type: string
+          description: Get Child Tax Credit details
+        name:
+          type: string
+          description: The HTTP Action to use on this endpoint.
+          example: GET
+      description: The Uniform Resource Identifier (URI) for the endpoint to get Child Tax Credit details for the requested match ID and time period.
+    ChildTaxCredit1:
+      title: ChildTaxCredit1
+      type: object
+      properties:
+        childCareAmount:
+          type: number
+          description: The amount for childcare.
+          example: 930.98
+        ctcChildAmount:
+          type: number
+          description: CTC child entitlements.
+          example: 730.49
+        familyAmount:
+          type: number
+          description: Family entitlement.
+          example: 100.49
+        babyAmount:
+          type: number
+          description: Baby entitlement. This was no longer available after 2017.
+          example: 100.01
+        paidYTD:
+          type: number
+          description: The actual payment amount, both direct and payment via employer (PVE). This is from the start of the tax credit period up to the calculated date of the payment profile.
+          example: 8976.34
+      description: Child Tax Credit (CTC) amounts.
+    ChildTaxCredit2:
+      title: ChildTaxCredit2
+      type: object
+      properties:
+        childCareAmount:
+          type: number
+          description: Amount for childcare.
+          example: 930.98
+      description: Child Tax Credit (CTC) amounts.
+    IndividualsBenefitsAndCreditsChildTaxCreditResponse:
+      title: IndividualsBenefitsAndCreditsChildTaxCreditResponse
+      required:
+      - _links
+      - applications
+      type: object
+      properties:
+        _links:
+          allOf:
+          - $ref: '#/components/schemas/Links1'
+          - description: A list of links for possible actions related to this endpoint.
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+          description: The applications that are active during the date range requested.
+      description: Child tax Credits
+    IndividualsBenefitsAndCreditsResponse:
+      title: IndividualsBenefitsAndCreditsResponse
+      required:
+      - _links
+      type: object
+      properties:
+        _links:
+          allOf:
+          - $ref: '#/components/schemas/Links'
+          - description: A list of links for possible actions related to this endpoint.
+      description: Individual Benefits and Credits
+    IndividualsBenefitsAndCreditsWorkingTaxCreditResponse:
+      title: IndividualsBenefitsAndCreditsWorkingTaxCreditResponse
+      required:
+      - _links
+      - applications
+      type: object
+      properties:
+        _links:
+          allOf:
+          - $ref: '#/components/schemas/Links2'
+          - description: A list of links for possible actions related to this endpoint.
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application1'
+          description: The applications that are active during the date range requested.
+      description: Individual matching request
+    Links:
+      title: Links
+      type: object
+      properties:
+        childTaxCredit:
+          allOf:
+          - $ref: '#/components/schemas/ChildTaxCredit'
+          - description: The Uniform Resource Identifier (URI) for the endpoint to get Child Tax Credit details for the requested match ID and time period.
+        workingTaxCredit:
+          allOf:
+          - $ref: '#/components/schemas/WorkingTaxCredit'
+          - description: The URI for the endpoint to get Working Tax Credit details for a requested match ID and time period.
+        self:
+          allOf:
+          - $ref: '#/components/schemas/Self'
+          - description: The URI for this endpoint.
+      description: A list of links for possible actions related to this endpoint.
+    Links1:
+      title: Links1
+      required:
+      - self
+      type: object
+      properties:
+        self:
+          allOf:
+          - $ref: '#/components/schemas/Self1'
+          - description: The Uniform Resource Identifier (URI) for this endpoint.
+      description: A list of links for possible actions related to this endpoint.
+    Links2:
+      title: Links2
+      required:
+      - self
+      type: object
+      properties:
+        self:
+          allOf:
+          - $ref: '#/components/schemas/Self2'
+          - description: The URL of the endpoint.
+      description: A list of links for possible actions related to this endpoint.
+    Payment:
+      title: Payment
+      type: object
+      properties:
+        startDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          example: 1996-08-01
+        endDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          example: 1996-08-07
+        frequency:
+          type: integer
+          description: The number of days between payments. Currently supported values are 1, 7, 14, and 28
+          format: int32
+          example: 7
+        tcType:
+          type: string
+          description: The type of tax credit. Currently supported values are ETC and ICC.
+          example: ICC
+        amount:
+          type: number
+          description: The amount to be paid to recipient
+          example: 76.34
+    Payment1:
+      title: Payment1
+      type: object
+      properties:
+        startDate:
+          type: string
+          description: The start date of the payment.
+          example: 1996-08-01
+        endDate:
+          type: string
+          description: The end date of the payment.
+          example: 1996-08-07
+        frequency:
+          type: integer
+          description: The number of days between payments. Currently supported values are 1, 7, 14, and 28.
+          format: int32
+          example: 7
+        tcType:
+          type: string
+          description: The type of tax credit. Currently supported values are ETC and ICC.
+          example: ETC
+        amount:
+          type: number
+          description: The amount to be paid to recipient.
+          example: 76.34
+    Self:
+      title: Self
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL of the endpoint.
+          example: /individuals/benefits-and-credits/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430
+      description: The URI for this endpoint.
+    Self1:
+      title: Self1
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL of the endpoint.
+          example: /individuals/child-tax-credit/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430
+      description: The Uniform Resource Identifier (URI) for this endpoint.
+    Self2:
+      title: Self2
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL of the endpoint.
+          example: /individuals/working-tax-credit/?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430
+      description: The URL of the endpoint.
+    WorkingTaxCredit:
+      title: WorkingTaxCredit
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL of the endpoint.
+          example: /individuals/benefits-and-credits/working-tax-credit?matchId=57072660-1df9-4aeb-b4ea-cd2d7f96e430{&fromDate,toDate}
+        title:
+          type: string
+          description: Get Working Tax Credit details
+        name:
+          type: string
+          description: The HTTP Action to use on this endpoint.
+          example: GET
+      description: The URI for the endpoint to get Working Tax Credit details for a requested match ID and time period.
+    WorkingTaxCredit1:
+      title: WorkingTaxCredit1
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Working Tax Credit element of the overall entitlement (totalEntitlement).
+          example: 930.98
+        paidYTD:
+          type: number
+          description: The actual payment amount, both direct and payment via employer (PVE). This is from the start of the tax credit period up to the calculated date of the payment profile.
+          example: 8976.34
+      description: Working Tax Credit (WTC) amounts.
+tags:
+- name: individuals
+  description: ''
