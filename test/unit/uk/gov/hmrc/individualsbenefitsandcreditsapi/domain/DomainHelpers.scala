@@ -91,6 +91,7 @@ trait DomainHelpers {
       Some("2020-08-18"),
       Some("2020-08-18"),
       Some("2020-08-18"),
+      Some("2020-08-18"),
       Some(10.0),
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),

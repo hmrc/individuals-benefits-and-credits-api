@@ -89,6 +89,7 @@ trait TestHelpers {
       payProfCalcDate = Some("2020-08-18"),
       startDate = Some("2020-08-18"),
       endDate = Some("2020-08-18"),
+      postedDate = Some("2020-08-18"),
       totalEntitlement = Some(22),
       workTaxCredit = Some(wtc),
       childTaxCredit = Some(ctc),
