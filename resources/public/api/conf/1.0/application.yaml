@@ -99,8 +99,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse'
-                  description: Invalid request
+                - $ref: '#/components/schemas/errorResponse400'
                   example:
                     code: INVALID_REQUEST
               example:
@@ -112,7 +111,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse'
+                - $ref: '#/components/schemas/errorResponse404'
                   description: Not Found
                   example:
                     code: NOT_FOUND
@@ -290,8 +289,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse'
-                - description: Invalid request
+                - $ref: '#/components/schemas/errorResponse400'
                   example:
                     code: INVALID_REQUEST
               example:
@@ -303,8 +301,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse'
-                - description: Not found
+                - $ref: '#/components/schemas/errorResponse404'
                   example:
                     code: NOT_FOUND
               example:
@@ -479,8 +476,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse'
-                - description: Invalid request
+                - $ref: '#/components/schemas/errorResponse400'
                   example:
                     code: INVALID_REQUEST
               example:
@@ -492,8 +488,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse'
-                - description: Not found
+                - $ref: '#/components/schemas/errorResponse404'
                   example:
                     code: NOT_FOUND
               example:
@@ -528,14 +523,24 @@ components:
           scopes:
             "assigned": "Grants read access"
   schemas:
-    errorResponse:
-      title: errorResponse
+    errorResponse400:
+      title: errorResponse400
       required:
         - code
       type: object
       properties:
         code:
           type: string
+          description: INVALID_REQUEST
+    errorResponse404:
+      title: errorResponse404
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          type: string
+          description: NOT_FOUND
     Application:
       title: Application
       type: object
