@@ -27,7 +27,7 @@ class IfAwardSpec extends UnitSpec {
   val awards: IfAward = IfAward(Some("2020-08-18"),
                        Some("2020-08-18"),
                        Some("2020-08-18"),
-                       Some("2020-08-18"),
+                       Some("2020-08-19"),
                        Some(0),
                        None,
                        None,
@@ -51,7 +51,7 @@ class IfAwardSpec extends UnitSpec {
                                       |  "payProfCalcDate" : "2020-08-18",
                                       |  "startDate" : "2020-08-18",
                                       |  "endDate" : "2020-08-18",
-                                      |  "postedDate" : "2020-08-18",
+                                      |  "postedDate" : "2020-08-19",
                                       |  "totalEntitlement" : 0,
                                       |  "grossTaxYearAmount" : 20
                                       |}"""".stripMargin)
