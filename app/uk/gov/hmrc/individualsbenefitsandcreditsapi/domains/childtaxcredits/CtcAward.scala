@@ -23,6 +23,7 @@ import play.api.libs.functional.syntax._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class CtcAward(
+    postedDate: Option[LocalDate],
     payProfCalcDate: Option[LocalDate],
     totalEntitlement: Option[Double],
     childTaxCredit: Option[CtcChildTaxCredit],
@@ -32,6 +33,7 @@ case class CtcAward(
 object CtcAward {
   def create(ifAward: IfAward): CtcAward = {
     CtcAward(
+      ifAward.postedDate.map(LocalDate.parse),
       ifAward.payProfCalcDate.map(LocalDate.parse),
       ifAward.totalEntitlement,
       ifAward.childTaxCredit.map(CtcChildTaxCredit.create),
@@ -41,12 +43,14 @@ object CtcAward {
 
   implicit val awardFormat: Format[CtcAward] = Format(
     (
+      (JsPath \ "postedDate").readNullable[LocalDate] and
       (JsPath \ "payProfCalcDate").readNullable[LocalDate] and
       (JsPath \ "totalEntitlement").readNullable[Double] and
       (JsPath \ "childTaxCredit").readNullable[CtcChildTaxCredit] and
       (JsPath \ "payments").readNullable[Seq[CtcPayment]]
     )(CtcAward.apply _),
     (
+      (JsPath \ "postedDate").writeNullable[LocalDate] and
       (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
       (JsPath \ "totalEntitlement").writeNullable[Double] and
       (JsPath \ "childTaxCredit").writeNullable[CtcChildTaxCredit] and
