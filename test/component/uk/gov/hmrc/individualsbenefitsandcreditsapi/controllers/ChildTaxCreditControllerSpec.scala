@@ -76,6 +76,7 @@ class ChildTaxCreditControllerSpec
         """[ {
           |    "id" : 22,
           |    "awards" : [ {
+          |      "postedDate" : "2020-08-18",
           |      "payProfCalcDate" : "2020-08-18",
           |      "totalEntitlement" : 22,
           |      "childTaxCredit" : {
@@ -96,6 +97,7 @@ class ChildTaxCreditControllerSpec
           |  }, {
           |    "id" : 22,
           |    "awards" : [ {
+          |      "postedDate": "2020-08-18",
           |      "payProfCalcDate" : "2020-08-18",
           |      "totalEntitlement" : 22,
           |      "childTaxCredit" : {

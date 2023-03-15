@@ -67,6 +67,7 @@ class WorkingTaxCreditControllerSpec
       val expectedData = """[ {
                            |    "id" : 22,
                            |    "awards" : [ {
+                           |      "postedDate" : "2020-08-18",
                            |      "payProfCalcDate" : "2020-08-18",
                            |      "totalEntitlement" : 22,
                            |      "workingTaxCredit" : {
@@ -87,6 +88,7 @@ class WorkingTaxCreditControllerSpec
                            |  }, {
                            |    "id" : 22,
                            |    "awards" : [ {
+                           |      "postedDate" : "2020-08-18",
                            |      "payProfCalcDate" : "2020-08-18",
                            |      "totalEntitlement" : 22,
                            |      "workingTaxCredit" : {

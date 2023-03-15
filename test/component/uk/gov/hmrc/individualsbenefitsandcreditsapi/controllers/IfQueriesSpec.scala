@@ -30,49 +30,49 @@ class IfQueriesSpec extends BaseSpec {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-laa-c1"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement,workingTaxCredit(amount,paidYTD)))"
+      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement,workingTaxCredit(amount,paidYTD)))"
     }
 
     Scenario("For read:individuals-benefits-and-credits-laa-c2") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-laa-c2"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement,workingTaxCredit(amount,paidYTD)))"
+      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement,workingTaxCredit(amount,paidYTD)))"
     }
 
     Scenario("For read:individuals-benefits-and-credits-laa-c3") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-laa-c3"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement,workingTaxCredit(amount,paidYTD)))"
+      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement,workingTaxCredit(amount,paidYTD)))"
     }
 
     Scenario("For read:individuals-benefits-and-credits-hmcts-c2") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-hmcts-c2"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
     }
 
     Scenario("For read:individuals-benefits-and-credits-hmcts-c3") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-hmcts-c3"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
     }
 
     Scenario("For read:individuals-benefits-and-credits-lsani-c1") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-lsani-c1"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
     }
 
     Scenario("For read:individuals-benefits-and-credits-lsani-c3") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-lsani-c3"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(childCareAmount),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement,workingTaxCredit(amount,paidYTD)),id)"
     }
 
   }
@@ -86,49 +86,49 @@ class IfQueriesSpec extends BaseSpec {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-laa-c1"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement))"
+      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement))"
     }
 
     Scenario("For read:individuals-benefits-and-credits-laa-c2") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-laa-c2"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement))"
+      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement))"
     }
 
     Scenario("For read:individuals-benefits-and-credits-laa-c3") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-laa-c3"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement))"
+      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement))"
     }
 
     Scenario("For read:individuals-benefits-and-credits-hmcts-c2") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-hmcts-c2"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement),id)"
     }
 
     Scenario("For read:individuals-benefits-and-credits-hmcts-c3") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-hmcts-c3"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement),id)"
     }
 
     Scenario("For read:individuals-benefits-and-credits-lsani-c1") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-lsani-c1"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement),id)"
     }
 
     Scenario("For read:individuals-benefits-and-credits-lsani-c3") {
       val queryString = helper.getQueryStringFor(
         Seq("read:individuals-benefits-and-credits-lsani-c3"),
         List(endpoint))
-      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),totalEntitlement),id)"
+      queryString shouldBe "applications(awards(childTaxCredit(babyAmount,childCareAmount,ctcChildAmount,familyAmount,paidYTD),payProfCalcDate,payments(amount,endDate,frequency,startDate,tcType),postedDate,totalEntitlement),id)"
     }
 
   }
