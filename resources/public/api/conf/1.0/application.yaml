@@ -202,7 +202,7 @@ paths:
                     - id: 123
                       awards:
                       - postedDate: 1996-08-01
-                      - payProfCalcDate: 1996-08-01
+                        payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         childTaxCredit:
                           childCareAmount: 930.98
@@ -247,7 +247,7 @@ paths:
                 - id: 123
                   awards:
                   - postedDate: 1996-08-01
-                  - payProfCalcDate: 1996-08-01
+                    payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     childTaxCredit:
                       childCareAmount: 930.98
@@ -393,7 +393,7 @@ paths:
                     - id: 123
                       awards:
                       - postedDate: 1996-08-01
-                      - payProfCalcDate: 1996-08-01
+                        payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         workingTaxCredit:
                           amount: 930.98
@@ -437,7 +437,7 @@ paths:
                 - id: 123
                   awards:
                   - postedDate: 1996-08-01
-                  - payProfCalcDate: 1996-08-01
+                    payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     workingTaxCredit:
                       amount: 930.98
