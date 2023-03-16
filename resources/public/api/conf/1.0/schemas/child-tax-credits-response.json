@@ -40,6 +40,12 @@
             "items": {
               "type": "object",
               "properties": {
+                "postedDate": {
+                  "type": "string",
+                  "id": "full-date",
+                  "description": "The date to which regular payments have been posted to the NTC applicant award account.",
+                  "example": "1996-08-01"
+                },
                 "payProfCalcDate": {
                   "description": "The date the payment profile was calculated.",
                   "$ref": "#/definitions/Pay-Prof-Date"
