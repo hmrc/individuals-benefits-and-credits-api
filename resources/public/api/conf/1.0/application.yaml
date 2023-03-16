@@ -573,6 +573,10 @@ components:
       title: Award
       type: object
       properties:
+        postedDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          example: 1996-08-01
         payProfCalcDate:
           pattern: ^\d{4}-\d{2}-\d{2}$
           type: string
@@ -594,6 +598,10 @@ components:
       title: Award1
       type: object
       properties:
+        postedDate:
+          type: string
+          description: The date to which regular payments have been posted to the NTC applicant award account.
+          example: 1996-08-01
         payProfCalcDate:
           type: string
           description: The date the payment profile was calculated.
