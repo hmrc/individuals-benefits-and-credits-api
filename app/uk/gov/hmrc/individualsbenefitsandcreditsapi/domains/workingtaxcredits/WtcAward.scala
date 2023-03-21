@@ -33,7 +33,7 @@ case class WtcAward(
 object WtcAward {
   def create(ifAward: IfAward) = {
 
-    val wtc = ifAward.workTaxCredit.map(WtcWorkingTaxCredit.create)
+    val wtc = ifAward.workingTaxCredit.map(WtcWorkingTaxCredit.create)
     val ctc = ifAward.childTaxCredit.map(WtcChildTaxCredit.create)
 
     WtcAward(

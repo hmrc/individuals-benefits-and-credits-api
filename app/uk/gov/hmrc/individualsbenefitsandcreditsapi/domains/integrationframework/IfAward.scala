@@ -25,7 +25,7 @@ case class IfAward(
     startDate: Option[String],
     endDate: Option[String],
     totalEntitlement: Option[Double],
-    workTaxCredit: Option[IfWorkTaxCredit],
+    workingTaxCredit: Option[IfWorkTaxCredit],
     childTaxCredit: Option[IfChildTaxCredit],
     grossTaxYearAmount: Option[Double],
     payments: Option[Seq[IfPayment]]
