@@ -99,7 +99,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse400'
+                - $ref: '#/components/schemas/errorResponse'
+                  description: Invalid request
                   example:
                     code: INVALID_REQUEST
               example:
@@ -111,7 +112,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse404'
+                - $ref: '#/components/schemas/errorResponse'
                   description: Not Found
                   example:
                     code: NOT_FOUND
@@ -201,8 +202,7 @@ paths:
                     applications:
                     - id: 123
                       awards:
-                      - postedDate: 1996-08-01
-                        payProfCalcDate: 1996-08-01
+                      - payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         childTaxCredit:
                           childCareAmount: 930.98
@@ -246,8 +246,7 @@ paths:
                 applications:
                 - id: 123
                   awards:
-                  - postedDate: 1996-08-01
-                    payProfCalcDate: 1996-08-01
+                  - payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     childTaxCredit:
                       childCareAmount: 930.98
@@ -291,7 +290,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse400'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Invalid request
                   example:
                     code: INVALID_REQUEST
               example:
@@ -303,7 +303,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse404'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Not found
                   example:
                     code: NOT_FOUND
               example:
@@ -392,8 +393,7 @@ paths:
                     applications:
                     - id: 123
                       awards:
-                      - postedDate: 1996-08-01
-                        payProfCalcDate: 1996-08-01
+                      - payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         workingTaxCredit:
                           amount: 930.98
@@ -411,8 +411,7 @@ paths:
                           frequency: 7
                           tcType: ETC
                           amount: 76.34
-                      - postedDate: 1996-08-01
-                        payProfCalcDate: 1996-08-01
+                      - payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         workingTaxCredit:
                           amount: 930.98
@@ -437,8 +436,7 @@ paths:
                 applications:
                 - id: 123
                   awards:
-                  - postedDate: 1996-08-01
-                    payProfCalcDate: 1996-08-01
+                  - payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     workingTaxCredit:
                       amount: 930.98
@@ -456,8 +454,7 @@ paths:
                       frequency: 7
                       tcType: ETC
                       amount: 76.34
-                  - postedDate: 1996-08-01
-                    payProfCalcDate: 1996-08-01
+                  - payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     workingTaxCredit:
                       amount: 930.98
@@ -482,7 +479,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse400'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Invalid request
                   example:
                     code: INVALID_REQUEST
               example:
@@ -494,7 +492,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse404'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Not found
                   example:
                     code: NOT_FOUND
               example:
@@ -529,24 +528,14 @@ components:
           scopes:
             "assigned": "Grants read access"
   schemas:
-    errorResponse400:
-      title: errorResponse400
+    errorResponse:
+      title: errorResponse
       required:
         - code
       type: object
       properties:
         code:
           type: string
-          description: INVALID_REQUEST
-    errorResponse404:
-      title: errorResponse404
-      required:
-        - code
-      type: object
-      properties:
-        code:
-          type: string
-          description: NOT_FOUND
     Application:
       title: Application
       type: object
@@ -579,10 +568,6 @@ components:
       title: Award
       type: object
       properties:
-        postedDate:
-          pattern: ^\d{4}-\d{2}-\d{2}$
-          type: string
-          example: 1996-08-01
         payProfCalcDate:
           pattern: ^\d{4}-\d{2}-\d{2}$
           type: string
@@ -604,10 +589,6 @@ components:
       title: Award1
       type: object
       properties:
-        postedDate:
-          type: string
-          description: The date to which regular payments have been posted to the NTC applicant award account.
-          example: 1996-08-01
         payProfCalcDate:
           type: string
           description: The date the payment profile was calculated.

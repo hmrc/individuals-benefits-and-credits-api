@@ -9,7 +9,6 @@
       "id": 123,
       "awards": [
         {
-          "postedDate": "2020-08-18",
           "payProfCalcDate": "1996-08-01",
           "totalEntitlement": 18765.23,
           "workingTaxCredit": {

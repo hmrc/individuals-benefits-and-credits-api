@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ class CtcAwardSpec extends UnitSpec with DomainHelpers {
       Some("2017-08-08"),
       Some("2017-09-09"),
       Some("2017-10-10"),
-      Some("2017-10-11"),
       Some(10.0),
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),
@@ -50,7 +49,6 @@ class CtcAwardSpec extends UnitSpec with DomainHelpers {
       Some("2017-08-08"),
       Some("2017-09-09"),
       Some("2017-10-10"),
-      Some("2017-10-11"),
       Some(10.0),
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),

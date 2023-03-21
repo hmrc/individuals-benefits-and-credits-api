@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,6 @@ class ChildTaxCreditControllerSpec
         """[ {
           |    "id" : 22,
           |    "awards" : [ {
-          |      "postedDate" : "2020-08-19",
           |      "payProfCalcDate" : "2020-08-18",
           |      "totalEntitlement" : 22,
           |      "childTaxCredit" : {
@@ -97,7 +96,6 @@ class ChildTaxCreditControllerSpec
           |  }, {
           |    "id" : 22,
           |    "awards" : [ {
-          |      "postedDate": "2020-08-19",
           |      "payProfCalcDate" : "2020-08-18",
           |      "totalEntitlement" : 22,
           |      "childTaxCredit" : {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,6 @@ trait DomainHelpers {
       Some("2020-08-18"),
       Some("2020-08-18"),
       Some("2020-08-18"),
-      Some("2020-08-18"),
       Some(10.0),
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),
@@ -112,7 +111,6 @@ trait DomainHelpers {
 
   def createValidWtcAward(): WtcAward = {
     new WtcAward(
-      Some(LocalDate.parse("2016-05-02")),
       Some(LocalDate.parse("2016-05-01")),
       Some(10.0),
       Some(WtcWorkingTaxCredit(Some(20.0), Some(30.0))),
@@ -137,7 +135,6 @@ trait DomainHelpers {
 
   def createValidCtcAward(): CtcAward = {
     new CtcAward(
-      Some(LocalDate.parse("2016-05-02")),
       Some(LocalDate.parse("2016-05-01")),
       Some(10.0),
       Some(
