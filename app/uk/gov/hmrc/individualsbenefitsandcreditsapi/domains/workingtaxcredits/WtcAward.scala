@@ -17,9 +17,9 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import org.joda.time.LocalDate
+// Required for JodaDate parsers to function
 import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class WtcAward(
@@ -45,20 +45,5 @@ object WtcAward {
     )
   }
 
-  implicit val awardFormat: Format[WtcAward] = Format(
-    (
-      (JsPath \ "payProfCalcDate").readNullable[LocalDate] and
-      (JsPath \ "totalEntitlement").readNullable[Double] and
-      (JsPath \ "workingTaxCredit").readNullable[WtcWorkingTaxCredit] and
-      (JsPath \ "childTaxCredit").readNullable[WtcChildTaxCredit] and
-      (JsPath \ "payments").readNullable[Seq[WtcPayment]]
-    )(WtcAward.apply _),
-    (
-      (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
-      (JsPath \ "totalEntitlement").writeNullable[Double] and
-      (JsPath \ "workingTaxCredit").writeNullable[WtcWorkingTaxCredit] and
-      (JsPath \ "childTaxCredit").writeNullable[WtcChildTaxCredit] and
-      (JsPath \ "payments").writeNullable[Seq[WtcPayment]]
-    )(unlift(WtcAward.unapply))
-  )
+  implicit val awardFormat: Format[WtcAward] = Json.format[WtcAward]
 }

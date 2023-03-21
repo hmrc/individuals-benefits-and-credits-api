@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 
 case class WtcApplication(id: Option[Double], awards: Seq[WtcAward])
@@ -31,14 +30,5 @@ object WtcApplication {
     )
   }
 
-  implicit val applicationFormat: Format[WtcApplication] = Format(
-    (
-      (JsPath \ "id").readNullable[Double] and
-        (JsPath \ "awards").read[Seq[WtcAward]]
-    )(WtcApplication.apply _),
-    (
-      (JsPath \ "id").writeNullable[Double] and
-        (JsPath \ "awards").write[Seq[WtcAward]]
-    )(unlift(WtcApplication.unapply))
-  )
+  implicit val applicationFormat: Format[WtcApplication] = Json.format[WtcApplication]
 }

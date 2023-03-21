@@ -17,7 +17,7 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfWorkTaxCredit(amount: Option[Double],
                            entitlementYTD: Option[Double],
@@ -32,10 +32,6 @@ object IfWorkTaxCredit extends PatternsAndValidators {
           .readNullable[Double](paymentAmountValidator) and
         (JsPath \ "paidYTD").readNullable[Double](paymentAmountValidator)
     )(IfWorkTaxCredit.apply _),
-    (
-      (JsPath \ "amount").writeNullable[Double] and
-        (JsPath \ "entitlementYTD").writeNullable[Double] and
-        (JsPath \ "paidYTD").writeNullable[Double]
-    )(unlift(IfWorkTaxCredit.unapply))
+    Json.writes[IfWorkTaxCredit]
   )
 }

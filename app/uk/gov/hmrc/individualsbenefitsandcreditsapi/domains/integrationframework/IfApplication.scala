@@ -18,7 +18,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframewor
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.pattern
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfApplication(id: Option[Double],
                          ceasedDate: Option[String],
@@ -39,12 +39,6 @@ object IfApplication extends PatternsAndValidators {
           .readNullable[String](pattern(datePattern, "invalid date")) and
         (JsPath \ "awards").readNullable[Seq[IfAward]]
     )(IfApplication.apply _),
-    (
-      (JsPath \ "id").writeNullable[Double] and
-        (JsPath \ "ceasedDate").writeNullable[String] and
-        (JsPath \ "entStartDate").writeNullable[String] and
-        (JsPath \ "entEndDate").writeNullable[String] and
-        (JsPath \ "awards").writeNullable[Seq[IfAward]]
-    )(unlift(IfApplication.unapply))
+    Json.writes[IfApplication]
   )
 }

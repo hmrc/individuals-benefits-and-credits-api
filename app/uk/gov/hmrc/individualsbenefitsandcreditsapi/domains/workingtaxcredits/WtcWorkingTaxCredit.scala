@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
 
 case class WtcWorkingTaxCredit(amount: Option[Double], paidYTD: Option[Double])
@@ -28,14 +27,5 @@ object WtcWorkingTaxCredit {
     WtcWorkingTaxCredit(ifWorkTaxCredit.amount, ifWorkTaxCredit.paidYTD)
   }
 
-  implicit val workingTaxCreditFormat: Format[WtcWorkingTaxCredit] = Format(
-    (
-      (JsPath \ "amount").readNullable[Double] and
-        (JsPath \ "paidYTD").readNullable[Double]
-    )(WtcWorkingTaxCredit.apply _),
-    (
-      (JsPath \ "amount").writeNullable[Double] and
-        (JsPath \ "paidYTD").writeNullable[Double]
-    )(unlift(WtcWorkingTaxCredit.unapply))
-  )
+  implicit val workingTaxCreditFormat: Format[WtcWorkingTaxCredit] = Json.format[WtcWorkingTaxCredit]
 }

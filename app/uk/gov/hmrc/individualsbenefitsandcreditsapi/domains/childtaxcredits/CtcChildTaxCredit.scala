@@ -17,7 +17,7 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
 
 case class CtcChildTaxCredit(
@@ -39,20 +39,5 @@ object CtcChildTaxCredit {
     )
   }
 
-  implicit val childTaxCreditFormat: Format[CtcChildTaxCredit] = Format(
-    (
-      (JsPath \ "childCareAmount").readNullable[Double] and
-        (JsPath \ "ctcChildAmount").readNullable[Double] and
-        (JsPath \ "familyAmount").readNullable[Double] and
-        (JsPath \ "babyAmount").readNullable[Double] and
-        (JsPath \ "paidYTD").readNullable[Double]
-    )(CtcChildTaxCredit.apply _),
-    (
-      (JsPath \ "childCareAmount").writeNullable[Double] and
-        (JsPath \ "ctcChildAmount").writeNullable[Double] and
-        (JsPath \ "familyAmount").writeNullable[Double] and
-        (JsPath \ "babyAmount").writeNullable[Double] and
-        (JsPath \ "paidYTD").writeNullable[Double]
-    )(unlift(CtcChildTaxCredit.unapply))
-  )
+  implicit val childTaxCreditFormat: Format[CtcChildTaxCredit] = Json.format[CtcChildTaxCredit]
 }
