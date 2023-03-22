@@ -38,12 +38,6 @@
             "items": {
               "type": "object",
               "properties": {
-                "postedDate": {
-                  "type": "string",
-                  "id": "full-date",
-                  "description": "The date to which regular payments have been posted to the NTC applicant award account.",
-                  "example": "1996-08-01"
-                },
                 "payProfCalcDate": {
                   "type": "string",
                   "id": "full-date",
@@ -99,6 +93,12 @@
                         "id": "full-date",
                         "description": "The end date of the payment.",
                         "example": "1996-08-07"
+                      },
+                      "postedDate": {
+                        "type": "string",
+                        "id": "full-date",
+                        "description": "The date the payment profile was calculated.",
+                        "example": "1996-08-01"
                       },
                       "frequency": {
                         "type": "integer",

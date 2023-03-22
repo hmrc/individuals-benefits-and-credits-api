@@ -9,7 +9,6 @@
       "id": 123,
       "awards": [
         {
-          "postedDate": "2020-08-18",
           "payProfCalcDate": "1996-08-01",
           "totalEntitlement": 18765.23,
           "childTaxCredit": {
@@ -23,6 +22,7 @@
             {
               "startDate": "1996-08-01",
               "endDate": "1996-08-07",
+              "postedDate": "1996-08-18",
               "frequency": 7,
               "tcType": "ETC",
               "amount": 76.34
@@ -30,6 +30,7 @@
             {
               "startDate": "1996-08-08",
               "endDate": "1996-08-14",
+              "postedDate": "1996-08-18",
               "frequency": 7,
               "tcType": "ETC",
               "amount": 76.34
@@ -49,6 +50,7 @@
             {
               "startDate": "1997-08-01",
               "endDate": "1997-08-07",
+              "postedDate": "1997-08-18",
               "frequency": 7,
               "tcType": "ICC",
               "amount": 76.34
@@ -56,6 +58,7 @@
             {
               "startDate": "1997-08-08",
               "endDate": "1997-08-14",
+              "postedDate": "1997-08-18",
               "frequency": 7,
               "tcType": "ICC",
               "amount": 76.34

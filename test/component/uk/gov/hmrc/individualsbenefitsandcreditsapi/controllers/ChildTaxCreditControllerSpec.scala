@@ -76,7 +76,6 @@ class ChildTaxCreditControllerSpec
         """[ {
           |    "id" : 22,
           |    "awards" : [ {
-          |      "postedDate" : "2020-08-19",
           |      "payProfCalcDate" : "2020-08-18",
           |      "totalEntitlement" : 22,
           |      "childTaxCredit" : {
@@ -89,6 +88,7 @@ class ChildTaxCreditControllerSpec
           |      "payments" : [ {
           |        "startDate" : "2020-08-17",
           |        "endDate" : "2020-08-17",
+          |        "postedDate" : "2020-08-28",
           |        "frequency" : 1,
           |        "tcType" : "ICC",
           |        "amount" : 22
@@ -97,7 +97,6 @@ class ChildTaxCreditControllerSpec
           |  }, {
           |    "id" : 22,
           |    "awards" : [ {
-          |      "postedDate": "2020-08-19",
           |      "payProfCalcDate" : "2020-08-18",
           |      "totalEntitlement" : 22,
           |      "childTaxCredit" : {
@@ -110,6 +109,7 @@ class ChildTaxCreditControllerSpec
           |      "payments" : [ {
           |        "startDate" : "2020-08-17",
           |        "endDate" : "2020-08-17",
+          |        "postedDate" : "2020-08-28",
           |        "frequency" : 1,
           |        "tcType" : "ICC",
           |        "amount" : 22

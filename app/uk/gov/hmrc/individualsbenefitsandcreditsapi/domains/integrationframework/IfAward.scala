@@ -24,7 +24,6 @@ case class IfAward(
     payProfCalcDate: Option[String],
     startDate: Option[String],
     endDate: Option[String],
-    postedDate: Option[String],
     totalEntitlement: Option[Double],
     workTaxCredit: Option[IfWorkTaxCredit],
     childTaxCredit: Option[IfChildTaxCredit],
@@ -42,8 +41,6 @@ object IfAward extends PatternsAndValidators {
           .readNullable[String](pattern(datePattern, "invalid date")) and
         (JsPath \ "endDate")
           .readNullable[String](pattern(datePattern, "invalid date")) and
-        (JsPath \ "postedDate")
-          .readNullable[String](pattern(datePattern, "invalid date")) and
         (JsPath \ "totalEntitlement")
           .readNullable[Double](paymentAmountValidator) and
         (JsPath \ "workingTaxCredit").readNullable[IfWorkTaxCredit] and
@@ -56,7 +53,6 @@ object IfAward extends PatternsAndValidators {
       (JsPath \ "payProfCalcDate").writeNullable[String] and
         (JsPath \ "startDate").writeNullable[String] and
         (JsPath \ "endDate").writeNullable[String] and
-        (JsPath \ "postedDate").writeNullable[String] and
         (JsPath \ "totalEntitlement").writeNullable[Double] and
         (JsPath \ "workingTaxCredit").writeNullable[IfWorkTaxCredit] and
         (JsPath \ "childTaxCredit").writeNullable[IfChildTaxCredit] and

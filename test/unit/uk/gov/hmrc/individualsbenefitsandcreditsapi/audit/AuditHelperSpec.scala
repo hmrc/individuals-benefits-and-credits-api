@@ -51,8 +51,8 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
 
   val auditConnector: AuditConnector = mock[AuditConnector]
 
-  val workingTaxCreditResponse = Seq(WtcApplication(None, Seq(WtcAward(None, None, None, None, None, None))))
-  val childTaxCreditResponse = Seq(CtcApplication(None, Seq(CtcAward(None, None, None, None, None))))
+  val workingTaxCreditResponse = Seq(WtcApplication(None, Seq(WtcAward(None, None, None, None, None))))
+  val childTaxCreditResponse = Seq(CtcApplication(None, Seq(CtcAward(None, None, None, None))))
   val ifResponse: IfApplications = IfApplications(Seq(IfApplication(None, None, None, None, None)))
 
   val auditHelper = new AuditHelper(auditConnector)

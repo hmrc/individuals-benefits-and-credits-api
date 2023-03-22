@@ -67,7 +67,6 @@ class WorkingTaxCreditControllerSpec
       val expectedData = """[ {
                            |    "id" : 22,
                            |    "awards" : [ {
-                           |      "postedDate" : "2020-08-19",
                            |      "payProfCalcDate" : "2020-08-18",
                            |      "totalEntitlement" : 22,
                            |      "workingTaxCredit" : {
@@ -80,6 +79,7 @@ class WorkingTaxCreditControllerSpec
                            |      "payments" : [ {
                            |        "startDate" : "2020-08-18",
                            |        "endDate" : "2020-08-18",
+                           |        "postedDate" : "2020-08-28",
                            |        "frequency" : 1,
                            |        "tcType" : "ETC",
                            |        "amount" : 22
@@ -88,7 +88,6 @@ class WorkingTaxCreditControllerSpec
                            |  }, {
                            |    "id" : 22,
                            |    "awards" : [ {
-                           |      "postedDate" : "2020-08-19",
                            |      "payProfCalcDate" : "2020-08-18",
                            |      "totalEntitlement" : 22,
                            |      "workingTaxCredit" : {
@@ -101,6 +100,7 @@ class WorkingTaxCreditControllerSpec
                            |      "payments" : [ {
                            |        "startDate" : "2020-08-18",
                            |        "endDate" : "2020-08-18",
+                           |        "postedDate" : "2020-08-28",
                            |        "frequency" : 1,
                            |        "tcType" : "ETC",
                            |        "amount" : 22

@@ -99,7 +99,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse400'
+                - $ref: '#/components/schemas/errorResponse'
+                  description: Invalid request
                   example:
                     code: INVALID_REQUEST
               example:
@@ -111,7 +112,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse404'
+                - $ref: '#/components/schemas/errorResponse'
                   description: Not Found
                   example:
                     code: NOT_FOUND
@@ -201,8 +202,7 @@ paths:
                     applications:
                     - id: 123
                       awards:
-                      - postedDate: 1996-08-01
-                        payProfCalcDate: 1996-08-01
+                      - payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         childTaxCredit:
                           childCareAmount: 930.98
@@ -213,11 +213,13 @@ paths:
                         payments:
                         - startDate: 1996-08-01
                           endDate: 1996-08-07
+                          postedDate: 1996-08-18
                           frequency: 7
                           tcType: ETC
                           amount: 76.34
                         - startDate: 1996-08-08
                           endDate: 1996-08-14
+                          postedDate: 1996-08-24
                           frequency: 7
                           tcType: ETC
                           amount: 76.34
@@ -231,11 +233,13 @@ paths:
                         payments:
                         - startDate: 1997-08-01
                           endDate: 1997-08-07
+                          postedDate: 1997-08-18
                           frequency: 7
                           tcType: ICC
                           amount: 76.34
                         - startDate: 1997-08-08
                           endDate: 1997-08-14
+                          postedDate: 1997-08-24
                           frequency: 7
                           tcType: ICC
                           amount: 76.34
@@ -246,8 +250,7 @@ paths:
                 applications:
                 - id: 123
                   awards:
-                  - postedDate: 1996-08-01
-                    payProfCalcDate: 1996-08-01
+                  - payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     childTaxCredit:
                       childCareAmount: 930.98
@@ -258,11 +261,13 @@ paths:
                     payments:
                     - startDate: 1996-08-01
                       endDate: 1996-08-07
+                      postedDate: 1996-08-18
                       frequency: 7
                       tcType: ETC
                       amount: 76.34
                     - startDate: 1996-08-08
                       endDate: 1996-08-14
+                      postedDate: 1996-08-24
                       frequency: 7
                       tcType: ETC
                       amount: 76.34
@@ -276,11 +281,13 @@ paths:
                     payments:
                     - startDate: 1997-08-01
                       endDate: 1997-08-07
+                      postedDate: 1997-08-14
                       frequency: 7
                       tcType: ICC
                       amount: 76.34
                     - startDate: 1997-08-08
                       endDate: 1997-08-14
+                      postedDate: 1997-08-28
                       frequency: 7
                       tcType: ICC
                       amount: 76.34
@@ -291,7 +298,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse400'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Invalid request
                   example:
                     code: INVALID_REQUEST
               example:
@@ -303,7 +311,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse404'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Not found
                   example:
                     code: NOT_FOUND
               example:
@@ -392,8 +401,7 @@ paths:
                     applications:
                     - id: 123
                       awards:
-                      - postedDate: 1996-08-01
-                        payProfCalcDate: 1996-08-01
+                      - payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         workingTaxCredit:
                           amount: 930.98
@@ -403,16 +411,17 @@ paths:
                         payments:
                         - startDate: 1996-08-01
                           endDate: 1996-08-07
+                          postedDate: 1996-08-14
                           frequency: 7
                           tcType: ETC
                           amount: 76.34
                         - startDate: 1996-08-01
                           endDate: 1996-08-07
+                          postedDate: 1996-08-14
                           frequency: 7
                           tcType: ETC
                           amount: 76.34
-                      - postedDate: 1996-08-01
-                        payProfCalcDate: 1996-08-01
+                      - payProfCalcDate: 1996-08-01
                         totalEntitlement: 18765.23
                         workingTaxCredit:
                           amount: 930.98
@@ -422,11 +431,13 @@ paths:
                         payments:
                         - startDate: 1996-08-01
                           endDate: 1996-08-07
+                          postedDate: 1996-08-14
                           frequency: 7
                           tcType: ETC
                           amount: 76.34
                         - startDate: 1996-08-01
                           endDate: 1996-08-07
+                          postedDate: 1996-08-14
                           frequency: 7
                           tcType: ETC
                           amount: 76.34
@@ -437,8 +448,7 @@ paths:
                 applications:
                 - id: 123
                   awards:
-                  - postedDate: 1996-08-01
-                    payProfCalcDate: 1996-08-01
+                  - payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     workingTaxCredit:
                       amount: 930.98
@@ -448,16 +458,17 @@ paths:
                     payments:
                     - startDate: 1996-08-01
                       endDate: 1996-08-07
+                      postedDate: 1996-08-14
                       frequency: 7
                       tcType: ETC
                       amount: 76.34
                     - startDate: 1996-08-01
                       endDate: 1996-08-07
+                      postedDate: 1996-08-14
                       frequency: 7
                       tcType: ETC
                       amount: 76.34
-                  - postedDate: 1996-08-01
-                    payProfCalcDate: 1996-08-01
+                  - payProfCalcDate: 1996-08-01
                     totalEntitlement: 18765.23
                     workingTaxCredit:
                       amount: 930.98
@@ -467,11 +478,13 @@ paths:
                     payments:
                     - startDate: 1996-08-01
                       endDate: 1996-08-07
+                      postedDate: 1996-08-14
                       frequency: 7
                       tcType: ETC
                       amount: 76.34
                     - startDate: 1996-08-01
                       endDate: 1996-08-07
+                      postedDate: 1996-08-14
                       frequency: 7
                       tcType: ETC
                       amount: 76.34
@@ -482,7 +495,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse400'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Invalid request
                   example:
                     code: INVALID_REQUEST
               example:
@@ -494,7 +508,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/errorResponse404'
+                - $ref: '#/components/schemas/errorResponse'
+                - description: Not found
                   example:
                     code: NOT_FOUND
               example:
@@ -529,24 +544,14 @@ components:
           scopes:
             "assigned": "Grants read access"
   schemas:
-    errorResponse400:
-      title: errorResponse400
+    errorResponse:
+      title: errorResponse
       required:
         - code
       type: object
       properties:
         code:
           type: string
-          description: INVALID_REQUEST
-    errorResponse404:
-      title: errorResponse404
-      required:
-        - code
-      type: object
-      properties:
-        code:
-          type: string
-          description: NOT_FOUND
     Application:
       title: Application
       type: object
@@ -579,10 +584,6 @@ components:
       title: Award
       type: object
       properties:
-        postedDate:
-          pattern: ^\d{4}-\d{2}-\d{2}$
-          type: string
-          example: 1996-08-01
         payProfCalcDate:
           pattern: ^\d{4}-\d{2}-\d{2}$
           type: string
@@ -604,10 +605,6 @@ components:
       title: Award1
       type: object
       properties:
-        postedDate:
-          type: string
-          description: The date to which regular payments have been posted to the NTC applicant award account.
-          example: 1996-08-01
         payProfCalcDate:
           type: string
           description: The date the payment profile was calculated.
@@ -775,6 +772,10 @@ components:
           pattern: ^\d{4}-\d{2}-\d{2}$
           type: string
           example: 1996-08-07
+        postedDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          example: 1996-08-14
         frequency:
           type: integer
           description: The number of days between payments. Currently supported values are 1, 7, 14, and 28
@@ -800,6 +801,10 @@ components:
           type: string
           description: The end date of the payment.
           example: 1996-08-07
+        postedDate:
+          type: string
+          description: The date to which regular payments have been posted to the NTC applicant award account.
+          example: 1996-08-14
         frequency:
           type: integer
           description: The number of days between payments. Currently supported values are 1, 7, 14, and 28.

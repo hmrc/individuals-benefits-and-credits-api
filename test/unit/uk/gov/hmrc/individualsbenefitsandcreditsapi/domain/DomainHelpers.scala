@@ -91,7 +91,6 @@ trait DomainHelpers {
       Some("2020-08-18"),
       Some("2020-08-18"),
       Some("2020-08-18"),
-      Some("2020-08-18"),
       Some(10.0),
       Some(createValidIfWorkingTaxCredit),
       Some(createValidIfChildTaxCredit()),
@@ -104,6 +103,7 @@ trait DomainHelpers {
     WtcPayment(
       Some(LocalDate.parse("2016-05-01")),
       Some(LocalDate.parse("2016-06-01")),
+      Some(LocalDate.parse("2016-07-01")),
       Some(7),
       Some("ETC"),
       Some(80.0)
@@ -112,7 +112,6 @@ trait DomainHelpers {
 
   def createValidWtcAward(): WtcAward = {
     new WtcAward(
-      Some(LocalDate.parse("2016-05-02")),
       Some(LocalDate.parse("2016-05-01")),
       Some(10.0),
       Some(WtcWorkingTaxCredit(Some(20.0), Some(30.0))),
@@ -129,6 +128,7 @@ trait DomainHelpers {
     CtcPayment(
       Some(LocalDate.parse("2016-05-01")),
       Some(LocalDate.parse("2016-06-01")),
+      Some(LocalDate.parse("2016-07-01")),
       Some(7),
       Some("ETC"),
       Some(80.0)
@@ -137,7 +137,6 @@ trait DomainHelpers {
 
   def createValidCtcAward(): CtcAward = {
     new CtcAward(
-      Some(LocalDate.parse("2016-05-02")),
       Some(LocalDate.parse("2016-05-01")),
       Some(10.0),
       Some(

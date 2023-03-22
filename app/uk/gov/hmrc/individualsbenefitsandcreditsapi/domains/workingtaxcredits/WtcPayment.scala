@@ -26,6 +26,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 case class WtcPayment(
     startDate: Option[LocalDate],
     endDate: Option[LocalDate],
+    postedDate: Option[LocalDate],
     frequency: Option[Int],
     tcType: Option[String],
     amount: Option[Double]
@@ -36,6 +37,7 @@ object WtcPayment {
     WtcPayment(
       ifPayment.startDate.map(LocalDate.parse),
       ifPayment.endDate.map(LocalDate.parse),
+      ifPayment.postedDate.map(LocalDate.parse),
       ifPayment.frequency,
       ifPayment.tcType,
       ifPayment.amount
@@ -46,6 +48,7 @@ object WtcPayment {
     (
       (JsPath \ "startDate").readNullable[LocalDate] and
         (JsPath \ "endDate").readNullable[LocalDate] and
+        (JsPath \ "postedDate").readNullable[LocalDate] and
         (JsPath \ "frequency").readNullable[Int] and
         (JsPath \ "tcType").readNullable[String] and
         (JsPath \ "amount").readNullable[Double]
@@ -53,6 +56,7 @@ object WtcPayment {
     (
       (JsPath \ "startDate").writeNullable[LocalDate] and
         (JsPath \ "endDate").writeNullable[LocalDate] and
+        (JsPath \ "postedDate").writeNullable[LocalDate] and
         (JsPath \ "frequency").writeNullable[Int] and
         (JsPath \ "tcType").writeNullable[String] and
         (JsPath \ "amount").writeNullable[Double]
