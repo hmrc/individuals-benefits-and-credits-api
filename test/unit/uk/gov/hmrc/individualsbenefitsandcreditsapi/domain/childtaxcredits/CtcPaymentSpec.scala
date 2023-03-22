@@ -29,7 +29,7 @@ class CtcPaymentSpec extends UnitSpec {
       Some("2017-08-08"),
       Some("2017-09-09"),
       Some("test5"),
-      Some("test6"),
+      Some("2017-10-10"),
       Some("test7"),
       Some(10),
       Some("test8"),
@@ -39,7 +39,9 @@ class CtcPaymentSpec extends UnitSpec {
 
     val result = CtcPayment.create(ifPayment)
 
+    result.startDate shouldBe Some(LocalDate.parse("2017-08-08"))
     result.endDate shouldBe Some(LocalDate.parse("2017-09-09"))
+    result.postedDate shouldBe Some(LocalDate.parse("2017-10-10"))
     result.amount shouldBe Some(10.0)
     result.frequency shouldBe Some(10)
     result.tcType shouldBe Some("test8")

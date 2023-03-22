@@ -88,6 +88,7 @@ class ChildTaxCreditControllerSpec
           |      "payments" : [ {
           |        "startDate" : "2020-08-17",
           |        "endDate" : "2020-08-17",
+          |        "postedDate" : "2020-08-28",
           |        "frequency" : 1,
           |        "tcType" : "ICC",
           |        "amount" : 22
@@ -108,6 +109,7 @@ class ChildTaxCreditControllerSpec
           |      "payments" : [ {
           |        "startDate" : "2020-08-17",
           |        "endDate" : "2020-08-17",
+          |        "postedDate" : "2020-08-28",
           |        "frequency" : 1,
           |        "tcType" : "ICC",
           |        "amount" : 22

@@ -103,6 +103,7 @@ trait DomainHelpers {
     WtcPayment(
       Some(LocalDate.parse("2016-05-01")),
       Some(LocalDate.parse("2016-06-01")),
+      Some(LocalDate.parse("2016-07-01")),
       Some(7),
       Some("ETC"),
       Some(80.0)
@@ -127,6 +128,7 @@ trait DomainHelpers {
     CtcPayment(
       Some(LocalDate.parse("2016-05-01")),
       Some(LocalDate.parse("2016-06-01")),
+      Some(LocalDate.parse("2016-07-01")),
       Some(7),
       Some("ETC"),
       Some(80.0)
