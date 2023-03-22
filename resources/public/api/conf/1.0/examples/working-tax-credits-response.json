@@ -22,6 +22,7 @@
             {
               "startDate": "1996-08-01",
               "endDate": "1996-08-07",
+              "postedDate": "1996-08-18",
               "frequency": 7,
               "tcType": "ETC",
               "amount": 76.34
@@ -29,6 +30,7 @@
             {
               "startDate": "1996-08-01",
               "endDate": "1996-08-07",
+              "postedDate": "1996-08-18",
               "frequency": 7,
               "tcType": "ETC",
               "amount": 76.34
@@ -49,6 +51,7 @@
             {
               "startDate": "1996-08-01",
               "endDate": "1996-08-07",
+              "postedDate": "1996-08-18",
               "frequency": 7,
               "tcType": "ETC",
               "amount": 76.34
@@ -56,6 +59,7 @@
             {
               "startDate": "1996-08-01",
               "endDate": "1996-08-07",
+              "postedDate": "1996-08-18",
               "frequency": 7,
               "tcType": "ETC",
               "amount": 76.34

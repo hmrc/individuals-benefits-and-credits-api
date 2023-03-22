@@ -94,6 +94,10 @@
                         "description": "The end date of the payment.",
                         "$ref": "#/definitions/End-Date"
                       },
+                      "postedDate": {
+                        "description": "The date the payment profile was calculated.",
+                        "$ref": "#/definitions/End-Date"
+                      },
                       "frequency": {
                         "type": "integer",
                         "description": "The number of days between payments. Currently supported values are 1, 7, 14, and 28",
