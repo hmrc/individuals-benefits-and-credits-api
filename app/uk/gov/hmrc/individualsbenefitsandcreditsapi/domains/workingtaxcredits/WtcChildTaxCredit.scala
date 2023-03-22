@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
 
 case class WtcChildTaxCredit(childCareAmount: Option[Double])
@@ -27,10 +27,5 @@ object WtcChildTaxCredit {
     WtcChildTaxCredit(ifChildTaxTaxCredit.childCareAmount)
   }
 
-  implicit val childTaxCreditFormat: Format[WtcChildTaxCredit] = Format(
-    (JsPath \ "childCareAmount").readNullable[Double].map(WtcChildTaxCredit(_)),
-    (JsPath \ "childCareAmount")
-      .writeNullable[Double]
-      .contramap(_.childCareAmount)
-  )
+  implicit val childTaxCreditFormat: Format[WtcChildTaxCredit] = Json.format[WtcChildTaxCredit]
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfChildTaxCredit(
     childCareAmount: Option[Double],
@@ -43,13 +43,6 @@ object IfChildTaxCredit extends PatternsAndValidators {
           .readNullable[Double](paymentAmountValidator) and
         (JsPath \ "paidYTD").readNullable[Double](paymentAmountValidator)
     )(IfChildTaxCredit.apply _),
-    (
-      (JsPath \ "childCareAmount").writeNullable[Double] and
-        (JsPath \ "ctcChildAmount").writeNullable[Double] and
-        (JsPath \ "familyAmount").writeNullable[Double] and
-        (JsPath \ "babyAmount").writeNullable[Double] and
-        (JsPath \ "entitlementYTD").writeNullable[Double] and
-        (JsPath \ "paidYTD").writeNullable[Double]
-    )(unlift(IfChildTaxCredit.unapply))
+    Json.writes[IfChildTaxCredit]
   )
 }

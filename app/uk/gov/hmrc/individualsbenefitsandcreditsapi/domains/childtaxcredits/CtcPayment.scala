@@ -19,7 +19,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 import org.joda.time.LocalDate
 import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
 case class CtcPayment(
@@ -43,22 +43,5 @@ object CtcPayment {
     )
   }
 
-  implicit val paymentFormat: Format[CtcPayment] = Format(
-    (
-      (JsPath \ "startDate").readNullable[LocalDate] and
-        (JsPath \ "endDate").readNullable[LocalDate] and
-        (JsPath \ "postedDate").readNullable[LocalDate] and
-        (JsPath \ "frequency").readNullable[Int] and
-        (JsPath \ "tcType").readNullable[String] and
-        (JsPath \ "amount").readNullable[Double]
-    )(CtcPayment.apply _),
-    (
-      (JsPath \ "startDate").writeNullable[LocalDate] and
-        (JsPath \ "endDate").writeNullable[LocalDate] and
-        (JsPath \ "postedDate").writeNullable[LocalDate] and
-        (JsPath \ "frequency").writeNullable[Int] and
-        (JsPath \ "tcType").writeNullable[String] and
-        (JsPath \ "amount").writeNullable[Double]
-    )(unlift(CtcPayment.unapply))
-  )
+  implicit val paymentFormat: Format[CtcPayment] = Json.format[CtcPayment]
 }

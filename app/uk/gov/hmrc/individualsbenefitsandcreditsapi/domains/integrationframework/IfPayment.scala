@@ -35,33 +35,19 @@ case class IfPayment(
                      )
 
 object IfPayment extends PatternsAndValidators {
-
   implicit val paymentsFormat: Format[IfPayment] = Format(
     (
       (JsPath \ "periodStartDate").readNullable[String](pattern(datePattern, "invalid date")) and
-      (JsPath \ "periodEndDate").readNullable[String](pattern(datePattern, "invalid date")) and
-      (JsPath \ "startDate").readNullable[String](pattern(datePattern, "invalid date")) and
-      (JsPath \ "endDate").readNullable[String](pattern(datePattern, "invalid date")) and
-      (JsPath \ "status").readNullable[String](pattern(statusPattern, "invalid status")) and
-      (JsPath \ "postedDate").readNullable[String](pattern(datePattern, "invalid date")) and
-      (JsPath \ "nextDueDate").readNullable[String](pattern(datePattern, "invalid date")) and
-      (JsPath \ "frequency").readNullable[Int](min[Int](1).keepAnd(max[Int](999))) and
-      (JsPath \ "tcType").readNullable[String](pattern(tcTypePattern, "invalid tc type")) and
-      (JsPath \ "amount").readNullable[Double](paymentAmountValidator) and
-      (JsPath \ "method").readNullable[String](pattern(methodPattern, "invalid method"))
+        (JsPath \ "periodEndDate").readNullable[String](pattern(datePattern, "invalid date")) and
+        (JsPath \ "startDate").readNullable[String](pattern(datePattern, "invalid date")) and
+        (JsPath \ "endDate").readNullable[String](pattern(datePattern, "invalid date")) and
+        (JsPath \ "status").readNullable[String](pattern(statusPattern, "invalid status")) and
+        (JsPath \ "postedDate").readNullable[String](pattern(datePattern, "invalid date")) and
+        (JsPath \ "nextDueDate").readNullable[String](pattern(datePattern, "invalid date")) and
+        (JsPath \ "frequency").readNullable[Int](min[Int](1).keepAnd(max[Int](999))) and
+        (JsPath \ "tcType").readNullable[String](pattern(tcTypePattern, "invalid tc type")) and
+        (JsPath \ "amount").readNullable[Double](paymentAmountValidator) and
+        (JsPath \ "method").readNullable[String](pattern(methodPattern, "invalid method"))
     )(IfPayment.apply _),
-    (
-      (JsPath \ "periodStartDate").writeNullable[String] and
-        (JsPath \ "periodEndDate").writeNullable[String] and
-        (JsPath \ "startDate").writeNullable[String] and
-        (JsPath \ "endDate").writeNullable[String] and
-        (JsPath \ "status").writeNullable[String] and
-        (JsPath \ "postedDate").writeNullable[String] and
-        (JsPath \ "nextDueDate").writeNullable[String] and
-        (JsPath \ "frequency").writeNullable[Int] and
-        (JsPath \ "tcType").writeNullable[String] and
-        (JsPath \ "amount").writeNullable[Double] and
-        (JsPath \ "method").writeNullable[String]
-      )(unlift(IfPayment.unapply))
-  )
+    Json.writes[IfPayment])
 }

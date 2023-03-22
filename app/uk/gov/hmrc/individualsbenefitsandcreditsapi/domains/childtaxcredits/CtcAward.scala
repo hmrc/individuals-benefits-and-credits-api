@@ -18,7 +18,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import org.joda.time.LocalDate
 import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 import play.api.libs.functional.syntax._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
@@ -39,18 +39,5 @@ object CtcAward {
     )
   }
 
-  implicit val awardFormat: Format[CtcAward] = Format(
-    (
-      (JsPath \ "payProfCalcDate").readNullable[LocalDate] and
-      (JsPath \ "totalEntitlement").readNullable[Double] and
-      (JsPath \ "childTaxCredit").readNullable[CtcChildTaxCredit] and
-      (JsPath \ "payments").readNullable[Seq[CtcPayment]]
-    )(CtcAward.apply _),
-    (
-      (JsPath \ "payProfCalcDate").writeNullable[LocalDate] and
-      (JsPath \ "totalEntitlement").writeNullable[Double] and
-      (JsPath \ "childTaxCredit").writeNullable[CtcChildTaxCredit] and
-      (JsPath \ "payments").writeNullable[Seq[CtcPayment]]
-    )(unlift(CtcAward.unapply))
-  )
+  implicit val awardFormat: Format[CtcAward] = Json.format[CtcAward]
 }

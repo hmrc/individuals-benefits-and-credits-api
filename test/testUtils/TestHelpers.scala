@@ -90,7 +90,7 @@ trait TestHelpers {
       startDate = Some("2020-08-18"),
       endDate = Some("2020-08-18"),
       totalEntitlement = Some(22),
-      workTaxCredit = Some(wtc),
+      workingTaxCredit = Some(wtc),
       childTaxCredit = Some(ctc),
       grossTaxYearAmount = Some(22),
       payments = Some(payments)

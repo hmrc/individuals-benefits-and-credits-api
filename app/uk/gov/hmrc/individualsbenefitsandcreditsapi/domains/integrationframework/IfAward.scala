@@ -18,14 +18,14 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframewor
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.pattern
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfAward(
     payProfCalcDate: Option[String],
     startDate: Option[String],
     endDate: Option[String],
     totalEntitlement: Option[Double],
-    workTaxCredit: Option[IfWorkTaxCredit],
+    workingTaxCredit: Option[IfWorkTaxCredit],
     childTaxCredit: Option[IfChildTaxCredit],
     grossTaxYearAmount: Option[Double],
     payments: Option[Seq[IfPayment]]
@@ -49,15 +49,6 @@ object IfAward extends PatternsAndValidators {
           .readNullable[Double](paymentAmountValidator) and
         (JsPath \ "payments").readNullable[Seq[IfPayment]]
     )(IfAward.apply _),
-    (
-      (JsPath \ "payProfCalcDate").writeNullable[String] and
-        (JsPath \ "startDate").writeNullable[String] and
-        (JsPath \ "endDate").writeNullable[String] and
-        (JsPath \ "totalEntitlement").writeNullable[Double] and
-        (JsPath \ "workingTaxCredit").writeNullable[IfWorkTaxCredit] and
-        (JsPath \ "childTaxCredit").writeNullable[IfChildTaxCredit] and
-        (JsPath \ "grossTaxYearAmount").writeNullable[Double] and
-        (JsPath \ "payments").writeNullable[Seq[IfPayment]]
-    )(unlift(IfAward.unapply))
+    Json.writes[IfAward]
   )
 }

@@ -16,17 +16,10 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfApplications(applications: Seq[IfApplication])
 
 object IfApplications {
-  implicit val applicationsFormat: Format[IfApplications] = Format(
-    (JsPath \ "applications")
-      .read[Seq[IfApplication]]
-      .map(IfApplications.apply),
-    (JsPath \ "applications")
-      .write[Seq[IfApplication]]
-      .contramap(_.applications)
-  )
+  implicit val applicationsFormat: Format[IfApplications] = Json.format[IfApplications]
 }
