@@ -16,22 +16,26 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.handlers
 
-import play.api.Configuration
+import play.api.{Configuration, OptionalDevContext}
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{Handler, RequestHeader}
 import play.api.routing.Router
+import play.core.WebCommands
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils._
 import uk.gov.hmrc.play.bootstrap.http.RequestHandler
 
 import javax.inject.Inject
 import scala.util.Try
 
-class VersioningRequestHandler @Inject()(config: Configuration,
-                                         router: Router,
-                                         errorHandler: HttpErrorHandler,
-                                         httpConfiguration: HttpConfiguration,
-                                         filters: HttpFilters)
-    extends RequestHandler(router, errorHandler, httpConfiguration, filters) {
+class VersioningRequestHandler @Inject()(
+  config: Configuration,
+  webCommands: WebCommands,
+  optDevContext: OptionalDevContext,
+  router: Router,
+  errorHandler: HttpErrorHandler,
+  httpConfiguration: HttpConfiguration,
+  filters: HttpFilters)
+    extends RequestHandler(webCommands, optDevContext, router, errorHandler, httpConfiguration, filters) {
 
   private lazy val unversionedContexts = Try {
     config
