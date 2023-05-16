@@ -25,6 +25,7 @@ object AppDependencies {
     "org.pegdown"            % "pegdown"                   % "1.6.0"             % scope,
     "com.github.tomakehurst" % "wiremock-jre8"             % "2.27.2"            % scope,
     hmrc                     %% "service-integration-test" % "1.1.0-play-28"     % scope,
-    hmrcMongo                %% "hmrc-mongo-test-play-28"  % "0.68.0"            % scope
+    hmrcMongo                %% "hmrc-mongo-test-play-28"  % "0.68.0"            % scope,
+    hmrc                     %% "bootstrap-test-play-28"   % "5.25.0"            % scope,
   )
 }

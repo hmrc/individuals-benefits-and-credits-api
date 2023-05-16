@@ -43,8 +43,7 @@ lazy val microservice =
     .enablePlugins(Seq(play.sbt.PlayScala,
                        SbtAutoBuildPlugin,
                        SbtGitVersioning,
-                       SbtDistributablesPlugin,
-                       SbtArtifactory) ++ plugins: _*)
+                       SbtDistributablesPlugin) ++ plugins: _*)
     .settings(scalaSettings: _*)
     .settings(scoverageSettings: _*)
     .settings(ThisBuild / useSuperShell := false)
