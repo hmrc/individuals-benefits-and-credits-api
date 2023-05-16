@@ -1,4 +1,3 @@
-import play.core.PlayVersion
 import play.sbt.PlayImport.ws
 import sbt._
 
@@ -6,24 +5,10 @@ object AppDependencies {
 
   val hmrc = "uk.gov.hmrc"
   val hmrcMongo = "uk.gov.hmrc.mongo"
-  val akka = "com.typesafe.akka"
-
-  val akkaVersion = "2.6.15"
-  val akkaHttpVersion = "10.2.6"
-
-  val overrides = Seq(
-    akka %% "akka-stream" % akkaVersion,
-    akka %% "akka-protobuf" % akkaVersion,
-    akka %% "akka-slf4j" % akkaVersion,
-    akka %% "akka-actor" % akkaVersion,
-    akka %% "akka-actor-typed" % akkaVersion,
-    akka %% "akka-serialization-jackson" % akkaVersion,
-    akka %% "akka-http-core" % akkaHttpVersion
-  )
 
   val compile = Seq(
     ws,
-    hmrc                %% "bootstrap-backend-play-28"  % "5.12.0",
+    hmrc                %% "bootstrap-backend-play-28"  % "5.25.0",
     hmrc                %% "domain"                     % "6.2.0-play-28",
     hmrc                %% "play-hal"                   % "2.1.0-play-27",
     hmrc                %% "play-hmrc-api"              % "6.4.0-play-28",
@@ -40,6 +25,7 @@ object AppDependencies {
     "org.pegdown"            % "pegdown"                   % "1.6.0"             % scope,
     "com.github.tomakehurst" % "wiremock-jre8"             % "2.27.2"            % scope,
     hmrc                     %% "service-integration-test" % "1.1.0-play-28"     % scope,
-    hmrcMongo                %% "hmrc-mongo-test-play-28"  % "0.68.0"            % scope
+    hmrcMongo                %% "hmrc-mongo-test-play-28"  % "0.68.0"            % scope,
+    hmrc                     %% "bootstrap-test-play-28"   % "5.25.0"            % scope,
   )
 }

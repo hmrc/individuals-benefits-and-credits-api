@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.{Format, Json}
 
 case class IfApplications(applications: Seq[IfApplication])
 
