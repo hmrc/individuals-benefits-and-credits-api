@@ -18,8 +18,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import org.joda.time.LocalDate
 import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
-import play.api.libs.json.{Format, JsPath, Json}
-import play.api.libs.functional.syntax._
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class CtcAward(

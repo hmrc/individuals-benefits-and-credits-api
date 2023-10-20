@@ -1,18 +1,9 @@
+import play.sbt.routes.RoutesKeys
 import sbt.Keys.compile
 import sbt.Tests.{Group, SubProcess}
-import uk.gov.hmrc.DefaultBuildSettings.{
-  addTestReportOption,
-  defaultSettings,
-  scalaSettings
-}
-import uk.gov.hmrc.ExternalService
-import uk.gov.hmrc.ServiceManagerPlugin.Keys.itDependenciesList
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import play.sbt.routes.RoutesKeys
+import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
 
-RoutesKeys.routesImport := Seq(
-  "uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._"
-)
+RoutesKeys.routesImport := Seq("uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._")
 
 val appName = "individuals-benefits-and-credits-api"
 
@@ -22,17 +13,11 @@ lazy val scoverageSettings = {
     // Semicolon-separated list of regexs matching classes to exclude
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;uk.gov.hmrc.individualsbenefitsandcreditsapi.views.*;" +
       ".*BuildInfo.;uk.gov.hmrc.BuildInfo;.*Routes;.*RoutesPrefix*;",
-    ScoverageKeys.coverageMinimum := 80,
+    ScoverageKeys.coverageMinimumStmtTotal := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
 }
-
-lazy val plugins: Seq[Plugins] = Seq.empty
-lazy val externalServices =
-  List(ExternalService("AUTH"),
-       ExternalService("INDIVIDUALS_MATCHING_API"),
-       ExternalService("DES"))
 
 def intTestFilter(name: String): Boolean = name startsWith "it"
 def unitFilter(name: String): Boolean = name startsWith "unit"
@@ -40,28 +25,24 @@ def componentFilter(name: String): Boolean = name startsWith "component"
 
 lazy val microservice =
   Project(appName, file("."))
-    .enablePlugins(Seq(play.sbt.PlayScala,
-                       SbtAutoBuildPlugin,
-                       SbtGitVersioning,
-                       SbtDistributablesPlugin) ++ plugins: _*)
+    .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
     .settings(scalaSettings: _*)
     .settings(scoverageSettings: _*)
     .settings(ThisBuild / useSuperShell := false)
-    .settings(publishingSettings: _*)
-    .settings(scalaVersion := "2.12.11")
+    .settings(scalaVersion := "2.13.8")
+    .settings(onLoadMessage := "")
     .settings(defaultSettings(): _*)
     .settings(
+      scalacOptions += "-Wconf:src=routes/.*:s",
+      scalacOptions += "-Wconf:cat=unused-imports&src=txt/.*:s",
       libraryDependencies ++= (AppDependencies.compile ++ AppDependencies
         .test()),
       Test / testOptions := Seq(Tests.Filter(unitFilter)),
       retrieveManaged := true,
-      update / evictionWarningOptions := EvictionWarningOptions.default
-        .withWarnScalaVersionEviction(false)
     )
     .settings(Compile / unmanagedResourceDirectories += baseDirectory.value / "resources")
     .configs(IntegrationTest)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-    .settings(itDependenciesList := externalServices)
     .settings(
       IntegrationTest / Keys.fork := false,
       IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory)(

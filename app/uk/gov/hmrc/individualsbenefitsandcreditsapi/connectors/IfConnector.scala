@@ -20,7 +20,8 @@ import org.joda.time.Interval
 import play.api.Logger
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, UpstreamErrorResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils
@@ -28,7 +29,6 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
 class IfConnector @Inject()(servicesConfig: ServicesConfig,
                             http: HttpClient,
@@ -93,7 +93,7 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig,
       auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, s"Error parsing IF response: ${validationError.errors}")
       Future.failed(new InternalServerException("Something went wrong."))
     }
-    case Upstream4xxResponse(msg, 404, _, _) => {
+    case UpstreamErrorResponse(msg, 404, _, _) => {
       auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, msg)
       
       msg.contains("NO_DATA_FOUND") match {
@@ -104,19 +104,19 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig,
         }
       }
     }
-    case Upstream5xxResponse(msg, code, _, _) => {
-      logger.warn(s"Integration Framework Upstream5xxResponse encountered: $code")
-      auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, s"Internal Server error: $msg")
+    case UpstreamErrorResponse.Upstream5xxResponse(e) => {
+      logger.warn(s"Integration Framework Upstream5xxResponse encountered: ${e.statusCode}")
+      auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, s"Internal Server error: ${e.message}")
       Future.failed(new InternalServerException("Something went wrong."))
     }
-    case Upstream4xxResponse(msg, 429, _, _) => {
+    case UpstreamErrorResponse(msg, 429, _, _) => {
       logger.warn(s"Integration Framework Rate limited: $msg")
       auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, s"IF Rate limited: $msg")
       Future.failed(new TooManyRequestException(msg))
     }
-    case Upstream4xxResponse(msg, code, _, _) => {
-      logger.warn(s"Integration Framework Upstream4xxResponse encountered: $code")
-      auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, msg)
+    case UpstreamErrorResponse.Upstream4xxResponse(e) => {
+      logger.warn(s"Integration Framework Upstream4xxResponse encountered: ${e.statusCode}")
+      auditHelper.auditIfApiFailure(correlationId, matchId, request, requestUrl, e.message)
       Future.failed(new InternalServerException("Something went wrong."))
     }
     case e: Exception => {
