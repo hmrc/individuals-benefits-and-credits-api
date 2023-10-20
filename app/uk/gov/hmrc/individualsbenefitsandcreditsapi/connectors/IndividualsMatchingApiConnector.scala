@@ -39,7 +39,7 @@ class IndividualsMatchingApiConnector @Inject()(servicesConfig: ServicesConfig,
   def resolve(matchId: UUID)(
       implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     http.GET[MatchedCitizen](s"$serviceUrl/match-record/$matchId") recover {
-      case Upstream4xxResponse(_, 404, _, _) => throw new MatchNotFoundException
+      case UpstreamErrorResponse(_, 404, _, _) => throw new MatchNotFoundException
     }
 
 }

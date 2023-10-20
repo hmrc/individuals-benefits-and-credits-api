@@ -20,7 +20,7 @@ import com.typesafe.config.Config
 import play.api.ConfigLoader
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.PathTree
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 case class ApiConfig(scopes: List[ScopeConfig], internalEndpoints: List[InternalEndpointConfig], externalEndpoints: List[ExternalEndpointConfig]) {
 
@@ -69,7 +69,7 @@ object ApiConfig {
             .getConfig(path)
             .entrySet()
             .asScala
-            .map(x => x.getKey.replaceAllLiterally("\"", ""))
+            .map(x => x.getKey.replaceAll("\"", ""))
             .toList
           Some(PathTree(keys, "\\."))
         }
