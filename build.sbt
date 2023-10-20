@@ -5,9 +5,6 @@ import uk.gov.hmrc.DefaultBuildSettings.{
   defaultSettings,
   scalaSettings
 }
-import uk.gov.hmrc.ExternalService
-import uk.gov.hmrc.ServiceManagerPlugin.Keys.itDependenciesList
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import play.sbt.routes.RoutesKeys
 
 RoutesKeys.routesImport := Seq(
@@ -22,17 +19,13 @@ lazy val scoverageSettings = {
     // Semicolon-separated list of regexs matching classes to exclude
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;uk.gov.hmrc.individualsbenefitsandcreditsapi.views.*;" +
       ".*BuildInfo.;uk.gov.hmrc.BuildInfo;.*Routes;.*RoutesPrefix*;",
-    ScoverageKeys.coverageMinimum := 80,
+    ScoverageKeys.coverageMinimumStmtTotal := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
 }
 
 lazy val plugins: Seq[Plugins] = Seq.empty
-lazy val externalServices =
-  List(ExternalService("AUTH"),
-       ExternalService("INDIVIDUALS_MATCHING_API"),
-       ExternalService("DES"))
 
 def intTestFilter(name: String): Boolean = name startsWith "it"
 def unitFilter(name: String): Boolean = name startsWith "unit"
@@ -47,21 +40,18 @@ lazy val microservice =
     .settings(scalaSettings: _*)
     .settings(scoverageSettings: _*)
     .settings(ThisBuild / useSuperShell := false)
-    .settings(publishingSettings: _*)
-    .settings(scalaVersion := "2.12.11")
+    .settings(scalaVersion := "2.13.8")
+    .settings(onLoadMessage := "")
     .settings(defaultSettings(): _*)
     .settings(
       libraryDependencies ++= (AppDependencies.compile ++ AppDependencies
         .test()),
       Test / testOptions := Seq(Tests.Filter(unitFilter)),
       retrieveManaged := true,
-      update / evictionWarningOptions := EvictionWarningOptions.default
-        .withWarnScalaVersionEviction(false)
     )
     .settings(Compile / unmanagedResourceDirectories += baseDirectory.value / "resources")
     .configs(IntegrationTest)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-    .settings(itDependenciesList := externalServices)
     .settings(
       IntegrationTest / Keys.fork := false,
       IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory)(
