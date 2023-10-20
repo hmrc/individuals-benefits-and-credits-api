@@ -44,6 +44,8 @@ lazy val microservice =
     .settings(onLoadMessage := "")
     .settings(defaultSettings(): _*)
     .settings(
+      scalacOptions += "-Wconf:src=routes/.*:s",
+      scalacOptions += "-Wconf:cat=unused-imports&src=txt/.*:s",
       libraryDependencies ++= (AppDependencies.compile ++ AppDependencies
         .test()),
       Test / testOptions := Seq(Tests.Filter(unitFilter)),
