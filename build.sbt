@@ -1,15 +1,9 @@
+import play.sbt.routes.RoutesKeys
 import sbt.Keys.compile
 import sbt.Tests.{Group, SubProcess}
-import uk.gov.hmrc.DefaultBuildSettings.{
-  addTestReportOption,
-  defaultSettings,
-  scalaSettings
-}
-import play.sbt.routes.RoutesKeys
+import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
 
-RoutesKeys.routesImport := Seq(
-  "uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._"
-)
+RoutesKeys.routesImport := Seq("uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._")
 
 val appName = "individuals-benefits-and-credits-api"
 
@@ -25,18 +19,13 @@ lazy val scoverageSettings = {
   )
 }
 
-lazy val plugins: Seq[Plugins] = Seq.empty
-
 def intTestFilter(name: String): Boolean = name startsWith "it"
 def unitFilter(name: String): Boolean = name startsWith "unit"
 def componentFilter(name: String): Boolean = name startsWith "component"
 
 lazy val microservice =
   Project(appName, file("."))
-    .enablePlugins(Seq(play.sbt.PlayScala,
-                       SbtAutoBuildPlugin,
-                       SbtGitVersioning,
-                       SbtDistributablesPlugin) ++ plugins: _*)
+    .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
     .settings(scalaSettings: _*)
     .settings(scoverageSettings: _*)
     .settings(ThisBuild / useSuperShell := false)
