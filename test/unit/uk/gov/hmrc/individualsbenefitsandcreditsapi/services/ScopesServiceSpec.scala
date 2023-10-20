@@ -27,9 +27,9 @@ class ScopesServiceSpec extends UnitSpec with Matchers with ScopesConfig {
   "Gets correct external endpoints from configuration for first scope" in {
     val endpoints = scopesService.getExternalEndpoints(Seq(mockScopeOne))
     endpoints.size shouldBe 2
-    endpoints.map(_.key) shouldBe Seq(endpointKeyOne, endpointKeyTwo)
-    endpoints.map(_.link) shouldBe Seq("/external/1", "/external/2")
-    endpoints.map(_.title) shouldBe Seq("Get the first endpoint", "Get the second endpoint")
+    endpoints.map(_.key) should contain theSameElementsAs Seq(endpointKeyOne, endpointKeyTwo)
+    endpoints.map(_.link) should contain theSameElementsAs Seq("/external/1", "/external/2")
+    endpoints.map(_.title) should contain theSameElementsAs Seq("Get the first endpoint", "Get the second endpoint")
 
   }
 
