@@ -7,18 +7,6 @@ RoutesKeys.routesImport := Seq("uk.gov.hmrc.individualsbenefitsandcreditsapi.Bin
 
 val appName = "individuals-benefits-and-credits-api"
 
-lazy val scoverageSettings = {
-  import scoverage.ScoverageKeys
-  Seq(
-    // Semicolon-separated list of regexs matching classes to exclude
-    ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;uk.gov.hmrc.individualsbenefitsandcreditsapi.views.*;" +
-      ".*BuildInfo.;uk.gov.hmrc.BuildInfo;.*Routes;.*RoutesPrefix*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 80,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
-  )
-}
-
 def intTestFilter(name: String): Boolean = name startsWith "it"
 def unitFilter(name: String): Boolean = name startsWith "unit"
 def componentFilter(name: String): Boolean = name startsWith "component"
@@ -27,7 +15,7 @@ lazy val microservice =
   Project(appName, file("."))
     .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
     .settings(scalaSettings: _*)
-    .settings(scoverageSettings: _*)
+    .settings(CodeCoverageSettings.settings *)
     .settings(ThisBuild / useSuperShell := false)
     .settings(scalaVersion := "2.13.8")
     .settings(onLoadMessage := "")
