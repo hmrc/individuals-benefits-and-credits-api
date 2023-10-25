@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
 import play.api.Configuration
 trait ScopesConfig {

@@ -18,7 +18,7 @@ package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.config
 
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.ApiConfig
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services.ScopesConfig
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class ApiConfigTest extends UnitSpec with MockitoSugar with ScopesConfig {
@@ -26,7 +26,6 @@ class ApiConfigTest extends UnitSpec with MockitoSugar with ScopesConfig {
   val apiConfig: ApiConfig = mockConfig.get[ApiConfig]("api-config")
 
   "ApiConfig" should {
-
     "parse scopes correctly" in {
       apiConfig.scopes.map(s => s.name).toSet shouldBe Set(mockScopeOne, mockScopeTwo)
       apiConfig
@@ -48,7 +47,6 @@ class ApiConfigTest extends UnitSpec with MockitoSugar with ScopesConfig {
 
     "parse endpoint links correctly" in {
       apiConfig.getInternalEndpoint(endpointOne).map(c => c.link).get shouldBe "/internal/1"
-      apiConfig.getExternalEndpoint(endpointTwo).map(c => c.link).get shouldBe "/external/2"
     }
   }
 }

@@ -32,8 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.WorkingTaxCreditController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesService, TaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 

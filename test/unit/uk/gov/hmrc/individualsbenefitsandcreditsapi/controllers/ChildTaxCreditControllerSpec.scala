@@ -31,8 +31,7 @@ import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, Insufficient
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.ChildTaxCreditController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesService, TaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 

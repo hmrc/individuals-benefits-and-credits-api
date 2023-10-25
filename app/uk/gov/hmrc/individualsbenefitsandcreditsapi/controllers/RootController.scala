@@ -22,7 +22,6 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.{maybeCorrelationId, validateCorrelationId}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.{ScopesHelper, ScopesService}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
 import java.util.UUID
