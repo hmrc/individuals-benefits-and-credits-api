@@ -29,7 +29,17 @@ lazy val microservice =
       addTestReportOption(IntegrationTest, "int-test-reports"),
       IntegrationTest / testGrouping := oneForkedJvmPerTest(
         (IntegrationTest / definedTests).value),
-      IntegrationTest / parallelExecution := false
+      IntegrationTest / parallelExecution := false,
+      // Disable default sbt Test options (might change with new versions of bootstrap)
+      IntegrationTest / testOptions -= Tests
+        .Argument("-o", "-u", "target/int-test-reports", "-h", "target/int-test-reports/html-report"),
+      IntegrationTest / testOptions += Tests.Argument(
+        TestFrameworks.ScalaTest,
+        "-oNCHPQR",
+        "-u",
+        "target/int-test-reports",
+        "-h",
+        "target/int-test-reports/html-report")
     )
     .configs(ComponentTest)
     .settings(inConfig(ComponentTest)(Defaults.testSettings) *)
@@ -39,10 +49,32 @@ lazy val microservice =
         base => Seq(base / "test")).value,
       ComponentTest / testGrouping := oneForkedJvmPerTest(
         (ComponentTest / definedTests).value),
-      ComponentTest / parallelExecution := false
+      ComponentTest / parallelExecution := false,
+      // Disable default sbt Test options (might change with new versions of bootstrap)
+      ComponentTest / testOptions -= Tests
+        .Argument("-o", "-u", "target/component-test-reports", "-h", "target/component-test-reports/html-report"),
+      ComponentTest / testOptions += Tests.Argument(
+        TestFrameworks.ScalaTest,
+        "-oNCHPQR",
+        "-u",
+        "target/component-test-reports",
+        "-h",
+        "target/component-test-reports/html-report")
     )
     .settings(PlayKeys.playDefaultPort := 9654)
     .settings(majorVersion := 0)
+    // Disable default sbt Test options (might change with new versions of bootstrap)
+    .settings(Test / testOptions -= Tests
+      .Argument("-o", "-u", "target/test-reports", "-h", "target/test-reports/html-report"))
+    // Suppress successful events in Scalatest in standard output (-o)
+    // Options described here: https://www.scalatest.org/user_guide/using_scalatest_with_sbt
+    .settings(Test / testOptions += Tests.Argument(
+      TestFrameworks.ScalaTest,
+      "-oNCHPQR",
+      "-u",
+      "target/test-reports",
+      "-h",
+      "target/test-reports/html-report"))
 
 def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
   tests.map { test =>
