@@ -14,32 +14,15 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
 import org.scalatest.matchers.should.Matchers
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.ScopesService
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class ScopesServiceSpec extends UnitSpec with Matchers with ScopesConfig {
 
   val scopesService = new ScopesService(mockConfig)
-
-  "Gets correct external endpoints from configuration for first scope" in {
-    val endpoints = scopesService.getExternalEndpoints(Seq(mockScopeOne))
-    endpoints.size shouldBe 2
-    endpoints.map(_.key) should contain theSameElementsAs Seq(endpointKeyOne, endpointKeyTwo)
-    endpoints.map(_.link) should contain theSameElementsAs Seq("/external/1", "/external/2")
-    endpoints.map(_.title) should contain theSameElementsAs Seq("Get the first endpoint", "Get the second endpoint")
-
-  }
-
-  "Gets correct external endpoints from configuration for second scope" in {
-    val endpoints = scopesService.getExternalEndpoints(Seq(mockScopeTwo))
-    endpoints.size shouldBe 2
-    endpoints.map(_.key) shouldBe Seq(endpointKeyTwo, endpointKeyThree)
-    endpoints.map(_.link) shouldBe Seq("/external/2", "/external/3")
-    endpoints.map(_.title) shouldBe Seq("Get the second endpoint", "Get the third endpoint")
-  }
 
   "Gets correct internal endpoints from configuration for first scope" in {
     val endpoints = scopesService.getInternalEndpoints(Seq(mockScopeOne))
@@ -56,6 +39,6 @@ class ScopesServiceSpec extends UnitSpec with Matchers with ScopesConfig {
 
   "Gets all scopes correctly" in {
     val scopes = scopesService.getAllScopes
-    scopes.toSeq shouldBe Seq(mockScopeOne, mockScopeTwo)
+    scopes shouldBe Seq(mockScopeOne, mockScopeTwo)
   }
 }

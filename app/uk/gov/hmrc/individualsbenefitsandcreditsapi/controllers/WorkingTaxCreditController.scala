@@ -20,12 +20,11 @@ import org.joda.time.Interval
 import play.api.hal.Hal._
 import play.api.hal.HalLink
 import play.api.libs.json.Json
-import play.api.mvc.ControllerComponents
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.mvc.hal._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.{maybeCorrelationId, validateCorrelationId}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
 import java.util.UUID
@@ -41,7 +40,7 @@ class WorkingTaxCreditController @Inject()(
 ) extends CommonController(cc)
     with PrivilegedAuthentication {
 
-  def workingTaxCredit(matchId: UUID, interval: Interval) =
+  def workingTaxCredit(matchId: UUID, interval: Interval): Action[AnyContent] =
     Action.async { implicit request =>
 
       val scopes = scopeService.getEndPointScopes("working-tax-credit")

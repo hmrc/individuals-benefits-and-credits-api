@@ -29,10 +29,8 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, Ind
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.TaxCreditsService
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheIdBase, CacheService}
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesHelper, ScopesService, TaxCreditsService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 import java.util.UUID

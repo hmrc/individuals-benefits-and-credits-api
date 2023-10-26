@@ -16,7 +16,6 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs
 
-import java.util.concurrent.TimeUnit
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
@@ -29,8 +28,9 @@ import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.mvc.Http.MimeTypes.JSON
 import scalaj.http.Http
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesConfig
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services.ScopesConfig
 
+import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 
 trait BaseSpec

@@ -17,7 +17,7 @@
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.BaseSpec
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.service.ScopesHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.ScopesHelper
 
 class IfQueriesSpec extends BaseSpec {
 
