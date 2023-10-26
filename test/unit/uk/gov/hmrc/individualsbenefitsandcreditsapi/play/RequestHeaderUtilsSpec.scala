@@ -17,12 +17,12 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.play
 
 import org.scalatest.matchers.should.Matchers
-
-import java.util.UUID
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{ACCEPT, GET}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils._
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.TestSupport
+
+import java.util.UUID
 
 class RequestHeaderUtilsSpec extends TestSupport with Matchers {
 

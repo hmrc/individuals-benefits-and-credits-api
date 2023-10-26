@@ -16,17 +16,13 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import java.util.UUID
-
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  IfStub,
-  IndividualsMatchingApiStub
-}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, IfStub, IndividualsMatchingApiStub}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
 import testUtils.TestHelpers
+
+import java.util.UUID
 
 class ChildTaxCreditControllerSpec
     extends CommonControllerWithIfRequestSpec

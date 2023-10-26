@@ -16,16 +16,17 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import javax.inject.Inject
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.mvc.{ControllerComponents, Request, RequestHeader, Result}
 import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
 import uk.gov.hmrc.http.{BadRequestException, TooManyRequestException}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{ErrorInternalServer, ErrorInvalidRequest, ErrorNotFound, ErrorTooManyRequests, ErrorUnauthorized, MatchNotFoundException}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Dates.toFormattedLocalDate
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+
+import javax.inject.Inject
 
 abstract class CommonController @Inject()(
     cc: ControllerComponents

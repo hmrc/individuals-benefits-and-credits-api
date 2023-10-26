@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.handlers
 
-import play.api.{Configuration, OptionalDevContext}
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{Handler, RequestHeader}
 import play.api.routing.Router
+import play.api.{Configuration, OptionalDevContext}
 import play.core.WebCommands
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils._
 import uk.gov.hmrc.play.bootstrap.http.RequestHandler

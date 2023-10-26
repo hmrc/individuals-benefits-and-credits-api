@@ -18,8 +18,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
 import org.joda.time.Interval
 import play.api.libs.json.Format
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{CacheRepositoryConfiguration, CacheRepository}
-
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{CacheRepository, CacheRepositoryConfiguration}
 
 import java.util.UUID
 import javax.inject.Inject

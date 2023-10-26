@@ -19,7 +19,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results
-import JsonFormatters._
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.JsonFormatters._
 
 sealed abstract class ErrorResponse(val httpStatusCode: Int,
                                     val errorCode: String,

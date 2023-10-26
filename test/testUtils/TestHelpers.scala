@@ -16,14 +16,7 @@
 
 package testUtils
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
-  IfApplication,
-  IfApplications,
-  IfAward,
-  IfChildTaxCredit,
-  IfPayment,
-  IfWorkTaxCredit
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework._
 
 import scala.util.Random
 

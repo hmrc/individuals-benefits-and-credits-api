@@ -16,10 +16,10 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
 
+import org.joda.time.LocalDate
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcPayment
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
-import org.joda.time.LocalDate
 
 class WtcPaymentSpec extends UnitSpec {
   "Create correctly from If Payment" in {

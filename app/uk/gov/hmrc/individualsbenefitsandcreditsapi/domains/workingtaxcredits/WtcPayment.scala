@@ -17,8 +17,8 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.http.controllers.RestFormats
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
 case class WtcPayment(
@@ -31,7 +31,7 @@ case class WtcPayment(
 )
 
 object WtcPayment {
-  def create(ifPayment: IfPayment) = {
+  def create(ifPayment: IfPayment): WtcPayment = {
     WtcPayment(
       ifPayment.startDate.map(LocalDate.parse),
       ifPayment.endDate.map(LocalDate.parse),
@@ -42,5 +42,6 @@ object WtcPayment {
     )
   }
 
+  implicit val dateFormat: Format[LocalDate] = RestFormats.localDateFormats
   implicit val paymentFormat: Format[WtcPayment] = Json.format[WtcPayment]
 }

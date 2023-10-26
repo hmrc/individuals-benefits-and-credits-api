@@ -16,15 +16,12 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import java.util.UUID
-
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  BaseSpec
-}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, BaseSpec}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
+
+import java.util.UUID
 
 trait CommonControllerSpec extends BaseSpec {
 

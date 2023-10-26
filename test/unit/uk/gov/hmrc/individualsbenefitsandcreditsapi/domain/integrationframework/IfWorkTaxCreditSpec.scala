@@ -17,9 +17,7 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.integrationframework
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{
-  IfWorkTaxCredit
-}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class IfWorkTaxCreditSpec extends UnitSpec {

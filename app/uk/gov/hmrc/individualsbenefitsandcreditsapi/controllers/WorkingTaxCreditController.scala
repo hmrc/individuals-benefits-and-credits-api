@@ -20,8 +20,8 @@ import org.joda.time.Interval
 import play.api.hal.Hal._
 import play.api.hal.HalLink
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.mvc.hal._
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.{maybeCorrelationId, validateCorrelationId}
