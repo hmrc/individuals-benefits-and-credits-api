@@ -29,24 +29,20 @@ import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaxCreditsService @Inject()(cacheService: CacheService,
-                                      ifConnector: IfConnector,
-                                      scopesService: ScopesService,
-                                      scopesHelper: ScopesHelper,
-                                      individualsMatchingApiConnector: IndividualsMatchingApiConnector) {
-  def getWorkingTaxCredits(matchId: UUID,
-                                    interval: Interval,
-                                    scopes: Iterable[String])
-                                   (implicit hc: HeaderCarrier,
-                                    request: RequestHeader,
-                                    ec: ExecutionContext): Future[Seq[WtcApplication]] = {
+class TaxCreditsService @Inject()(
+  cacheService: CacheService,
+  ifConnector: IfConnector,
+  scopesService: ScopesService,
+  scopesHelper: ScopesHelper,
+  individualsMatchingApiConnector: IndividualsMatchingApiConnector) {
+  def getWorkingTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(
+    implicit hc: HeaderCarrier,
+    request: RequestHeader,
+    ec: ExecutionContext): Future[Seq[WtcApplication]] = {
 
     val endpoint: String = "working-tax-credit"
 
-    val cacheid = CacheId(
-      matchId,
-      interval,
-      scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
+    val cacheid = CacheId(matchId, interval, scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
 
     cacheService
       .get(
@@ -56,33 +52,24 @@ class TaxCreditsService @Inject()(cacheService: CacheService,
               val fieldsQuery =
                 scopesHelper.getQueryStringFor(scopes.toList, Seq(endpoint).toList)
               ifConnector
-                .fetchTaxCredits(ninoMatch.nino,
-                                 interval,
-                                 Option(fieldsQuery).filter(_.nonEmpty),
-                                 matchId.toString)
+                .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
             })
         }
       )
       .map(applications => applications.map(WtcApplication.create))
   }
 
-  def resolve(matchId: UUID)
-                      (implicit hc: HeaderCarrier): Future[MatchedCitizen] =
+  def resolve(matchId: UUID)(implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     individualsMatchingApiConnector.resolve(matchId)
 
-  def getChildTaxCredits(matchId: UUID,
-                                  interval: Interval,
-                                  scopes: Iterable[String])
-                                 (implicit hc: HeaderCarrier,
-                                  request: RequestHeader,
-                                  ec: ExecutionContext): Future[Seq[CtcApplication]] = {
+  def getChildTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(
+    implicit hc: HeaderCarrier,
+    request: RequestHeader,
+    ec: ExecutionContext): Future[Seq[CtcApplication]] = {
 
     val endpoint: String = "child-tax-credit"
 
-    val cacheid = CacheId(
-      matchId,
-      interval,
-      scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
+    val cacheid = CacheId(matchId, interval, scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
 
     cacheService
       .get(
@@ -91,11 +78,8 @@ class TaxCreditsService @Inject()(cacheService: CacheService,
             .flatMap(ninoMatch => {
               val fieldsQuery =
                 scopesHelper.getQueryStringFor(scopes.toList, List(endpoint))
-              ifConnector.fetchTaxCredits(
-                ninoMatch.nino,
-                interval,
-                Option(fieldsQuery).filter(_.nonEmpty),
-                matchId.toString)
+              ifConnector
+                .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
             })
         }
       )

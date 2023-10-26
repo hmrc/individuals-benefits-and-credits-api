@@ -39,10 +39,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class WorkingTaxCreditControllerSpec
-    extends SpecBase
-    with MockitoSugar
-    with DomainHelpers {
+class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with DomainHelpers {
 
   val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
   val correlationIdHeader: (String, String) = "CorrelationId" -> sampleCorrelationId
@@ -61,10 +58,7 @@ class WorkingTaxCreditControllerSpec
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
     val auditHelper: AuditHelper = mock[AuditHelper]
 
-    when(
-      mockAuthConnector.authorise(
-        eqTo(Enrolment("test-scope")),
-        refEq(Retrievals.allEnrolments))(any(), any()))
+    when(mockAuthConnector.authorise(eqTo(Enrolment("test-scope")), refEq(Retrievals.allEnrolments))(any(), any()))
       .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
     val scopes: Iterable[String] =
@@ -94,17 +88,14 @@ class WorkingTaxCreditControllerSpec
 
           Mockito.reset(workingTaxCreditsController.auditHelper)
 
-          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/working-tax-credits/")
-            .withHeaders(correlationIdHeader)
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest("GET", s"/working-tax-credits/")
+              .withHeaders(correlationIdHeader)
 
-          when(
-            liveTaxCreditsService.getWorkingTaxCredits(
-              eqTo(testMatchId),
-              eqTo(testInterval),
-              eqTo(Set("test-scope")))(any(), any(), any()))
+          when(liveTaxCreditsService
+            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
-              Future.successful(
-                Seq(createValidWtcApplication(), createValidWtcApplication()))
+              Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
           val result: Future[Result] =
@@ -113,37 +104,34 @@ class WorkingTaxCreditControllerSpec
 
           status(result) shouldBe OK
 
-          verify(workingTaxCreditsController.auditHelper, times(1)).
-            workingTaxCreditAuditApiResponse(any(), any(), any(), any(), any(), any())(any())
+          verify(workingTaxCreditsController.auditHelper, times(1))
+            .workingTaxCreditAuditApiResponse(any(), any(), any(), any(), any(), any())(any())
 
-          verify(workingTaxCreditsController.auditHelper, times(1)).
-            auditAuthScopes(any(), any(), any())(any())
+          verify(workingTaxCreditsController.auditHelper, times(1))
+            .auditAuthScopes(any(), any(), any())(any())
         }
 
         "return 404 (not found) for an invalid matchId" in new Fixture {
 
           Mockito.reset(workingTaxCreditsController.auditHelper)
 
-          when(
-            liveTaxCreditsService.getWorkingTaxCredits(
-              eqTo(testMatchId),
-              eqTo(testInterval),
-              eqTo(Set("test-scope")))(any(), any(), any()))
+          when(liveTaxCreditsService
+            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )
 
-          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/working-tax-credits/")
-            .withHeaders(correlationIdHeader)
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest("GET", s"/working-tax-credits/")
+              .withHeaders(correlationIdHeader)
 
-          val result: Future[Result] = workingTaxCreditsController.workingTaxCredit(
-            testMatchId,
-            testInterval)(fakeRequest)
+          val result: Future[Result] = workingTaxCreditsController
+            .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe NOT_FOUND
 
           contentAsJson(result) shouldBe Json.obj(
-            "code" -> "NOT_FOUND",
+            "code"    -> "NOT_FOUND",
             "message" -> "The resource can not be found"
           )
 
@@ -156,12 +144,12 @@ class WorkingTaxCreditControllerSpec
           when(mockAuthConnector.authorise(any(), any())(any(), any()))
             .thenReturn(Future.failed(InsufficientEnrolments()))
 
-          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/working-tax-credits/")
-            .withHeaders(correlationIdHeader)
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest("GET", s"/working-tax-credits/")
+              .withHeaders(correlationIdHeader)
 
-          val result: Future[Result] = workingTaxCreditsController.workingTaxCredit(
-            testMatchId,
-            testInterval)(fakeRequest)
+          val result: Future[Result] = workingTaxCreditsController
+            .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
 
           status(result) shouldBe UNAUTHORIZED
           verifyNoInteractions(liveTaxCreditsService)
@@ -186,16 +174,13 @@ class WorkingTaxCreditControllerSpec
 
           Mockito.reset(workingTaxCreditsController.auditHelper)
 
-          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/working-tax-credits/")
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest("GET", s"/working-tax-credits/")
 
-          when(
-            liveTaxCreditsService.getWorkingTaxCredits(
-              eqTo(testMatchId),
-              eqTo(testInterval),
-              eqTo(Set("test-scope")))(any(), any(), any()))
+          when(liveTaxCreditsService
+            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
-              Future.successful(
-                Seq(createValidWtcApplication(), createValidWtcApplication()))
+              Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
           val result: Future[Result] =
@@ -217,16 +202,14 @@ class WorkingTaxCreditControllerSpec
 
           Mockito.reset(workingTaxCreditsController.auditHelper)
 
-          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/working-tax-credits/").withHeaders("correlationId" -> "InvalidId")
+          val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest("GET", s"/working-tax-credits/")
+              .withHeaders("correlationId" -> "InvalidId")
 
-          when(
-            liveTaxCreditsService.getWorkingTaxCredits(
-              eqTo(testMatchId),
-              eqTo(testInterval),
-              eqTo(Set("test-scope")))(any(), any(), any()))
+          when(liveTaxCreditsService
+            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
             .thenReturn(
-              Future.successful(
-                Seq(createValidWtcApplication(), createValidWtcApplication()))
+              Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
 
           val result: Future[Result] =

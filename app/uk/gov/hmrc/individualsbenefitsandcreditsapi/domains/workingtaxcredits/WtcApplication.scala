@@ -23,12 +23,12 @@ case class WtcApplication(id: Option[Double], awards: Seq[WtcAward])
 
 object WtcApplication {
 
-  def create(ifApplication: IfApplication) = {
+  def create(ifApplication: IfApplication) =
     WtcApplication(
       ifApplication.id,
       ifApplication.awards.map(x => x.map(WtcAward.create)).getOrElse(Seq.empty)
     )
-  }
 
-  implicit val applicationFormat: Format[WtcApplication] = Json.format[WtcApplication]
+  implicit val applicationFormat: Format[WtcApplication] =
+    Json.format[WtcApplication]
 }

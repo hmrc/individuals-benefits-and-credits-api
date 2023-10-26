@@ -20,12 +20,12 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfChildTaxCredit(
-    childCareAmount: Option[Double],
-    ctcChildAmount: Option[Double],
-    familyAmount: Option[Double],
-    babyAmount: Option[Double],
-    entitlementYTD: Option[Double],
-    paidYTD: Option[Double]
+  childCareAmount: Option[Double],
+  ctcChildAmount: Option[Double],
+  familyAmount: Option[Double],
+  babyAmount: Option[Double],
+  entitlementYTD: Option[Double],
+  paidYTD: Option[Double]
 )
 
 object IfChildTaxCredit extends PatternsAndValidators {

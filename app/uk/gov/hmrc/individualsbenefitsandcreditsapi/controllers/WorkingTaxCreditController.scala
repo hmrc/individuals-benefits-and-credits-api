@@ -32,34 +32,46 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class WorkingTaxCreditController @Inject()(
-    val authConnector: AuthConnector,
-    cc: ControllerComponents,
-    scopeService: ScopesService,
-    implicit val auditHelper: AuditHelper,
-    taxCreditsService: TaxCreditsService
-) extends CommonController(cc)
-    with PrivilegedAuthentication {
+  val authConnector: AuthConnector,
+  cc: ControllerComponents,
+  scopeService: ScopesService,
+  implicit val auditHelper: AuditHelper,
+  taxCreditsService: TaxCreditsService
+) extends CommonController(cc) with PrivilegedAuthentication {
 
   def workingTaxCredit(matchId: UUID, interval: Interval): Action[AnyContent] =
     Action.async { implicit request =>
-
       val scopes = scopeService.getEndPointScopes("working-tax-credit")
 
       authenticate(scopes, matchId.toString) { authScopes =>
         val correlationId = validateCorrelationId(request)
 
-        taxCreditsService.getWorkingTaxCredits(matchId, interval, authScopes)
+        taxCreditsService
+          .getWorkingTaxCredits(matchId, interval, authScopes)
           .map(
             applications => {
-              val selfLink = HalLink("self", urlWithInterval(s"/individuals/benefits-and-credits/working-tax-credits?matchId=$matchId", interval.getStart))
-              val response = Json.obj("applications" -> Json.toJson(applications))
+              val selfLink = HalLink(
+                "self",
+                urlWithInterval(
+                  s"/individuals/benefits-and-credits/working-tax-credits?matchId=$matchId",
+                  interval.getStart))
+              val response =
+                Json.obj("applications" -> Json.toJson(applications))
 
-              auditHelper.workingTaxCreditAuditApiResponse(correlationId.toString, matchId.toString, authScopes.mkString(","),
-                request, selfLink.toString, applications)
+              auditHelper.workingTaxCreditAuditApiResponse(
+                correlationId.toString,
+                matchId.toString,
+                authScopes.mkString(","),
+                request,
+                selfLink.toString,
+                applications)
 
               Ok(state(response) ++ selfLink)
             }
           )
-      } recover withAudit(maybeCorrelationId(request), matchId.toString, "/individuals/benefits-and-credits/working-tax-credits")
+      } recover withAudit(
+        maybeCorrelationId(request),
+        matchId.toString,
+        "/individuals/benefits-and-credits/working-tax-credits")
     }
 }

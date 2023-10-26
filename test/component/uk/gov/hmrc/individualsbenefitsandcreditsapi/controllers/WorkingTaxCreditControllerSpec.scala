@@ -24,9 +24,7 @@ import testUtils.TestHelpers
 
 import java.util.UUID
 
-class WorkingTaxCreditControllerSpec
-    extends CommonControllerWithIfRequestSpec
-    with TestHelpers {
+class WorkingTaxCreditControllerSpec extends CommonControllerWithIfRequestSpec with TestHelpers {
 
   val rootScope = List(
     "read:individuals-benefits-and-credits-hmcts-c2",
@@ -58,8 +56,7 @@ class WorkingTaxCreditControllerSpec
 
       When("I make a call to working-tax-credit endpoint")
       val response =
-        Http(
-          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+        Http(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeader1))
           .asString
 
@@ -121,8 +118,7 @@ class WorkingTaxCreditControllerSpec
 
     }
 
-    Scenario(
-      "Valid Request to working-tax-credits endpoint when IF return no rewards") {
+    Scenario("Valid Request to working-tax-credits endpoint when IF return no rewards") {
 
       Given("A valid auth token ")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, rootScope)
@@ -131,15 +127,11 @@ class WorkingTaxCreditControllerSpec
       IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
 
       And("IF will return benefits and credits applications")
-      IfStub.searchBenefitsAndCredits(nino,
-                                      fromDate,
-                                      toDate,
-                                      createIfApplicationsWithEmptyRewards())
+      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, createIfApplicationsWithEmptyRewards())
 
       When("I make a call to working-tax-credit endpoint")
       val response =
-        Http(
-          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+        Http(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeader1))
           .asString
 
@@ -171,15 +163,14 @@ class WorkingTaxCreditControllerSpec
 
       When("I make a call to working-tax-credit endpoint")
       val response =
-        Http(
-          s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+        Http(s"$serviceUrl/working-tax-credit/?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeader1))
           .asString
 
       Then("the response status should be 401 (unauthorized)")
       response.code shouldBe UNAUTHORIZED
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "UNAUTHORIZED",
+        "code"    -> "UNAUTHORIZED",
         "message" -> "Bearer token is missing or not authorized"
       )
     }

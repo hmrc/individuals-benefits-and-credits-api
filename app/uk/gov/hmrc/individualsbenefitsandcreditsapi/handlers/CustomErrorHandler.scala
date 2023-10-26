@@ -32,22 +32,22 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomErrorHandler @Inject()(auditConnector: AuditConnector,
-                                   httpAuditEvent: HttpAuditEvent,
-                                   configuration: Configuration)
+class CustomErrorHandler @Inject()(
+  auditConnector: AuditConnector,
+  httpAuditEvent: HttpAuditEvent,
+  configuration: Configuration)
     extends JsonErrorHandler(auditConnector, httpAuditEvent, configuration) {
   import httpAuditEvent.dataEvent
 
-  override def onClientError(request: RequestHeader,
-                             statusCode: Int,
-                             message: String): Future[Result] = {
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
     implicit val headerCarrier: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     statusCode match {
       case NOT_FOUND =>
-        val event = dataEvent("ResourceNotFound", "Resource Endpoint Not Found", request)
+        val event =
+          dataEvent("ResourceNotFound", "Resource Endpoint Not Found", request)
         auditConnector.sendEvent(event)
         Future.successful(ErrorNotFound.toHttpResponse)
       case BAD_REQUEST =>

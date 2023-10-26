@@ -29,11 +29,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.TestSupport
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CacheRepositorySpec
-    extends AnyWordSpec
-    with Matchers
-    with BeforeAndAfterEach
-    with TestSupport {
+class CacheRepositorySpec extends AnyWordSpec with Matchers with BeforeAndAfterEach with TestSupport {
 
   val cacheTtl = 60
   val id = UUID.randomUUID().toString
@@ -41,7 +37,7 @@ class CacheRepositorySpec
   val testValue = TestClass("one", "two")
 
   protected def databaseName: String = "test-" + this.getClass.getSimpleName
-  protected def mongoUri: String     = s"mongodb://localhost:27017/$databaseName"
+  protected def mongoUri: String = s"mongodb://localhost:27017/$databaseName"
 
   val fakeApplication = new GuiceApplicationBuilder()
     .configure("mongodb.uri" -> mongoUri, "cache.ttlInSeconds" -> cacheTtl)
@@ -65,46 +61,40 @@ class CacheRepositorySpec
   "cache" should {
     "store the encrypted version of a value" in {
       await(cacheRepository.cache(id, testValue)(TestClass.format))
-      retrieveRawCachedValue(id) shouldBe JsString(
-        "JsmkF4A8qI/c0Ly4gEKw1nnwDMicSkMk7zfnYaL9tXo=")
+      retrieveRawCachedValue(id) shouldBe JsString("JsmkF4A8qI/c0Ly4gEKw1nnwDMicSkMk7zfnYaL9tXo=")
     }
 
     "update a cached value for a given id and key" in {
       val newValue = TestClass("three", "four")
 
       await(cacheRepository.cache(id, testValue)(TestClass.format))
-      retrieveRawCachedValue(id) shouldBe JsString(
-        "JsmkF4A8qI/c0Ly4gEKw1nnwDMicSkMk7zfnYaL9tXo=")
+      retrieveRawCachedValue(id) shouldBe JsString("JsmkF4A8qI/c0Ly4gEKw1nnwDMicSkMk7zfnYaL9tXo=")
 
       await(cacheRepository.cache(id, newValue)(TestClass.format))
-      retrieveRawCachedValue(id) shouldBe JsString(
-        "r4uGlFRapPo/p60YRhB/UnzjrNGddwYw+ID9BJC5hrc=")
+      retrieveRawCachedValue(id) shouldBe JsString("r4uGlFRapPo/p60YRhB/UnzjrNGddwYw+ID9BJC5hrc=")
     }
   }
 
   "fetch" should {
     "retrieve the unencrypted cached value for a given id and key" in {
       await(cacheRepository.cache(id, testValue)(TestClass.format))
-      await(
-        cacheRepository.fetchAndGetEntry[TestClass](id)(
-          TestClass.format)) shouldBe Some(testValue)
+      await(cacheRepository.fetchAndGetEntry[TestClass](id)(TestClass.format)) shouldBe Some(testValue)
     }
 
     "return None if no cached value exists for a given id and key" in {
-      await(
-        cacheRepository.fetchAndGetEntry[TestClass](id)(
-          TestClass.format)) shouldBe None
+      await(cacheRepository.fetchAndGetEntry[TestClass](id)(TestClass.format)) shouldBe None
     }
   }
 
-  private def retrieveRawCachedValue(id: String) = {
-    await(cacheRepository.collection.find(Filters.equal("id", toBson(id)))
-      .headOption()
-      .map {
-        case Some(entry) => entry.data.value
-        case None => None
-      })
-  }
+  private def retrieveRawCachedValue(id: String) =
+    await(
+      cacheRepository.collection
+        .find(Filters.equal("id", toBson(id)))
+        .headOption()
+        .map {
+          case Some(entry) => entry.data.value
+          case None        => None
+        })
 
   case class TestClass(one: String, two: String)
 

@@ -29,9 +29,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import java.util.UUID
 
-class IndividualsMatchingApiConnectorSpec
-    extends SpecBase
-    with BeforeAndAfterEach {
+class IndividualsMatchingApiConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
   val stubPort: Int = sys.env.getOrElse("WIREMOCK", "11121").toInt
   val stubHost = "localhost"
@@ -41,9 +39,7 @@ class IndividualsMatchingApiConnectorSpec
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val individualsMatchingApiConnector: IndividualsMatchingApiConnector =
-      new IndividualsMatchingApiConnector(
-        servicesConfig,
-        fakeApplication.injector.instanceOf[HttpClient]) {
+      new IndividualsMatchingApiConnector(servicesConfig, fakeApplication.injector.instanceOf[HttpClient]) {
         override val serviceUrl = "http://127.0.0.1:11121"
       }
   }
@@ -79,22 +75,20 @@ class IndividualsMatchingApiConnectorSpec
     }
 
     "return a nino match when upstream service call succeeds" in new Fixture {
-      stubWithResponseStatus(OK,
-                             s"""
+      stubWithResponseStatus(
+        OK,
+        s"""
           {
             "matchId":"${matchId.toString}",
             "nino":"AB123456C"
           }
         """)
-      await(individualsMatchingApiConnector.resolve(matchId)) shouldBe MatchedCitizen(
-        matchId,
-        Nino("AB123456C"))
+      await(individualsMatchingApiConnector.resolve(matchId)) shouldBe MatchedCitizen(matchId, Nino("AB123456C"))
     }
 
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     wireMockServer.stop()
-  }
 
 }

@@ -22,22 +22,10 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class IfAwardSpec extends UnitSpec {
 
-  val awards: IfAward = IfAward(Some("2020-08-18"),
-                       Some("2020-08-18"),
-                       Some("2020-08-18"),
-                       Some(0),
-                       None,
-                       None,
-                       Some(20),
-                       None)
-  val invalidAwards: IfAward = IfAward(Some("asd"),
-                              Some("abcdefghijklmnopqrstuvwxyz0123456789"),
-                              Some("a"),
-                              Some(0),
-                              None,
-                              None,
-                              None,
-                              None)
+  val awards: IfAward =
+    IfAward(Some("2020-08-18"), Some("2020-08-18"), Some("2020-08-18"), Some(0), None, None, Some(20), None)
+  val invalidAwards: IfAward =
+    IfAward(Some("asd"), Some("abcdefghijklmnopqrstuvwxyz0123456789"), Some("a"), Some(0), None, None, None, None)
 
   "Contact details" should {
     "Write to JSON" in {

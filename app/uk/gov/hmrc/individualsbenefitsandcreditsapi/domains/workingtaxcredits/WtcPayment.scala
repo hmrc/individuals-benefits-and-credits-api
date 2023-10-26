@@ -22,16 +22,16 @@ import uk.gov.hmrc.http.controllers.RestFormats
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
 case class WtcPayment(
-    startDate: Option[LocalDate],
-    endDate: Option[LocalDate],
-    postedDate: Option[LocalDate],
-    frequency: Option[Int],
-    tcType: Option[String],
-    amount: Option[Double]
+  startDate: Option[LocalDate],
+  endDate: Option[LocalDate],
+  postedDate: Option[LocalDate],
+  frequency: Option[Int],
+  tcType: Option[String],
+  amount: Option[Double]
 )
 
 object WtcPayment {
-  def create(ifPayment: IfPayment): WtcPayment = {
+  def create(ifPayment: IfPayment): WtcPayment =
     WtcPayment(
       ifPayment.startDate.map(LocalDate.parse),
       ifPayment.endDate.map(LocalDate.parse),
@@ -40,7 +40,6 @@ object WtcPayment {
       ifPayment.tcType,
       ifPayment.amount
     )
-  }
 
   implicit val dateFormat: Format[LocalDate] = RestFormats.localDateFormats
   implicit val paymentFormat: Format[WtcPayment] = Json.format[WtcPayment]

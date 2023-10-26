@@ -51,7 +51,7 @@ object RequestHeaderUtils {
   private def withCorrelationId[A](requestHeader: RequestHeader, onSome: String => A, onNone: () => A) =
     requestHeader.headers.get("CorrelationId") match {
       case Some(uuidString) => onSome(uuidString)
-      case None => onNone()
+      case None             => onNone()
     }
 
   private def getUuidFromString(uuidString: String) =
@@ -60,12 +60,11 @@ object RequestHeaderUtils {
       case false => throw new BadRequestException("Malformed CorrelationId")
     }
 
-  private def getUuidStringOption(uuidString : String) =
+  private def getUuidStringOption(uuidString: String) =
     UuidValidator.validate(uuidString) match {
-      case true => Some(uuidString)
-      case false          => None
+      case true  => Some(uuidString)
+      case false => None
     }
-
 
   def getVersionedRequest(originalRequest: RequestHeader) = {
     val version = getVersion(originalRequest)
@@ -87,10 +86,9 @@ object RequestHeaderUtils {
       acceptHeaderRegex.findFirstMatchIn(acceptHeaderValue) map (_.group(1))
     } getOrElse "1.0"
 
-  private def versionedUri(urlPath: String, version: String) = {
+  private def versionedUri(urlPath: String, version: String) =
     urlPath match {
       case "/" => s"/v$version"
       case uri => s"/v$version$urlPath"
     }
-  }
 }

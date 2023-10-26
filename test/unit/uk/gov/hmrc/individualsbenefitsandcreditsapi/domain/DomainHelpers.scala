@@ -22,7 +22,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits._
 
 trait DomainHelpers {
-  def createValidIfChildTaxCredit(): IfChildTaxCredit = {
+  def createValidIfChildTaxCredit(): IfChildTaxCredit =
     IfChildTaxCredit(
       Some(10.0),
       Some(20.0),
@@ -31,13 +31,11 @@ trait DomainHelpers {
       Some(50.0),
       Some(60.0)
     )
-  }
 
-  def createValidIfWorkingTaxCredit: IfWorkTaxCredit = {
+  def createValidIfWorkingTaxCredit: IfWorkTaxCredit =
     IfWorkTaxCredit(Some(10.0), Some(20.0), Some(30.0))
-  }
 
-  def createValidIfWtcPayment(): IfPayment = {
+  def createValidIfWtcPayment(): IfPayment =
     IfPayment(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -51,10 +49,8 @@ trait DomainHelpers {
       Some(2),
       Some("R")
     )
-  }
 
-
-  def createValidIfCtcPayment(): IfPayment = {
+  def createValidIfCtcPayment(): IfPayment =
     IfPayment(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -68,9 +64,8 @@ trait DomainHelpers {
       Some(2),
       Some("R")
     )
-  }
 
-  def createValidIfAward(payments: Seq[IfPayment]): IfAward = {
+  def createValidIfAward(payments: Seq[IfPayment]): IfAward =
     IfAward(
       Some("2020-08-18"),
       Some("2020-08-18"),
@@ -81,9 +76,8 @@ trait DomainHelpers {
       Some(20.0),
       Some(payments)
     )
-  }
 
-  def createValidWtcPayment(): WtcPayment = {
+  def createValidWtcPayment(): WtcPayment =
     WtcPayment(
       Some(LocalDate.parse("2016-05-01")),
       Some(LocalDate.parse("2016-06-01")),
@@ -92,9 +86,8 @@ trait DomainHelpers {
       Some("ETC"),
       Some(80.0)
     )
-  }
 
-  def createValidWtcAward(): WtcAward = {
+  def createValidWtcAward(): WtcAward =
     new WtcAward(
       Some(LocalDate.parse("2016-05-01")),
       Some(10.0),
@@ -102,13 +95,11 @@ trait DomainHelpers {
       Some(WtcChildTaxCredit(Some(40.0))),
       Some(Seq(createValidWtcPayment()))
     )
-  }
 
-  def createValidWtcApplication(): WtcApplication = {
+  def createValidWtcApplication(): WtcApplication =
     new WtcApplication(Some(123), Seq(createValidWtcAward()))
-  }
 
-  def createValidCtcPayment(): CtcPayment = {
+  def createValidCtcPayment(): CtcPayment =
     CtcPayment(
       Some(LocalDate.parse("2016-05-01")),
       Some(LocalDate.parse("2016-06-01")),
@@ -117,24 +108,16 @@ trait DomainHelpers {
       Some("ETC"),
       Some(80.0)
     )
-  }
 
-  def createValidCtcAward(): CtcAward = {
+  def createValidCtcAward(): CtcAward =
     new CtcAward(
       Some(LocalDate.parse("2016-05-01")),
       Some(10.0),
-      Some(
-        CtcChildTaxCredit(Some(40.0),
-                          Some(50.0),
-                          Some(60.0),
-                          Some(70.0),
-                          Some(80.0))),
+      Some(CtcChildTaxCredit(Some(40.0), Some(50.0), Some(60.0), Some(70.0), Some(80.0))),
       Some(Seq(createValidCtcPayment()))
     )
-  }
 
-  def createValidCtcApplication(): CtcApplication = {
+  def createValidCtcApplication(): CtcApplication =
     new CtcApplication(Some(123), Seq(createValidCtcAward()))
-  }
 
 }

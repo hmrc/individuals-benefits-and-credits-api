@@ -21,18 +21,15 @@ import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesHelper, ScopesService}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class ScopesHelperSpec
-  extends UnitSpec
-    with ScopesConfig
-    with BeforeAndAfterEach
-    with Matchers {
+class ScopesHelperSpec extends UnitSpec with ScopesConfig with BeforeAndAfterEach with Matchers {
 
   "Scopes helper" should {
     val scopesService = new ScopesService(mockConfig)
     val scopesHelper = new ScopesHelper(scopesService)
 
     "return correct query string" in {
-      val result = scopesHelper.getQueryStringFor(List(mockScopeOne, mockScopeTwo), List(endpointOne, endpointTwo, endpointThree))
+      val result =
+        scopesHelper.getQueryStringFor(List(mockScopeOne, mockScopeTwo), List(endpointOne, endpointTwo, endpointThree))
       result shouldBe "path(to(a,b,c,d,e,f,g,h,i))"
     }
   }

@@ -21,18 +21,18 @@ import play.api.libs.json.Reads._
 import play.api.libs.json._
 
 case class IfPayment(
-                      periodStartDate: Option[String],
-                      periodEndDate: Option[String],
-                      startDate: Option[String],
-                      endDate: Option[String],
-                      status: Option[String],
-                      postedDate: Option[String],
-                      nextDueDate: Option[String],
-                      frequency: Option[Int],
-                      tcType: Option[String],
-                      amount: Option[Double],
-                      method: Option[String]
-                     )
+  periodStartDate: Option[String],
+  periodEndDate: Option[String],
+  startDate: Option[String],
+  endDate: Option[String],
+  status: Option[String],
+  postedDate: Option[String],
+  nextDueDate: Option[String],
+  frequency: Option[Int],
+  tcType: Option[String],
+  amount: Option[Double],
+  method: Option[String]
+)
 
 object IfPayment extends PatternsAndValidators {
   implicit val paymentsFormat: Format[IfPayment] = Format(
@@ -49,5 +49,6 @@ object IfPayment extends PatternsAndValidators {
         (JsPath \ "amount").readNullable[Double](paymentAmountValidator) and
         (JsPath \ "method").readNullable[String](pattern(methodPattern, "invalid method"))
     )(IfPayment.apply _),
-    Json.writes[IfPayment])
+    Json.writes[IfPayment]
+  )
 }

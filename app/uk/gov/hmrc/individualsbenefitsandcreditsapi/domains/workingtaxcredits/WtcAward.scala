@@ -23,11 +23,11 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class WtcAward(
-    payProfCalcDate: Option[LocalDate],
-    totalEntitlement: Option[Double],
-    workingTaxCredit: Option[WtcWorkingTaxCredit],
-    childTaxCredit: Option[WtcChildTaxCredit],
-    payments: Option[Seq[WtcPayment]]
+  payProfCalcDate: Option[LocalDate],
+  totalEntitlement: Option[Double],
+  workingTaxCredit: Option[WtcWorkingTaxCredit],
+  childTaxCredit: Option[WtcChildTaxCredit],
+  payments: Option[Seq[WtcPayment]]
 )
 
 object WtcAward {
@@ -41,7 +41,9 @@ object WtcAward {
       ifAward.totalEntitlement,
       wtc,
       ctc,
-      ifAward.payments.map(_.filter(_.tcType.exists(s => s.equals("ETC")))).map(_.map(WtcPayment.create))
+      ifAward.payments
+        .map(_.filter(_.tcType.exists(s => s.equals("ETC"))))
+        .map(_.map(WtcPayment.create))
     )
   }
 

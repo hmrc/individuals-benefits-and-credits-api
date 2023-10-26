@@ -22,12 +22,12 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 case class CtcApplication(id: Option[Double], awards: Seq[CtcAward])
 
 object CtcApplication {
-  def create(ifApplication: IfApplication): CtcApplication = {
+  def create(ifApplication: IfApplication): CtcApplication =
     CtcApplication(
       ifApplication.id,
       ifApplication.awards.map(x => x.map(CtcAward.create)).getOrElse(Seq.empty)
     )
-  }
 
-  implicit val applicationFormat: Format[CtcApplication] = Json.format[CtcApplication]
+  implicit val applicationFormat: Format[CtcApplication] =
+    Json.format[CtcApplication]
 }

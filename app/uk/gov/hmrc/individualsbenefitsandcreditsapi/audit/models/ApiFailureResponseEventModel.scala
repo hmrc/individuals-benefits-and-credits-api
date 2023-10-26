@@ -18,19 +18,19 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 
 import play.api.libs.json.Json
 
-case class ApiFailureResponseEventModel(deviceId: String,
-                                        input: String,
-                                        method: String,
-                                        userAgent: String,
-                                        apiVersion: String,
-                                        matchId: String,
-                                        correlationId: Option[String],
-                                        applicationId: String,
-                                        requestUrl: String,
-                                        response: String)
+case class ApiFailureResponseEventModel(
+  deviceId: String,
+  input: String,
+  method: String,
+  userAgent: String,
+  apiVersion: String,
+  matchId: String,
+  correlationId: Option[String],
+  applicationId: String,
+  requestUrl: String,
+  response: String)
 
 object ApiFailureResponseEventModel {
-  implicit val formatApiFailureResponseEventModel = Json.format[ApiFailureResponseEventModel]
+  implicit val formatApiFailureResponseEventModel =
+    Json.format[ApiFailureResponseEventModel]
 }
-
-

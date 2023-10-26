@@ -23,10 +23,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 object IfStub extends MockHost(22004) {
 
-  def searchBenefitsAndCredits(nino: String,
-                               fromDate: String,
-                               toDate: String,
-                               ifApplications: IfApplications) =
+  def searchBenefitsAndCredits(nino: String, fromDate: String, toDate: String, ifApplications: IfApplications) =
     mock.register(
       get(urlPathEqualTo(s"/individuals/tax-credits/nino/$nino"))
         .withQueryParam("startDate", equalTo(fromDate))
@@ -35,16 +32,14 @@ object IfStub extends MockHost(22004) {
           .withStatus(OK)
           .withBody(Json.toJson(ifApplications).toString())))
 
-  def customResponse(nino: String, fromDate: String,
-                     toDate: String, status: Int, response: JsValue) =
+  def customResponse(nino: String, fromDate: String, toDate: String, status: Int, response: JsValue) =
     mock.register(
       get(urlPathEqualTo(s"/individuals/tax-credits/nino/$nino"))
         .withQueryParam("startDate", equalTo(fromDate))
         .withQueryParam("endDate", equalTo(toDate))
-        .willReturn(
-          aResponse()
-            .withStatus(status)
-            .withBody(response.toString())))
+        .willReturn(aResponse()
+          .withStatus(status)
+          .withBody(response.toString())))
 
   def enforceRateLimit(nino: String, fromDate: String, toDate: String): Unit =
     mock.register(

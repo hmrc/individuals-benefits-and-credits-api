@@ -20,11 +20,12 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.pattern
 import play.api.libs.json.{Format, JsPath, Json}
 
-case class IfApplication(id: Option[Double],
-                         ceasedDate: Option[String],
-                         entStartDate: Option[String],
-                         entEndDate: Option[String],
-                         awards: Option[Seq[IfAward]])
+case class IfApplication(
+  id: Option[Double],
+  ceasedDate: Option[String],
+  entStartDate: Option[String],
+  entEndDate: Option[String],
+  awards: Option[Seq[IfAward]])
 
 object IfApplication extends PatternsAndValidators {
 

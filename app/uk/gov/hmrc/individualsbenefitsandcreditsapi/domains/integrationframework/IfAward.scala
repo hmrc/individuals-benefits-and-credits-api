@@ -21,14 +21,14 @@ import play.api.libs.json.Reads.pattern
 import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfAward(
-    payProfCalcDate: Option[String],
-    startDate: Option[String],
-    endDate: Option[String],
-    totalEntitlement: Option[Double],
-    workingTaxCredit: Option[IfWorkTaxCredit],
-    childTaxCredit: Option[IfChildTaxCredit],
-    grossTaxYearAmount: Option[Double],
-    payments: Option[Seq[IfPayment]]
+  payProfCalcDate: Option[String],
+  startDate: Option[String],
+  endDate: Option[String],
+  totalEntitlement: Option[Double],
+  workingTaxCredit: Option[IfWorkTaxCredit],
+  childTaxCredit: Option[IfChildTaxCredit],
+  grossTaxYearAmount: Option[Double],
+  payments: Option[Seq[IfPayment]]
 )
 
 object IfAward extends PatternsAndValidators {

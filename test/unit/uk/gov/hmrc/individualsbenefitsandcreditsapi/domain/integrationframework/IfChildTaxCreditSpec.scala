@@ -25,12 +25,7 @@ class IfChildTaxCreditSpec extends UnitSpec {
   val childTaxCredit: IfChildTaxCredit =
     IfChildTaxCredit(Some(20), Some(20), Some(20), Some(20), Some(20), Some(20))
   val invalidChildTaxCredit: IfChildTaxCredit =
-    IfChildTaxCredit(Some(-20),
-                     Some(-20),
-                     Some(-20),
-                     Some(-20),
-                     Some(-20),
-                     Some(-20))
+    IfChildTaxCredit(Some(-20), Some(-20), Some(-20), Some(-20), Some(-20), Some(-20))
 
   "Contact details" should {
     "Write to JSON" in {
