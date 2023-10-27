@@ -17,9 +17,9 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
@@ -31,24 +31,20 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
   def authPredicate(scopes: Iterable[String]): Predicate =
     scopes.map(Enrolment(_): Predicate).reduce(_ or _)
 
-  def authenticate(endpointScopes: Iterable[String],
-                   matchId: String)
-                  (f: Iterable[String] => Future[Result])
-                  (implicit hc: HeaderCarrier,
-                   request: RequestHeader,
-                   auditHelper: AuditHelper): Future[Result] = {
-
+  def authenticate(endpointScopes: Iterable[String], matchId: String)(f: Iterable[String] => Future[Result])(
+    implicit hc: HeaderCarrier,
+    request: RequestHeader,
+    auditHelper: AuditHelper): Future[Result] =
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
-
     else {
-      authorised(authPredicate(endpointScopes)).retrieve(Retrievals.allEnrolments) {
-        case scopes => {
+      authorised(authPredicate(endpointScopes))
+        .retrieve(Retrievals.allEnrolments) {
+          case scopes => {
 
-          auditHelper.auditAuthScopes(matchId, scopes.enrolments.map(e => e.key).mkString(","), request)
+            auditHelper.auditAuthScopes(matchId, scopes.enrolments.map(e => e.key).mkString(","), request)
 
-          f(scopes.enrolments.map(e => e.key))
+            f(scopes.enrolments.map(e => e.key))
+          }
         }
-      }
     }
-  }
 }

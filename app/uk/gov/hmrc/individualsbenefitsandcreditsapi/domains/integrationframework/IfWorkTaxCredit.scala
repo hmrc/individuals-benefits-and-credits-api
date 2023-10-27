@@ -19,9 +19,7 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframewor
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath, Json}
 
-case class IfWorkTaxCredit(amount: Option[Double],
-                           entitlementYTD: Option[Double],
-                           paidYTD: Option[Double])
+case class IfWorkTaxCredit(amount: Option[Double], entitlementYTD: Option[Double], paidYTD: Option[Double])
 
 object IfWorkTaxCredit extends PatternsAndValidators {
 

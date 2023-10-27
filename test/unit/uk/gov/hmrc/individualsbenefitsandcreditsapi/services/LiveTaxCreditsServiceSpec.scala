@@ -36,24 +36,20 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
-class LiveTaxCreditsServiceSpec
-    extends UnitSpec
-    with MockitoSugar
-    with TestHelpers
-    with ScopesConfig {
+class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelpers with ScopesConfig {
 
   trait Setup {
 
     val cacheService: CacheService = new CacheService(null, null)(null) {
-      override def get[T: Format](cacheId: CacheIdBase,
-                                  functionToCache: => Future[T]): Future[T] =
+      override def get[T: Format](cacheId: CacheIdBase, functionToCache: => Future[T]): Future[T] =
         functionToCache
     }
 
     val ifConnector: IfConnector = mock[IfConnector]
     val scopeService: ScopesService = mock[ScopesService]
     val scopesHelper: ScopesHelper = mock[ScopesHelper]
-    val matchingConnector: IndividualsMatchingApiConnector = mock[IndividualsMatchingApiConnector]
+    val matchingConnector: IndividualsMatchingApiConnector =
+      mock[IndividualsMatchingApiConnector]
 
     val taxCreditsService =
       new TaxCreditsService(
@@ -68,7 +64,8 @@ class LiveTaxCreditsServiceSpec
     private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
     private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
     val testInterval = new Interval(fromDate, toDate)
-    val testMatchId: UUID = UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
+    val testMatchId: UUID =
+      UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
 
     implicit val ec: ExecutionContextExecutor = ExecutionContext.global
     implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -84,68 +81,42 @@ class LiveTaxCreditsServiceSpec
   "Live Tax Credits Service" should {
 
     "return empty list of working tax credits when no records exists for the given matchId" in new Setup {
-      when(
-        ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(),
-                                                                any(),
-                                                                any()))
+      when(ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response: Seq[WtcApplication] = await(
         taxCreditsService
-          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(
-            hc,
-            FakeRequest(),
-            ec))
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
       response.isEmpty shouldBe true
     }
 
     "return list of working tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino),
-                           eqTo(testInterval),
-                           any(),
-                           eqTo(testMatchId.toString))(any(), any(), any()))
-        .thenReturn(
-          Future.successful(createValidIfApplicationsMultiple.applications))
+          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any()))
+        .thenReturn(Future.successful(createValidIfApplicationsMultiple.applications))
       val response: Seq[WtcApplication] = await(
         taxCreditsService
-          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(
-            hc,
-            FakeRequest(),
-            ec))
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
       response.isEmpty shouldBe false
     }
 
     "return empty list of child tax credits when no records exists for the given matchId" in new Setup {
-      when(
-        ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(),
-                                                                any(),
-                                                                any()))
+      when(ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response: Seq[CtcApplication] = await(
         taxCreditsService
-          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(
-            hc,
-            FakeRequest(),
-            ec))
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
       response.isEmpty shouldBe true
     }
 
     "return list of child tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino),
-                           eqTo(testInterval),
-                           any(),
-                           eqTo(testMatchId.toString))(any(), any(), any()))
-        .thenReturn(
-          Future.successful(createValidIfApplicationsMultiple.applications))
+          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any()))
+        .thenReturn(Future.successful(createValidIfApplicationsMultiple.applications))
       val response: Seq[CtcApplication] = await(
         taxCreditsService
-          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(
-            hc,
-            FakeRequest(),
-            ec))
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
       response.isEmpty shouldBe false
     }
   }

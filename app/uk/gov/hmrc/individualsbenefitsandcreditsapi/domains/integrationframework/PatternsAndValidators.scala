@@ -38,11 +38,10 @@ trait PatternsAndValidators {
   def isMultipleOfOne(value: Double): Boolean = BigDecimal(value) % 1 == 0
 
   def applicationIdValidator: Reads[Double] =
-    min[Double](0) andKeep max[Double](999999999999.0) andKeep verifying[
-      Double](isMultipleOfOne)
+    min[Double](0) andKeep max[Double](999999999999.0) andKeep verifying[Double](isMultipleOfOne)
 
   def paymentAmountValidator: Reads[Double] =
-    min[Double](minPaymentValue) andKeep max[Double](maxPaymentValue) andKeep verifying[
-      Double](isMultipleOfPointZeroOne)
+    min[Double](minPaymentValue) andKeep max[Double](maxPaymentValue) andKeep verifying[Double](
+      isMultipleOfPointZeroOne)
 
 }

@@ -23,9 +23,9 @@ case class WtcChildTaxCredit(childCareAmount: Option[Double])
 
 object WtcChildTaxCredit {
 
-  def create(ifChildTaxTaxCredit: IfChildTaxCredit): WtcChildTaxCredit = {
+  def create(ifChildTaxTaxCredit: IfChildTaxCredit): WtcChildTaxCredit =
     WtcChildTaxCredit(ifChildTaxTaxCredit.childCareAmount)
-  }
 
-  implicit val childTaxCreditFormat: Format[WtcChildTaxCredit] = Json.format[WtcChildTaxCredit]
+  implicit val childTaxCreditFormat: Format[WtcChildTaxCredit] =
+    Json.format[WtcChildTaxCredit]
 }

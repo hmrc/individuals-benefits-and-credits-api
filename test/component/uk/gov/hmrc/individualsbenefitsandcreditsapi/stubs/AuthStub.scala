@@ -16,24 +16,23 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, equalToJson, get, post, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.http.{HeaderNames, Status}
-import play.api.libs.json.{JsArray, Json}
 import play.api.libs.json.Json.{arr, obj, toJson}
+import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 
 object AuthStub extends MockHost(22000) {
 
-  def authPredicate(scopes: Iterable[String]): Predicate = {
+  def authPredicate(scopes: Iterable[String]): Predicate =
     scopes.map(Enrolment(_): Predicate).reduce(_ or _)
-  }
 
   private def privilegedAuthority(scope: String) = obj(
     "authorise" -> arr(toJson(Enrolment(scope))),
-    "retrieve" -> JsArray()
+    "retrieve"  -> JsArray()
   )
 
   private def privilegedAuthority(scopes: List[String]) = {
@@ -45,12 +44,11 @@ object AuthStub extends MockHost(22000) {
 
     obj(
       "authorise" -> predicateJson,
-      "retrieve" -> arr(toJson("allEnrolments"))
+      "retrieve"  -> arr(toJson("allEnrolments"))
     )
   }
 
-  def willAuthorizePrivilegedAuthToken(authBearerToken: String,
-                                       scopes: List[String]): StubMapping =
+  def willAuthorizePrivilegedAuthToken(authBearerToken: String, scopes: List[String]): StubMapping =
     mock.register(
       post(urlEqualTo("/auth/authorise"))
         .withRequestBody(equalToJson(privilegedAuthority(scopes).toString()))
@@ -61,53 +59,40 @@ object AuthStub extends MockHost(22000) {
             .map(scope => s"""{ "key": "$scope", "value": ""}""")
             .reduce((a, b) => s"$a, $b")} ]}""")))
 
-  def willAuthorizePrivilegedAuthToken(authBearerToken: String,
-                                       scope: String): StubMapping =
+  def willAuthorizePrivilegedAuthToken(authBearerToken: String, scope: String): StubMapping =
     mock.register(
       post(urlEqualTo("/auth/authorise"))
         .withRequestBody(equalToJson(privilegedAuthority(scope).toString()))
         .withHeader(AUTHORIZATION, equalTo(authBearerToken))
         .willReturn(aResponse()
           .withStatus(Status.OK)
-          .withBody(
-            s"""{"internalId": "some-id", "allEnrolments": [ { "key": "$scope", "value": "" } ]}""")))
+          .withBody(s"""{"internalId": "some-id", "allEnrolments": [ { "key": "$scope", "value": "" } ]}""")))
 
-  def willNotAuthorizePrivilegedAuthToken(authBearerToken: String,
-                                          scopes: List[String]): StubMapping =
+  def willNotAuthorizePrivilegedAuthToken(authBearerToken: String, scopes: List[String]): StubMapping =
     mock.register(
       post(urlEqualTo("/auth/authorise"))
         .withRequestBody(equalToJson(privilegedAuthority(scopes).toString()))
         .withHeader(AUTHORIZATION, equalTo(authBearerToken))
-        .willReturn(
-          aResponse()
-            .withStatus(Status.UNAUTHORIZED)
-            .withHeader(
-              HeaderNames.WWW_AUTHENTICATE,
-              """MDTP detail="Bearer token is missing or not authorized"""")))
+        .willReturn(aResponse()
+          .withStatus(Status.UNAUTHORIZED)
+          .withHeader(HeaderNames.WWW_AUTHENTICATE, """MDTP detail="Bearer token is missing or not authorized"""")))
 
-  def willNotAuthorizePrivilegedAuthToken(authBearerToken: String,
-                                          scope: String): StubMapping =
+  def willNotAuthorizePrivilegedAuthToken(authBearerToken: String, scope: String): StubMapping =
     mock.register(
       post(urlEqualTo("/auth/authorise"))
         .withRequestBody(equalToJson(privilegedAuthority(scope).toString()))
         .withHeader(AUTHORIZATION, equalTo(authBearerToken))
-        .willReturn(
-          aResponse()
-            .withStatus(Status.UNAUTHORIZED)
-            .withHeader(
-              HeaderNames.WWW_AUTHENTICATE,
-              """MDTP detail="Bearer token is missing or not authorized"""")))
+        .willReturn(aResponse()
+          .withStatus(Status.UNAUTHORIZED)
+          .withHeader(HeaderNames.WWW_AUTHENTICATE, """MDTP detail="Bearer token is missing or not authorized"""")))
 
   def willNotAuthorizePrivilegedAuthTokenNoScopes(authBearerToken: String): StubMapping =
     mock.register(
       post(urlEqualTo("/auth/authorise"))
         .withHeader(AUTHORIZATION, equalTo(authBearerToken))
-        .willReturn(
-          aResponse()
-            .withStatus(Status.UNAUTHORIZED)
-            .withHeader(
-              HeaderNames.WWW_AUTHENTICATE,
-              """MDTP detail="InsufficientEnrolments"""")))
+        .willReturn(aResponse()
+          .withStatus(Status.UNAUTHORIZED)
+          .withHeader(HeaderNames.WWW_AUTHENTICATE, """MDTP detail="InsufficientEnrolments"""")))
 
   def willAuthorizeNinoWithAuthToken(nino: String, authBearerToken: String) =
     mock.register(

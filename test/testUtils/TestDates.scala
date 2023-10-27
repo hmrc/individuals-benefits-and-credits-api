@@ -24,8 +24,7 @@ trait TestDates {
   protected def toInterval(fromDate: String, toDate: String): Interval =
     toInterval(parse(fromDate), parse(toDate))
 
-  protected def toInterval(fromDate: LocalDateTime,
-                           toDate: LocalDateTime): Interval =
+  protected def toInterval(fromDate: LocalDateTime, toDate: LocalDateTime): Interval =
     new Interval(fromDate.toDate.getTime, toDate.toDate.getTime)
 
 }

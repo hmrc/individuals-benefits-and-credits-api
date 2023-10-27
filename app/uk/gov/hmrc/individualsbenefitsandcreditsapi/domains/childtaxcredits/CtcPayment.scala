@@ -18,20 +18,20 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import org.joda.time.LocalDate
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
+import uk.gov.hmrc.http.controllers.RestFormats
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
 case class CtcPayment(
-    startDate: Option[LocalDate],
-    endDate: Option[LocalDate],
-    postedDate: Option[LocalDate],
-    frequency: Option[Int],
-    tcType: Option[String],
-    amount: Option[Double]
+  startDate: Option[LocalDate],
+  endDate: Option[LocalDate],
+  postedDate: Option[LocalDate],
+  frequency: Option[Int],
+  tcType: Option[String],
+  amount: Option[Double]
 )
 
 object CtcPayment {
-  def create(ifPayment: IfPayment): CtcPayment = {
+  def create(ifPayment: IfPayment): CtcPayment =
     CtcPayment(
       ifPayment.startDate.map(LocalDate.parse),
       ifPayment.endDate.map(LocalDate.parse),
@@ -40,7 +40,7 @@ object CtcPayment {
       ifPayment.tcType,
       ifPayment.amount
     )
-  }
 
+  implicit val dateFormat: Format[LocalDate] = RestFormats.localDateFormats
   implicit val paymentFormat: Format[CtcPayment] = Json.format[CtcPayment]
 }

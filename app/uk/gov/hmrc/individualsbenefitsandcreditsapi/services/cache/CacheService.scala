@@ -18,22 +18,18 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
 import org.joda.time.Interval
 import play.api.libs.json.Format
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{CacheRepositoryConfiguration, CacheRepository}
-
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{CacheRepository, CacheRepositoryConfiguration}
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CacheService @Inject()(
-    cachingClient: CacheRepository,
-    conf: CacheRepositoryConfiguration)(implicit ec: ExecutionContext) {
+class CacheService @Inject()(cachingClient: CacheRepository, conf: CacheRepositoryConfiguration)(
+  implicit ec: ExecutionContext) {
 
   lazy val cacheEnabled: Boolean = conf.cacheEnabled
 
-  def get[T: Format](cacheId: CacheIdBase,
-                     fallbackFunction: => Future[T]): Future[T] = {
-
+  def get[T: Format](cacheId: CacheIdBase, fallbackFunction: => Future[T]): Future[T] =
     if (cacheEnabled)
       cachingClient.fetchAndGetEntry[T](cacheId.id) flatMap {
         case Some(value) =>
@@ -47,7 +43,6 @@ class CacheService @Inject()(
       fallbackFunction
     }
 
-  }
 }
 
 // Cache ID implementations
@@ -65,8 +60,7 @@ trait CacheIdBase {
   override def toString: String = id
 }
 
-case class CacheId(matchId: UUID, interval: Interval, fields: String)
-    extends CacheIdBase {
+case class CacheId(matchId: UUID, interval: Interval, fields: String) extends CacheIdBase {
 
   lazy val id: String =
     s"$matchId-${interval.getStart}-${interval.getEnd}-$fields"

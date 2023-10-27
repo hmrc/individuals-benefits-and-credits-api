@@ -18,12 +18,7 @@ package testUtils
 
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.auth.core.{
-  AuthConnector,
-  Enrolment,
-  EnrolmentIdentifier,
-  Enrolments
-}
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,23 +27,16 @@ trait AuthHelper {
 
   protected val enrolments = Enrolments(
     Set(
-      Enrolment("read:hello-scopes-1",
-                Seq(EnrolmentIdentifier("FOO", "BAR")),
-                "Activated"),
-      Enrolment("read:hello-scopes-2",
-                Seq(EnrolmentIdentifier("FOO2", "BAR2")),
-                "Activated"),
-      Enrolment("read:hello-scopes-3",
-                Seq(EnrolmentIdentifier("FOO3", "BAR3")),
-                "Activated")
+      Enrolment("read:hello-scopes-1", Seq(EnrolmentIdentifier("FOO", "BAR")), "Activated"),
+      Enrolment("read:hello-scopes-2", Seq(EnrolmentIdentifier("FOO2", "BAR2")), "Activated"),
+      Enrolment("read:hello-scopes-3", Seq(EnrolmentIdentifier("FOO3", "BAR3")), "Activated")
     )
   )
 
-  protected def fakeAuthConnector(
-      stubbedRetrievalResult: Future[_]): AuthConnector = new AuthConnector {
+  protected def fakeAuthConnector(stubbedRetrievalResult: Future[_]): AuthConnector = new AuthConnector {
     def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
-        implicit hc: HeaderCarrier,
-        ec: ExecutionContext): Future[A] =
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext): Future[A] =
       stubbedRetrievalResult.map(_.asInstanceOf[A])
   }
 

@@ -17,21 +17,21 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import org.joda.time.LocalDate
+import uk.gov.hmrc.http.controllers.RestFormats
 // Required for JodaDate parsers to function
-import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class WtcAward(
-    payProfCalcDate: Option[LocalDate],
-    totalEntitlement: Option[Double],
-    workingTaxCredit: Option[WtcWorkingTaxCredit],
-    childTaxCredit: Option[WtcChildTaxCredit],
-    payments: Option[Seq[WtcPayment]]
+  payProfCalcDate: Option[LocalDate],
+  totalEntitlement: Option[Double],
+  workingTaxCredit: Option[WtcWorkingTaxCredit],
+  childTaxCredit: Option[WtcChildTaxCredit],
+  payments: Option[Seq[WtcPayment]]
 )
 
 object WtcAward {
-  def create(ifAward: IfAward) = {
+  def create(ifAward: IfAward): WtcAward = {
 
     val wtc = ifAward.workingTaxCredit.map(WtcWorkingTaxCredit.create)
     val ctc = ifAward.childTaxCredit.map(WtcChildTaxCredit.create)
@@ -41,9 +41,12 @@ object WtcAward {
       ifAward.totalEntitlement,
       wtc,
       ctc,
-      ifAward.payments.map(_.filter(_.tcType.exists(s => s.equals("ETC")))).map(_.map(WtcPayment.create))
+      ifAward.payments
+        .map(_.filter(_.tcType.exists(s => s.equals("ETC"))))
+        .map(_.map(WtcPayment.create))
     )
   }
 
+  implicit val dateFormat: Format[LocalDate] = RestFormats.localDateFormats
   implicit val awardFormat: Format[WtcAward] = Json.format[WtcAward]
 }

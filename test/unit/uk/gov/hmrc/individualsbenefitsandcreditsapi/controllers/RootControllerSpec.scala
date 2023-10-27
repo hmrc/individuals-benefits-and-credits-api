@@ -62,10 +62,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
 
     val testNino: Nino = Nino("AB123456C")
 
-    when(
-      mockAuthConnector.authorise(
-        eqTo(Enrolment("test-scope")),
-        refEq(Retrievals.allEnrolments))(any(), any()))
+    when(mockAuthConnector.authorise(eqTo(Enrolment("test-scope")), refEq(Retrievals.allEnrolments))(any(), any()))
       .thenReturn(Future.successful(Enrolments(Set(Enrolment("test-scope")))))
 
     val rootController =
@@ -88,17 +85,16 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(taxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.failed(new MatchNotFoundException))
 
-      val eventualResult: Future[Result] = rootController.root(testMatchId)(
-        FakeRequest().withHeaders(correlationIdHeader))
+      val eventualResult: Future[Result] =
+        rootController.root(testMatchId)(FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe NOT_FOUND
       contentAsJson(eventualResult) shouldBe Json.obj(
-        "code" -> "NOT_FOUND",
+        "code"    -> "NOT_FOUND",
         "message" -> "The resource can not be found"
       )
 
-      verify(rootController.auditHelper, times(1)).
-        auditApiFailure(any(), any(), any(), any(), any())(any())
+      verify(rootController.auditHelper, times(1)).auditApiFailure(any(), any(), any(), any(), any())(any())
     }
 
     "return a 200 (ok) when a match id matches tdata" in new Fixture {
@@ -106,18 +102,18 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(taxCreditsService.resolve(eqTo(testMatchId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(MatchedCitizen(testMatchId, testNino)))
 
-      val eventualResult: Future[Result] = rootController.root(testMatchId)(
-        FakeRequest().withHeaders(correlationIdHeader))
+      val eventualResult: Future[Result] =
+        rootController.root(testMatchId)(FakeRequest().withHeaders(correlationIdHeader))
 
       status(eventualResult) shouldBe OK
       contentAsJson(eventualResult) shouldBe Json.obj(
         "_links" -> Json.obj(
           "child-tax-credit" -> Json.obj(
-            "href" -> s"/individuals/benefits-and-credits/child-tax-credit?matchId=$testMatchId{&fromDate,toDate}",
+            "href"  -> s"/individuals/benefits-and-credits/child-tax-credit?matchId=$testMatchId{&fromDate,toDate}",
             "title" -> "Get Child Tax Credit details"
           ),
           "working-tax-credit" -> Json.obj(
-            "href" -> s"/individuals/benefits-and-credits/working-tax-credit?matchId=$testMatchId{&fromDate,toDate}",
+            "href"  -> s"/individuals/benefits-and-credits/working-tax-credit?matchId=$testMatchId{&fromDate,toDate}",
             "title" -> "Get Working Tax Credit details"
           ),
           "self" -> Json.obj(
@@ -132,8 +128,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
       when(mockAuthConnector.authorise(any(), any())(any(), any()))
         .thenReturn(Future.failed(InsufficientEnrolments()))
 
-      val result: Future[Result] = rootController.root(testMatchId)(
-        FakeRequest().withHeaders(correlationIdHeader))
+      val result: Future[Result] = rootController.root(testMatchId)(FakeRequest().withHeaders(correlationIdHeader))
 
       status(result) shouldBe UNAUTHORIZED
       verifyNoInteractions(taxCreditsService)

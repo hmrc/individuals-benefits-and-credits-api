@@ -34,25 +34,19 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 
 trait BaseSpec
-    extends AnyFeatureSpec
-    with BeforeAndAfterAll
-    with BeforeAndAfterEach
-    with Matchers
-    with GuiceOneServerPerSuite
-    with ScopesConfig
-    with GivenWhenThen {
-
+    extends AnyFeatureSpec with BeforeAndAfterAll with BeforeAndAfterEach with Matchers with GuiceOneServerPerSuite
+    with ScopesConfig with GivenWhenThen {
 
   val cacheEnabled = false;
 
   implicit override lazy val app: Application = GuiceApplicationBuilder()
     .configure(
-      "auditing.enabled" -> false,
-      "auditing.traceRequests" -> false,
-      "microservice.services.auth.port" -> AuthStub.port,
+      "auditing.enabled"                                    -> false,
+      "auditing.traceRequests"                              -> false,
+      "microservice.services.auth.port"                     -> AuthStub.port,
       "microservice.services.individuals-matching-api.port" -> IndividualsMatchingApiStub.port,
-      "microservice.services.integration-framework.port" -> IfStub.port,
-      "cache.enabled" -> cacheEnabled
+      "microservice.services.integration-framework.port"    -> IfStub.port,
+      "cache.enabled"                                       -> cacheEnabled
     )
     .build()
 
@@ -61,7 +55,7 @@ trait BaseSpec
   val mocks = Seq(AuthStub, IndividualsMatchingApiStub, IfStub)
   val authToken = "Bearer AUTH_TOKEN"
   val clientId = "CLIENT_ID"
-  val acceptHeader1 = ACCEPT -> "application/vnd.hmrc.1.0+json"
+  val acceptHeader1 = ACCEPT                -> "application/vnd.hmrc.1.0+json"
   val correlationIdHeader = "CorrelationId" -> "188e9400-b636-4a3b-80ba-230a8c72b92a"
 
   def invokeEndpoint(endpoint: String) =
@@ -71,10 +65,7 @@ trait BaseSpec
       .asString
 
   protected def requestHeaders(acceptHeader: (String, String) = acceptHeader1) =
-    Map(CONTENT_TYPE -> JSON,
-        AUTHORIZATION -> authToken,
-        acceptHeader,
-        correlationIdHeader)
+    Map(CONTENT_TYPE -> JSON, AUTHORIZATION -> authToken, acceptHeader, correlationIdHeader)
 
   protected def errorResponse(message: String) =
     s"""{"code":"INVALID_REQUEST","message":"$message"}"""
@@ -90,8 +81,7 @@ trait BaseSpec
 }
 
 case class MockHost(port: Int) {
-  val server = new WireMockServer(
-    WireMockConfiguration.wireMockConfig().port(port))
+  val server = new WireMockServer(WireMockConfiguration.wireMockConfig().port(port))
   val mock = new WireMock("localhost", port)
   val url = s"http://localhost:$port"
 }

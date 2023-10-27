@@ -17,26 +17,28 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.http.controllers.RestFormats.localDateFormats
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.http.controllers.RestFormats
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class CtcAward(
-    payProfCalcDate: Option[LocalDate],
-    totalEntitlement: Option[Double],
-    childTaxCredit: Option[CtcChildTaxCredit],
-    payments: Option[Seq[CtcPayment]]
+  payProfCalcDate: Option[LocalDate],
+  totalEntitlement: Option[Double],
+  childTaxCredit: Option[CtcChildTaxCredit],
+  payments: Option[Seq[CtcPayment]]
 )
 
 object CtcAward {
-  def create(ifAward: IfAward): CtcAward = {
+  def create(ifAward: IfAward): CtcAward =
     CtcAward(
       ifAward.payProfCalcDate.map(LocalDate.parse),
       ifAward.totalEntitlement,
       ifAward.childTaxCredit.map(CtcChildTaxCredit.create),
-      ifAward.payments.map(_.filter(_.tcType.exists(s => s.equals("ICC")))).map(_.map(CtcPayment.create))
+      ifAward.payments
+        .map(_.filter(_.tcType.exists(s => s.equals("ICC"))))
+        .map(_.map(CtcPayment.create))
     )
-  }
 
+  implicit val dateFormat: Format[LocalDate] = RestFormats.localDateFormats
   implicit val awardFormat: Format[CtcAward] = Json.format[CtcAward]
 }

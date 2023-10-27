@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.cache
 
-import java.time.{LocalDateTime, ZoneOffset}
 import org.mongodb.scala.model.Indexes.ascending
 import org.mongodb.scala.model.{Filters, IndexModel, IndexOptions, ReplaceOptions}
 import play.api.Configuration
@@ -27,40 +26,43 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
+import java.time.{LocalDateTime, ZoneOffset}
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CacheRepository @Inject()(val cacheConfig: CacheRepositoryConfiguration,
-                                configuration: Configuration,
-                                mongo: MongoComponent)(implicit ec: ExecutionContext
-                               ) extends PlayMongoRepository[Entry](
-  mongoComponent = mongo,
-  collectionName = cacheConfig.collName,
-  domainFormat   = Entry.format,
-  replaceIndexes = true,
-  indexes        = Seq(
-    IndexModel(
-      ascending("id"),
-      IndexOptions().name("_id").
-        unique(true).
-        background(false).
-        sparse(true)),
-    IndexModel(
-      ascending("modifiedDetails.lastUpdated"),
-      IndexOptions().name("lastUpdatedIndex").
-        background(false).
-        expireAfter(cacheConfig.cacheTtl, TimeUnit.SECONDS)))
-) {
+class CacheRepository @Inject()(
+  val cacheConfig: CacheRepositoryConfiguration,
+  configuration: Configuration,
+  mongo: MongoComponent)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[Entry](
+      mongoComponent = mongo,
+      collectionName = cacheConfig.collName,
+      domainFormat = Entry.format,
+      replaceIndexes = true,
+      indexes = Seq(
+        IndexModel(
+          ascending("id"),
+          IndexOptions()
+            .name("_id")
+            .unique(true)
+            .background(false)
+            .sparse(true)),
+        IndexModel(
+          ascending("modifiedDetails.lastUpdated"),
+          IndexOptions()
+            .name("lastUpdatedIndex")
+            .background(false)
+            .expireAfter(cacheConfig.cacheTtl, TimeUnit.SECONDS))
+      )
+    ) {
 
-  implicit lazy val crypto: CompositeSymmetricCrypto = new ApplicationCrypto(
-    configuration.underlying).JsonCrypto
+  implicit lazy val crypto: CompositeSymmetricCrypto = new ApplicationCrypto(configuration.underlying).JsonCrypto
 
-  def cache[T](id: String, value: T)(
-    implicit formats: Format[T]) = {
+  def cache[T](id: String, value: T)(implicit formats: Format[T]) = {
 
-    val jsonEncryptor           = new JsonEncryptor[T]()
+    val jsonEncryptor = new JsonEncryptor[T]()
     val encryptedValue: JsValue = jsonEncryptor.writes(Protected[T](value))
 
     val entry = new Entry(
@@ -72,20 +74,24 @@ class CacheRepository @Inject()(val cacheConfig: CacheRepositoryConfiguration,
       )
     )
 
-    collection.replaceOne(
-      Filters.equal("id", toBson(id)), entry, ReplaceOptions().upsert(true)
-    ).toFuture()
+    collection
+      .replaceOne(
+        Filters.equal("id", toBson(id)),
+        entry,
+        ReplaceOptions().upsert(true)
+      )
+      .toFuture()
   }
 
-  def fetchAndGetEntry[T](id: String)(
-    implicit formats: Format[T]): Future[Option[T]] = {
+  def fetchAndGetEntry[T](id: String)(implicit formats: Format[T]): Future[Option[T]] = {
     val decryptor = new JsonDecryptor[T]()
 
     collection
       .find(Filters.equal("id", toBson(id)))
       .headOption()
       .map {
-        case Some(entry) => decryptor.reads(entry.data.value).asOpt map (_.decryptedValue)
+        case Some(entry) =>
+          decryptor.reads(entry.data.value).asOpt map (_.decryptedValue)
         case None => None
       }
   }

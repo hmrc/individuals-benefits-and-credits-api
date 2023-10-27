@@ -37,12 +37,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import scala.concurrent.ExecutionContext
 
-class IfConnectorSpec
-    extends SpecBase
-    with BeforeAndAfterEach
-    with TestHelpers
-    with MockitoSugar
-    with TestDates {
+class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers with MockitoSugar with TestDates {
   val stubPort = sys.env.getOrElse("WIREMOCK", "11122").toInt
   val stubHost = "localhost"
   val wireMockServer = new WireMockServer(wireMockConfig().port(stubPort))
@@ -55,10 +50,10 @@ class IfConnectorSpec
   override lazy val fakeApplication = new GuiceApplicationBuilder()
     .bindings(bindModules: _*)
     .configure(
-      "microservice.services.integration-framework.host" -> "127.0.0.1",
-      "microservice.services.integration-framework.port" -> "11122",
+      "microservice.services.integration-framework.host"                -> "127.0.0.1",
+      "microservice.services.integration-framework.port"                -> "11122",
       "microservice.services.integration-framework.authorization-token" -> integrationFrameworkAuthorizationToken,
-      "microservice.services.integration-framework.environment" -> integrationFrameworkEnvironment
+      "microservice.services.integration-framework.environment"         -> integrationFrameworkEnvironment
     )
     .build()
 
@@ -83,9 +78,8 @@ class IfConnectorSpec
     configureFor(stubHost, stubPort)
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     wireMockServer.stop()
-  }
 
   val applicationsData = createValidIfApplications
   val idType = "nino"
@@ -118,8 +112,7 @@ class IfConnectorSpec
         )
       }
 
-      verify(underTest.auditHelper, times(1)).
-        auditIfApiFailure(any(), any(), any(), any(), any())(any())
+      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any(), any(), any(), any())(any())
     }
 
     "Fail when IF returns a bad request" in new Setup {
@@ -142,8 +135,7 @@ class IfConnectorSpec
         )
       }
 
-      verify(underTest.auditHelper, times(1)).
-        auditIfApiFailure(any(), any(), any(), any(), any())(any())
+      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any(), any(), any(), any())(any())
     }
 
     "return an empty dataset for NO_DATA_FOUND" in new Setup {
@@ -156,13 +148,13 @@ class IfConnectorSpec
           .withQueryParam("endDate", equalTo(endDate))
           .willReturn(aResponse().withStatus(404).withBody("NO_DATA_FOUND")))
 
-      val result = await(underTest.fetchTaxCredits(nino, interval, None, matchId)
-      (hc, FakeRequest().withHeaders(sampleCorrelationIdHeader), ec))
+      val result = await(
+        underTest
+          .fetchTaxCredits(nino, interval, None, matchId)(hc, FakeRequest().withHeaders(sampleCorrelationIdHeader), ec))
 
       result shouldBe List()
 
-      verify(underTest.auditHelper, times(1)).
-        auditIfApiFailure(any(), any(), any(), any(), any())(any())
+      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any(), any(), any(), any())(any())
     }
 
     "Fail when IF returns a NOT_FOUND" in new Setup {
@@ -185,8 +177,7 @@ class IfConnectorSpec
         )
       }
 
-      verify(underTest.auditHelper, times(1)).
-        auditIfApiFailure(any(), any(), any(), any(), any())(any())
+      verify(underTest.auditHelper, times(1)).auditIfApiFailure(any(), any(), any(), any(), any())(any())
     }
 
     "for standard response" in new Setup {
@@ -197,9 +188,7 @@ class IfConnectorSpec
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
           .withQueryParam("endDate", equalTo(endDate))
-          .withHeader(
-            HeaderNames.authorisation,
-            equalTo(s"Bearer $integrationFrameworkAuthorizationToken"))
+          .withHeader(HeaderNames.authorisation, equalTo(s"Bearer $integrationFrameworkAuthorizationToken"))
           .withHeader("Environment", equalTo(integrationFrameworkEnvironment))
           .withHeader("CorrelationId", equalTo(sampleCorrelationId))
           .willReturn(aResponse()
@@ -215,8 +204,7 @@ class IfConnectorSpec
           )
         )
 
-      verify(underTest.auditHelper, times(1)).
-        auditIfApiResponse(any(), any(), any(), any(), any())(any())
+      verify(underTest.auditHelper, times(1)).auditIfApiResponse(any(), any(), any(), any(), any())(any())
 
       result shouldBe applicationsData.applications
 

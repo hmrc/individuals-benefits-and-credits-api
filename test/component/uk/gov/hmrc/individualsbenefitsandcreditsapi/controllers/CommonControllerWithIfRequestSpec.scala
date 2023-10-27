@@ -23,7 +23,6 @@ import testUtils.TestHelpers
 
 trait CommonControllerWithIfRequestSpec extends CommonControllerSpec with TestHelpers {
 
-
   val apps = createValidIfApplicationsMultiple
   val invalidApplications = createInvalidIfApplications
   val nino = "AB123456C"
@@ -38,16 +37,14 @@ trait CommonControllerWithIfRequestSpec extends CommonControllerSpec with TestHe
     And("IF will return benefits and credits applications")
     IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, apps)
 
-
-    When(
-      s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
-    val response = invokeEndpoint(s"$serviceUrl/${endpoint}?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+    When(s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
+    val response = invokeEndpoint(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
 
     Then("The response status should be 401")
     response.code shouldBe UNAUTHORIZED
     Json.parse(response.body) shouldBe Json.obj(
-      "code" -> "UNAUTHORIZED",
-      "message" ->"Insufficient Enrolments"
+      "code"    -> "UNAUTHORIZED",
+      "message" -> "Insufficient Enrolments"
     )
   }
 
@@ -62,15 +59,12 @@ trait CommonControllerWithIfRequestSpec extends CommonControllerSpec with TestHe
     And("IF will return invalid response")
     IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, invalidApplications)
 
-    When(
-      s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
-    val response = invokeEndpoint(s"$serviceUrl/${endpoint}?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+    When(s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
+    val response = invokeEndpoint(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
 
     Then("The response status should be 500 with a generic error message")
     response.code shouldBe INTERNAL_SERVER_ERROR
-    Json.parse(response.body) shouldBe Json.obj(
-      "code" -> "INTERNAL_SERVER_ERROR",
-      "message" -> "Something went wrong.")
+    Json.parse(response.body) shouldBe Json.obj("code" -> "INTERNAL_SERVER_ERROR", "message" -> "Something went wrong.")
   }
 
   Scenario(s"IF returns an Internal Server Error") {
@@ -84,15 +78,12 @@ trait CommonControllerWithIfRequestSpec extends CommonControllerSpec with TestHe
     And("IF will return Internal Server Error")
     IfStub.customResponse(nino, fromDate, toDate, INTERNAL_SERVER_ERROR, Json.obj("reason" -> "Server error"))
 
-    When(
-      s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
-    val response = invokeEndpoint(s"$serviceUrl/${endpoint}?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+    When(s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
+    val response = invokeEndpoint(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
 
     Then("The response status should be 500 with a generic error message")
     response.code shouldBe INTERNAL_SERVER_ERROR
-    Json.parse(response.body) shouldBe Json.obj(
-      "code" -> "INTERNAL_SERVER_ERROR",
-      "message" -> "Something went wrong.")
+    Json.parse(response.body) shouldBe Json.obj("code" -> "INTERNAL_SERVER_ERROR", "message" -> "Something went wrong.")
   }
 
   Scenario(s"IF returns an Bad Request Error") {
@@ -104,17 +95,20 @@ trait CommonControllerWithIfRequestSpec extends CommonControllerSpec with TestHe
     IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
 
     And("IF will return Internal Server Error")
-    IfStub.customResponse(nino, fromDate, toDate, UNPROCESSABLE_ENTITY, Json.obj("reason" ->
-      "There are 1 or more unknown data items in the 'fields' query string"))
+    IfStub.customResponse(
+      nino,
+      fromDate,
+      toDate,
+      UNPROCESSABLE_ENTITY,
+      Json.obj(
+        "reason" ->
+          "There are 1 or more unknown data items in the 'fields' query string"))
 
-    When(
-      s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
-    val response = invokeEndpoint(s"$serviceUrl/${endpoint}?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+    When(s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
+    val response = invokeEndpoint(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
 
     Then("The response status should be 500 with a generic error message")
     response.code shouldBe INTERNAL_SERVER_ERROR
-    Json.parse(response.body) shouldBe Json.obj(
-      "code" -> "INTERNAL_SERVER_ERROR",
-      "message" -> "Something went wrong.")
+    Json.parse(response.body) shouldBe Json.obj("code" -> "INTERNAL_SERVER_ERROR", "message" -> "Something went wrong.")
   }
 }

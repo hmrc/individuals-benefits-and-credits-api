@@ -16,21 +16,15 @@
 
 package component.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import java.util.UUID
-
-import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{
-  AuthStub,
-  IfStub,
-  IndividualsMatchingApiStub
-}
+import component.uk.gov.hmrc.individualsbenefitsandcreditsapi.stubs.{AuthStub, IfStub, IndividualsMatchingApiStub}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import scalaj.http.Http
 import testUtils.TestHelpers
 
-class ChildTaxCreditControllerSpec
-    extends CommonControllerWithIfRequestSpec
-    with TestHelpers {
+import java.util.UUID
+
+class ChildTaxCreditControllerSpec extends CommonControllerWithIfRequestSpec with TestHelpers {
 
   val rootScope = List(
     "read:individuals-benefits-and-credits-hmcts-c2",
@@ -46,7 +40,6 @@ class ChildTaxCreditControllerSpec
   val matchId = UUID.randomUUID()
   val fromDate = "2017-01-01"
   val toDate = "2017-09-25"
-
 
   Feature("Live Child Tax Credit Controller") {
 
@@ -64,8 +57,7 @@ class ChildTaxCreditControllerSpec
 
       When("I make a call to child-tax-credit endpoint")
       val response =
-        Http(
-          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+        Http(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeader1))
           .asString
 
@@ -129,8 +121,7 @@ class ChildTaxCreditControllerSpec
 
     }
 
-    Scenario(
-      "Valid request to child-tax-credits endpoint when there are no rewards") {
+    Scenario("Valid request to child-tax-credits endpoint when there are no rewards") {
 
       Given("A valid auth token")
 
@@ -140,15 +131,11 @@ class ChildTaxCreditControllerSpec
       IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
 
       And("IF will return benefits and credits applications")
-      IfStub.searchBenefitsAndCredits(nino,
-                                      fromDate,
-                                      toDate,
-                                      createIfApplicationsWithEmptyRewards())
+      IfStub.searchBenefitsAndCredits(nino, fromDate, toDate, createIfApplicationsWithEmptyRewards())
 
       When("I make a call to child-tax-credit endpoint")
       val response =
-        Http(
-          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+        Http(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeader1))
           .asString
 
@@ -180,15 +167,14 @@ class ChildTaxCreditControllerSpec
 
       When("I make a call to child-tax-credit endpoint")
       val response =
-        Http(
-          s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
+        Http(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
           .headers(requestHeaders(acceptHeader1))
           .asString
 
       Then("the response status should be 401 (unauthorized)")
       response.code shouldBe UNAUTHORIZED
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "UNAUTHORIZED",
+        "code"    -> "UNAUTHORIZED",
         "message" -> "Bearer token is missing or not authorized"
       )
     }

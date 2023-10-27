@@ -54,22 +54,26 @@ class ScopesService @Inject()(configuration: Configuration) {
 
   def getValidFilters(scopes: Iterable[String]): Iterable[String] = {
     val filterKeys = scopes.flatMap(getScopeFilterKeys).toList
-    getInternalEndpoints(scopes).flatMap(endpoint =>
-      endpoint.filters.filter(filterMap =>
-        filterKeys.contains(filterMap._1))
-        .values)
+    getInternalEndpoints(scopes).flatMap(
+      endpoint =>
+        endpoint.filters
+          .filter(filterMap => filterKeys.contains(filterMap._1))
+          .values)
   }
 
   def getIfDataPaths(scopes: Iterable[String], endpoints: List[String]): Set[String] = {
     val uniqueDataFields = scopes.flatMap(getScopeFieldKeys).toList.distinct
-    val endpointDataItems = endpoints.flatMap(e => getEndpointFieldKeys(e).toSet)
-    val authorizedDataItemsOnEndpoint = uniqueDataFields.filter(endpointDataItems.contains)
+    val endpointDataItems =
+      endpoints.flatMap(e => getEndpointFieldKeys(e).toSet)
+    val authorizedDataItemsOnEndpoint =
+      uniqueDataFields.filter(endpointDataItems.contains)
     getFieldPaths(authorizedDataItemsOnEndpoint).toSet
   }
 
   def getValidFieldsForCacheKey(scopes: Iterable[String], endpoints: Iterable[String]): String = {
     val uniqueDataFields = scopes.flatMap(getScopeFieldKeys).toList.distinct
-    val endpointDataItems = endpoints.flatMap(e => getEndpointFieldKeys(e).toSet).toList
+    val endpointDataItems =
+      endpoints.flatMap(e => getEndpointFieldKeys(e).toSet).toList
     val keys = uniqueDataFields.filter(endpointDataItems.contains)
     if (keys.nonEmpty) {
       keys.reduce(_ + _)
@@ -97,6 +101,7 @@ class ScopesService @Inject()(configuration: Configuration) {
 
     apiConfig.scopes
       .filter(_.fields.toSet.intersect(keys.toSet).nonEmpty)
-      .map(_.name).sorted
+      .map(_.name)
+      .sorted
   }
 }

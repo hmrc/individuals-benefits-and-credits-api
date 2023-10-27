@@ -30,11 +30,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CacheServiceSpec
-    extends SpecBase
-    with MockitoSugar
-    with Matchers
-    with BeforeAndAfterEach {
+class CacheServiceSpec extends SpecBase with MockitoSugar with Matchers with BeforeAndAfterEach {
 
   val cacheId: TestCacheId = TestCacheId("someid")
   val cachedValue: TestClass = TestClass("cached value")
@@ -43,7 +39,8 @@ class CacheServiceSpec
   trait Setup {
 
     val mockClient: CacheRepository = mock[CacheRepository]
-    val mockCacheConfig: CacheRepositoryConfiguration = mock[CacheRepositoryConfiguration]
+    val mockCacheConfig: CacheRepositoryConfiguration =
+      mock[CacheRepositoryConfiguration]
     val cacheService = new CacheService(mockClient, mockCacheConfig)
 
     implicit val hc: HeaderCarrier = HeaderCarrier()

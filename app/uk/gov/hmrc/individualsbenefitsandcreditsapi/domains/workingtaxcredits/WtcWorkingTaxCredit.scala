@@ -23,9 +23,9 @@ case class WtcWorkingTaxCredit(amount: Option[Double], paidYTD: Option[Double])
 
 object WtcWorkingTaxCredit {
 
-  def create(ifWorkTaxCredit: IfWorkTaxCredit): WtcWorkingTaxCredit = {
+  def create(ifWorkTaxCredit: IfWorkTaxCredit): WtcWorkingTaxCredit =
     WtcWorkingTaxCredit(ifWorkTaxCredit.amount, ifWorkTaxCredit.paidYTD)
-  }
 
-  implicit val workingTaxCreditFormat: Format[WtcWorkingTaxCredit] = Json.format[WtcWorkingTaxCredit]
+  implicit val workingTaxCreditFormat: Format[WtcWorkingTaxCredit] =
+    Json.format[WtcWorkingTaxCredit]
 }

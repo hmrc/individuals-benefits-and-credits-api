@@ -21,5 +21,6 @@ import play.api.libs.json.{Format, Json}
 case class IfApplications(applications: Seq[IfApplication])
 
 object IfApplications {
-  implicit val applicationsFormat: Format[IfApplications] = Json.format[IfApplications]
+  implicit val applicationsFormat: Format[IfApplications] =
+    Json.format[IfApplications]
 }

@@ -19,18 +19,19 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplications
 
-case class IfApiResponseEventModel(deviceId: String,
-                                   input: String,
-                                   method: String,
-                                   userAgent: String,
-                                   apiVersion: String,
-                                   matchId: String,
-                                   correlationId: String,
-                                   applicationId: String,
-                                   requestUrl: String,
-                                   integrationFrameworkApplications: IfApplications)
-
+case class IfApiResponseEventModel(
+  deviceId: String,
+  input: String,
+  method: String,
+  userAgent: String,
+  apiVersion: String,
+  matchId: String,
+  correlationId: String,
+  applicationId: String,
+  requestUrl: String,
+  integrationFrameworkApplications: IfApplications)
 
 object IfApiResponseEventModel {
-  implicit val formatIfApiResponseEventModel = Json.format[IfApiResponseEventModel]
+  implicit val formatIfApiResponseEventModel =
+    Json.format[IfApiResponseEventModel]
 }

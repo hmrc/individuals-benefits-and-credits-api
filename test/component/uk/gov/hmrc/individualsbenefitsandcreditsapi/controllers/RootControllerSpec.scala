@@ -49,7 +49,7 @@ class RootControllerSpec extends BaseSpec {
       Then("the response status should be 401 (unauthorized)")
       response.code shouldBe UNAUTHORIZED
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "UNAUTHORIZED",
+        "code"    -> "UNAUTHORIZED",
         "message" -> "Bearer token is missing or not authorized"
       )
     }
@@ -64,7 +64,7 @@ class RootControllerSpec extends BaseSpec {
       Then("the response status should be 400 (bad request)")
       response.code shouldBe BAD_REQUEST
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
+        "code"    -> "INVALID_REQUEST",
         "message" -> "matchId is required"
       )
     }
@@ -73,15 +73,14 @@ class RootControllerSpec extends BaseSpec {
       Given("a valid privileged Auth bearer token")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, allScopes)
 
-      When(
-        "the root entry point to the API is invoked with a malformed match id")
+      When("the root entry point to the API is invoked with a malformed match id")
       val response =
         invokeEndpoint(s"$serviceUrl/?matchId=malformed-match-id-value")
 
       Then("the response status should be 400 (bad request)")
       response.code shouldBe BAD_REQUEST
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "INVALID_REQUEST",
+        "code"    -> "INVALID_REQUEST",
         "message" -> "matchId format is invalid"
       )
     }
@@ -90,14 +89,13 @@ class RootControllerSpec extends BaseSpec {
       Given("a valid privileged Auth bearer token")
       AuthStub.willAuthorizePrivilegedAuthToken(authToken, allScopes)
 
-      When(
-        "the root entry point to the API is invoked with an invalid match id")
+      When("the root entry point to the API is invoked with an invalid match id")
       val response = invokeEndpoint(s"$serviceUrl/?matchId=$matchId")
 
       Then("the response status should be 404 (not found)")
       response.code shouldBe NOT_FOUND
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "NOT_FOUND",
+        "code"    -> "NOT_FOUND",
         "message" -> "The resource can not be found"
       )
     }
@@ -120,11 +118,11 @@ class RootControllerSpec extends BaseSpec {
             "href" -> s"/individuals/benefits-and-credits/?matchId=$matchId"
           ),
           "working-tax-credit" -> Json.obj(
-            "href" -> s"/individuals/benefits-and-credits/working-tax-credit?matchId=$matchId{&fromDate,toDate}",
+            "href"  -> s"/individuals/benefits-and-credits/working-tax-credit?matchId=$matchId{&fromDate,toDate}",
             "title" -> "Get Working Tax Credit details"
           ),
           "child-tax-credit" -> Json.obj(
-            "href" -> s"/individuals/benefits-and-credits/child-tax-credit?matchId=$matchId{&fromDate,toDate}",
+            "href"  -> s"/individuals/benefits-and-credits/child-tax-credit?matchId=$matchId{&fromDate,toDate}",
             "title" -> "Get Child Tax Credit details"
           )
         )
@@ -138,16 +136,14 @@ class RootControllerSpec extends BaseSpec {
       And("a valid record in the matching API")
       IndividualsMatchingApiStub.hasMatchFor(matchId.toString, nino)
 
-
-      When(
-        s"I make a call to root endpoint")
+      When(s"I make a call to root endpoint")
       val response = invokeEndpoint(s"$serviceUrl/?matchId=$matchId")
 
       Then("The response status should be 401")
       response.code shouldBe UNAUTHORIZED
       Json.parse(response.body) shouldBe Json.obj(
-        "code" -> "UNAUTHORIZED",
-        "message" ->"Insufficient Enrolments"
+        "code"    -> "UNAUTHORIZED",
+        "message" -> "Insufficient Enrolments"
       )
     }
   }

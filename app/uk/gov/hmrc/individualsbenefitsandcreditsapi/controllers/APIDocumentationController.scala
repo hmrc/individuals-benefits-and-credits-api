@@ -30,16 +30,14 @@ import scala.concurrent.ExecutionContext
 // $COVERAGE-OFF$
 
 @Singleton
-class APIDocumentationController @Inject()(cc: ControllerComponents,
-                                           assets: Assets,
-                                           config: Configuration)
-                                          (implicit materializer: Materializer, executionContext: ExecutionContext)
+class APIDocumentationController @Inject()(cc: ControllerComponents, assets: Assets, config: Configuration)(
+  implicit materializer: Materializer,
+  executionContext: ExecutionContext)
     extends BackendController(cc) {
 
   private lazy val privilegedWhitelistedApplicationIds =
     config
-      .getOptional[Seq[String]](
-        "api.access.version-1.0.whitelistedApplicationIds")
+      .getOptional[Seq[String]]("api.access.version-1.0.whitelistedApplicationIds")
       .getOrElse(Seq.empty)
 
   private lazy val endpointsEnabled: Boolean =
@@ -53,19 +51,15 @@ class APIDocumentationController @Inject()(cc: ControllerComponents,
       .getOrElse("BETA")
 
   def definition(): Action[AnyContent] = Action { _ =>
-    Ok(
-      txt.definition(privilegedWhitelistedApplicationIds,
-                     endpointsEnabled,
-                     status))
+    Ok(txt.definition(privilegedWhitelistedApplicationIds, endpointsEnabled, status))
       .withHeaders(CONTENT_TYPE -> JSON)
   }
 
   def documentation(
-      version: String,
-      endpointName: String
+    version: String,
+    endpointName: String
   ): Action[AnyContent] =
-    assets.at(s"/public/api/documentation/$version",
-              s"${endpointName.replaceAll(" ", "-")}.xml")
+    assets.at(s"/public/api/documentation/$version", s"${endpointName.replaceAll(" ", "-")}.xml")
 
   def yaml(version: String, file: String): Action[AnyContent] =
     CORSActionBuilder(config).async { implicit request =>

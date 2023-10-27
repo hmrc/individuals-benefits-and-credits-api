@@ -19,18 +19,20 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 import play.api.libs.json.Json
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 
-case class ChildTaxApiResponseEventModel(deviceId: String,
-                                         input: String,
-                                         method: String,
-                                         userAgent: String,
-                                         apiVersion: String,
-                                         matchId: String,
-                                         correlationId: Option[String],
-                                         applicationId: String,
-                                         scopes: String,
-                                         returnLinks: String,
-                                         childTaxCredit: Seq[CtcApplication])
+case class ChildTaxApiResponseEventModel(
+  deviceId: String,
+  input: String,
+  method: String,
+  userAgent: String,
+  apiVersion: String,
+  matchId: String,
+  correlationId: Option[String],
+  applicationId: String,
+  scopes: String,
+  returnLinks: String,
+  childTaxCredit: Seq[CtcApplication])
 
 object ChildTaxApiResponseEventModel {
-  implicit val formatApiResponseEventModel = Json.format[ChildTaxApiResponseEventModel]
+  implicit val formatApiResponseEventModel =
+    Json.format[ChildTaxApiResponseEventModel]
 }

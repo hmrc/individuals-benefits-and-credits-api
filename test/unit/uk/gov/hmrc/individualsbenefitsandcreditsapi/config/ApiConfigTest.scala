@@ -42,11 +42,14 @@ class ApiConfigTest extends UnitSpec with MockitoSugar with ScopesConfig {
       apiConfig.internalEndpoints.map(e => e.name).toSet shouldBe Set(endpointOne, endpointTwo, endpointThree)
       val endpoint1 = apiConfig.getInternalEndpoint(endpointOne).get
       endpoint1.fields.keys shouldBe Set("A", "B", "C")
-      endpoint1.fields.values.toSet shouldBe  Set("path/to/a", "path/to/b", "path/to/c")
+      endpoint1.fields.values.toSet shouldBe Set("path/to/a", "path/to/b", "path/to/c")
     }
 
     "parse endpoint links correctly" in {
-      apiConfig.getInternalEndpoint(endpointOne).map(c => c.link).get shouldBe "/internal/1"
+      apiConfig
+        .getInternalEndpoint(endpointOne)
+        .map(c => c.link)
+        .get shouldBe "/internal/1"
     }
   }
 }
