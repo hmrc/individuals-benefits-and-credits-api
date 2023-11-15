@@ -26,6 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IndividualsMatchingApiConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import java.util.UUID
 
