@@ -53,6 +53,9 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
 
   trait Fixture {
 
+    implicit val executionContext: ExecutionContext =
+      fakeApplication.injector.instanceOf[ExecutionContext]
+
     val scopeService: ScopesService = mock[ScopesService]
     val liveTaxCreditsService: TaxCreditsService = mock[TaxCreditsService]
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
@@ -77,8 +80,6 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
-    implicit val executionContext: ExecutionContext =
-      fakeApplication.injector.instanceOf[ExecutionContext]
   }
 
   "working tax credits controller" when {
