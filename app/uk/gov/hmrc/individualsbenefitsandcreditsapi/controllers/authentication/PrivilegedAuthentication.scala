@@ -23,8 +23,7 @@ import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait PrivilegedAuthentication extends AuthorisedFunctions {
 
@@ -33,6 +32,7 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
 
   def authenticate(endpointScopes: Iterable[String], matchId: String)(f: Iterable[String] => Future[Result])(
     implicit hc: HeaderCarrier,
+    ec: ExecutionContext,
     request: RequestHeader,
     auditHelper: AuditHelper): Future[Result] =
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")

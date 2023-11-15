@@ -29,15 +29,16 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
 import java.util.UUID
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 class WorkingTaxCreditController @Inject()(
   val authConnector: AuthConnector,
   cc: ControllerComponents,
   scopeService: ScopesService,
   implicit val auditHelper: AuditHelper,
-  taxCreditsService: TaxCreditsService
-) extends CommonController(cc) with PrivilegedAuthentication {
+  taxCreditsService: TaxCreditsService,
+)(implicit ec: ExecutionContext)
+    extends CommonController(cc) with PrivilegedAuthentication {
 
   def workingTaxCredit(matchId: UUID, interval: Interval): Action[AnyContent] =
     Action.async { implicit request =>
