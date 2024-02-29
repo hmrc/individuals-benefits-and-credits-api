@@ -10,7 +10,7 @@ lazy val microservice =
     .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
     .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
     .settings(CodeCoverageSettings.settings *)
-    .settings(scalaVersion := "2.13.8")
+    .settings(scalaVersion := "2.13.12")
     .settings(scalafmtOnCompile := true)
     .settings(onLoadMessage := "")
     .settings(
