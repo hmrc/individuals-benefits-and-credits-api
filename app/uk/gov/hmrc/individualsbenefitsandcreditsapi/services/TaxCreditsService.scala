@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
-import org.joda.time.Interval
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
@@ -25,6 +24,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcA
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheId, CacheService}
 
+import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,14 +35,15 @@ class TaxCreditsService @Inject()(
   scopesService: ScopesService,
   scopesHelper: ScopesHelper,
   individualsMatchingApiConnector: IndividualsMatchingApiConnector) {
-  def getWorkingTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(
+  def getWorkingTaxCredits(matchId: UUID, startDate: LocalDate, endDate: LocalDate, scopes: Iterable[String])(
     implicit hc: HeaderCarrier,
     request: RequestHeader,
     ec: ExecutionContext): Future[Seq[WtcApplication]] = {
 
     val endpoint: String = "working-tax-credit"
 
-    val cacheid = CacheId(matchId, interval, scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
+    val cacheid =
+      CacheId(matchId, startDate, endDate, scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
 
     cacheService
       .get(
@@ -52,7 +53,12 @@ class TaxCreditsService @Inject()(
               val fieldsQuery =
                 scopesHelper.getQueryStringFor(scopes.toList, Seq(endpoint).toList)
               ifConnector
-                .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
+                .fetchTaxCredits(
+                  ninoMatch.nino,
+                  startDate,
+                  endDate,
+                  Option(fieldsQuery).filter(_.nonEmpty),
+                  matchId.toString)
             })
         }
       )
@@ -62,14 +68,15 @@ class TaxCreditsService @Inject()(
   def resolve(matchId: UUID)(implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     individualsMatchingApiConnector.resolve(matchId)
 
-  def getChildTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(
+  def getChildTaxCredits(matchId: UUID, startDate: LocalDate, endDate: LocalDate, scopes: Iterable[String])(
     implicit hc: HeaderCarrier,
     request: RequestHeader,
     ec: ExecutionContext): Future[Seq[CtcApplication]] = {
 
     val endpoint: String = "child-tax-credit"
 
-    val cacheid = CacheId(matchId, interval, scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
+    val cacheid =
+      CacheId(matchId, startDate, endDate, scopesService.getValidFieldsForCacheKey(scopes.toList, List(endpoint)))
 
     cacheService
       .get(
@@ -79,7 +86,12 @@ class TaxCreditsService @Inject()(
               val fieldsQuery =
                 scopesHelper.getQueryStringFor(scopes.toList, List(endpoint))
               ifConnector
-                .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
+                .fetchTaxCredits(
+                  ninoMatch.nino,
+                  startDate,
+                  endDate,
+                  Option(fieldsQuery).filter(_.nonEmpty),
+                  matchId.toString)
             })
         }
       )

@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.{IntervalQueryStringBinder, MatchUuidQueryStringBinder}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.{DateQueryStringBinder, MatchUuidQueryStringBinder}
 
 package object Binders {
   implicit val matchUuidQueryStringBinder = new MatchUuidQueryStringBinder
-  implicit val intervalQueryStringBinder = new IntervalQueryStringBinder
+  implicit val dateQueryStringBinder = new DateQueryStringBinder
+
 }

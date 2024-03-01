@@ -22,7 +22,6 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 import testUtils.TestDates
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.IntervalQueryStringBinder
 
 class IntervalQueryStringBinderSpec extends AnyFlatSpec with Matchers with EitherValues with TestDates {
 

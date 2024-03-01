@@ -1,3 +1,3 @@
-GET        /working-tax-credit      uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.WorkingTaxCreditController.workingTaxCredit(matchId: java.util.UUID, interval: org.joda.time.Interval)
-GET        /child-tax-credit        uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.ChildTaxCreditController.childTaxCredit(matchId: java.util.UUID, interval: org.joda.time.Interval)
+GET        /working-tax-credit      uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.WorkingTaxCreditController.workingTaxCredit(matchId: java.util.UUID, startDate: java.time.LocalDate, endDate: java.time.LocalDate)
+GET        /child-tax-credit        uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.ChildTaxCreditController.childTaxCredit(matchId: java.util.UUID, startDate: java.time.LocalDate, endDate: java.time.LocalDate)
 GET        /                        uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.RootController.root(matchId: java.util.UUID)

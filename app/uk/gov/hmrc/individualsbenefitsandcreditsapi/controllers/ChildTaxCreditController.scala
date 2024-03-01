@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import org.joda.time.Interval
 import play.api.hal.Hal._
 import play.api.hal.HalLink
 import play.api.libs.json.Json
@@ -27,6 +26,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.{maybeCorrelationId, validateCorrelationId}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services._
 
+import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -40,7 +40,7 @@ class ChildTaxCreditController @Inject()(
 )(implicit val ec: ExecutionContext)
     extends CommonController(cc) with PrivilegedAuthentication {
 
-  def childTaxCredit(matchId: UUID, interval: Interval): Action[AnyContent] =
+  def childTaxCredit(matchId: UUID, startDate: LocalDate, endDate: LocalDate): Action[AnyContent] =
     Action.async { implicit request =>
       val scopes = scopeService.getEndPointScopes("child-tax-credit")
 
@@ -48,14 +48,12 @@ class ChildTaxCreditController @Inject()(
         val correlationId = validateCorrelationId(request)
 
         taxCreditsService
-          .getChildTaxCredits(matchId, interval, authScopes)
+          .getChildTaxCredits(matchId, startDate, endDate, authScopes)
           .map(
             applications => {
               val selfLink = HalLink(
                 "self",
-                urlWithInterval(
-                  s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId",
-                  interval.getStart))
+                urlWithInterval(s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId", startDate))
               val response =
                 Json.obj("applications" -> Json.toJson(applications))
 

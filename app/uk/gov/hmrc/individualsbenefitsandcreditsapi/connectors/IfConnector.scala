@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
-import org.joda.time.Interval
 import play.api.Logger
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
@@ -27,6 +26,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,14 +41,12 @@ class IfConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient, va
 
   val serviceUrl = servicesConfig.baseUrl("integration-framework")
 
-  def fetchTaxCredits(nino: Nino, interval: Interval, filter: Option[String], matchId: String)(
+  def fetchTaxCredits(nino: Nino, startDate: LocalDate, endDate: LocalDate, filter: Option[String], matchId: String)(
     implicit hc: HeaderCarrier,
     request: RequestHeader,
     ec: ExecutionContext): Future[Seq[IfApplication]] = {
 
     val endpoint = "IfConnector::fetchTaxCredits"
-    val startDate = interval.getStart.toLocalDate
-    val endDate = interval.getEnd.toLocalDate
 
     val url = s"$serviceUrl/individuals/tax-credits/nino/$nino?" +
       s"startDate=$startDate&endDate=$endDate${filter.map(f => s"&fields=$f").getOrElse("")}"

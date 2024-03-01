@@ -16,14 +16,13 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import org.joda.time.DateTime
+import java.time.LocalDate
 import play.api.Logger
 import play.api.mvc.{ControllerComponents, Request, RequestHeader, Result}
 import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
 import uk.gov.hmrc.http.{BadRequestException, TooManyRequestException}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Dates.toFormattedLocalDate
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.Inject
@@ -37,8 +36,8 @@ abstract class CommonController @Inject()(
   private def getQueryParam[T](name: String)(implicit request: Request[T]) =
     request.queryString.get(name).flatMap(_.headOption)
 
-  private[controllers] def urlWithInterval[T](url: String, fromDate: DateTime)(implicit request: Request[T]) = {
-    val urlWithFromDate = s"$url&fromDate=${toFormattedLocalDate(fromDate)}"
+  private[controllers] def urlWithInterval[T](url: String, fromDate: LocalDate)(implicit request: Request[T]) = {
+    val urlWithFromDate = s"$url&fromDate=${fromDate: LocalDate}"
     getQueryParam("toDate") map (toDate => s"$urlWithFromDate&toDate=$toDate") getOrElse urlWithFromDate
   }
 
