@@ -40,6 +40,5 @@ object CtcPayment {
       ifPayment.amount
     )
 
-  implicit val dateFormat: Format[LocalDate] = Json.format[LocalDate]
   implicit val paymentFormat: Format[CtcPayment] = Json.format[CtcPayment]
 }

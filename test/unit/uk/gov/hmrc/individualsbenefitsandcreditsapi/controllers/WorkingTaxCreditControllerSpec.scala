@@ -32,9 +32,11 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.WorkingTaxCreditController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesService, TaxCreditsService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
+import java.time.LocalDate
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,9 +48,9 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
   implicit lazy val materializer: Materializer = fakeApplication.materializer
   private val testMatchId =
     UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
-  private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
-  private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
-  private val testInterval = new Interval(fromDate, toDate)
+  private val fromDate = LocalDate.parse("2017-03-02").atStartOfDay()
+  private val toDate = LocalDate.parse("2017-05-31").atStartOfDay()
+  private val testInterval = Interval(fromDate, toDate)
 
   trait Fixture {
 
