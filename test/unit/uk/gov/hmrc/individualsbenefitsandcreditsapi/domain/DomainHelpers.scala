@@ -16,7 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.{CtcApplication, CtcAward, CtcChildTaxCredit, CtcPayment}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfAward, IfChildTaxCredit, IfPayment, IfWorkTaxCredit}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits._

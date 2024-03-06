@@ -16,8 +16,7 @@
 
 package testUtils
 
-import org.joda.time.LocalDateTime.parse
-import org.joda.time.{Interval, LocalDateTime}
+import java.time.LocalDateTime.parse
 
 trait TestDates {
 
