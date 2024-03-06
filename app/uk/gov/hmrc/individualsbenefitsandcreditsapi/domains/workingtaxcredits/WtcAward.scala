@@ -45,6 +45,5 @@ object WtcAward {
     )
   }
 
-  implicit val dateFormat: Format[LocalDate] = Json.format[LocalDate]
   implicit val awardFormat: Format[WtcAward] = Json.format[WtcAward]
 }

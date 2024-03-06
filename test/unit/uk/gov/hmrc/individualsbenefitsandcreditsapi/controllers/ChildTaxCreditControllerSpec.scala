@@ -35,7 +35,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
-import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.time.{LocalDate, LocalTime}
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,8 +51,8 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
 
   private val testMatchId =
     UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
-  private val fromDate = new LocalDateTime(LocalDate.parse("2017-03-02"), LocalTime.MIN)
-  private val toDate = new LocalDateTime(LocalDate.parse("2017-05-31"), LocalTime.MAX)
+  private val fromDate = LocalDate.parse("2017-03-02").atStartOfDay()
+  private val toDate = LocalDate.parse("2017-05-31").atTime(LocalTime.MAX)
   private val testInterval = Interval(fromDate, toDate)
 
   trait Fixture {

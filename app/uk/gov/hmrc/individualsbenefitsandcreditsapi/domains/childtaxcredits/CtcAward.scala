@@ -38,6 +38,5 @@ object CtcAward {
         .map(_.map(CtcPayment.create))
     )
 
-  implicit val dateFormat: Format[LocalDate] = Json.format[LocalDate]
   implicit val awardFormat: Format[CtcAward] = Json.format[CtcAward]
 }

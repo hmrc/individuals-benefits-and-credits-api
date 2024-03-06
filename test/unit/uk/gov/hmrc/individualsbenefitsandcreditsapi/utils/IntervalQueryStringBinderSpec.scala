@@ -16,7 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -49,8 +49,7 @@ class IntervalQueryStringBinderSpec extends AnyFlatSpec with Matchers with Eithe
   it should "default to today's date when a valid fromDate parameter is present but a toDate parameter is missing" in {
     val parameters = Map("fromDate" -> Seq("2017-01-31"))
     val maybeEither = intervalQueryStringBinder.bind("", parameters)
-    maybeEither shouldBe Some(
-      Right(toInterval("2017-01-31T00:00:00.000", LocalDateTime.now().withTime(0, 0, 0, 1).toString())))
+    maybeEither shouldBe Some(Right(toInterval("2017-01-31T00:00:00.000", LocalDate.now.atTime(0, 0, 0, 1).toString)))
   }
 
   it should "succeed in binding an interval from well formed fromDate and toDate parameters" in {
