@@ -16,21 +16,24 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.utils
 
-import org.joda.time.{DateTime, Interval, LocalDate}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.ValidationException
+
+import java.text.SimpleDateFormat
+import java.time.{LocalDate, LocalDateTime, LocalTime}
+
+case class Interval(from: LocalDateTime, to: LocalDateTime)
 
 object Dates {
 
-  val localDatePattern = "yyyy-MM-dd"
+  val localDatePattern = new SimpleDateFormat("yyyy-MM-dd")
 
   private val desDataInceptionDate = LocalDate.parse("2013-03-31")
 
-  def toFormattedLocalDate(date: DateTime) =
-    date.toLocalDate.toString(localDatePattern)
+  def toFormattedLocalDate(date: LocalDateTime) = localDatePattern.format(date)
 
   def toInterval(fromDate: LocalDate, toDate: LocalDate): Interval =
     if (fromDate.isBefore(desDataInceptionDate))
       throw new ValidationException("fromDate earlier than 31st March 2013")
     else
-      new Interval(fromDate.toDate.getTime, toDate.toDateTimeAtStartOfDay.plusMillis(1).toDate.getTime)
+      Interval(fromDate.atTime(LocalTime.MIN), toDate.atTime(LocalTime.MAX))
 }

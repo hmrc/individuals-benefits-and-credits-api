@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.utils
 
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{Interval, LocalDate}
 import play.api.mvc.QueryStringBindable
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.ValidationException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Dates.toInterval
 
+import java.time.{LocalDate, ZoneId}
+
 class IntervalQueryStringBinder extends QueryStringBindable[Interval] {
 
-  private val dateTimeFormatter =
-    DateTimeFormat.forPattern(Dates.localDatePattern)
+  private val dateTimeFormatter = Dates.localDatePattern
 
   override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Interval]] =
     (getParam(params, "fromDate"), getParam(params, "toDate", Some(LocalDate.now()))) match {
@@ -48,7 +47,7 @@ class IntervalQueryStringBinder extends QueryStringBindable[Interval] {
     default: Option[LocalDate] = None): Either[String, LocalDate] =
     try {
       params.get(paramName).flatMap(_.headOption) match {
-        case Some(date) => Right(dateTimeFormatter.parseLocalDate(date))
+        case Some(date) => Right(dateTimeFormatter.parse(date).toInstant.atZone(ZoneId.systemDefault()).toLocalDate)
         case None =>
           default.map(Right(_)).getOrElse(Left(s"$paramName is required"))
       }
@@ -57,7 +56,6 @@ class IntervalQueryStringBinder extends QueryStringBindable[Interval] {
     }
 
   override def unbind(key: String, dateRange: Interval): String =
-    s"fromDate=${dateTimeFormatter.print(dateRange.getStart.toLocalDate)}&toDate=${dateTimeFormatter
-      .print(dateRange.getEnd.toLocalDate)}"
+    s"fromDate=${dateTimeFormatter.format(dateRange.from.toLocalDate)}&toDate=${dateTimeFormatter.format(dateRange.to.toLocalDate)}"
 
 }

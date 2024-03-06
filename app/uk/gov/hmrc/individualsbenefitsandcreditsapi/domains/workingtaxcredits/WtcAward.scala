@@ -16,9 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import org.joda.time.LocalDate
-import uk.gov.hmrc.http.controllers.RestFormats
-// Required for JodaDate parsers to function
+import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
@@ -47,6 +45,6 @@ object WtcAward {
     )
   }
 
-  implicit val dateFormat: Format[LocalDate] = RestFormats.localDateFormats
+  implicit val dateFormat: Format[LocalDate] = Json.format[LocalDate]
   implicit val awardFormat: Format[WtcAward] = Json.format[WtcAward]
 }

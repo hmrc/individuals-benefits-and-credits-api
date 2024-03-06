@@ -16,7 +16,6 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
-import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

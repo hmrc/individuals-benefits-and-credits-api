@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
-import org.joda.time.Interval
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 import play.api.hal.Hal._
 import play.api.hal.HalLink
 import play.api.libs.json.Json
@@ -55,7 +55,7 @@ class WorkingTaxCreditController @Inject()(
                 "self",
                 urlWithInterval(
                   s"/individuals/benefits-and-credits/working-tax-credits?matchId=$matchId",
-                  interval.getStart))
+                  interval.from))
               val response =
                 Json.obj("applications" -> Json.toJson(applications))
 
