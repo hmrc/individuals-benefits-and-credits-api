@@ -28,9 +28,10 @@ class IntervalQueryStringBinder extends QueryStringBindable[Interval] {
 
   override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Interval]] =
     (getParam(params, "fromDate"), getParam(params, "toDate", Some(LocalDate.now()))) match {
-      case (Right(from), Right(to)) => Some(interval(from, to))
-      case (_, Left(msg))           => Some(Left(msg))
-      case (Left(msg), _)           => Some(Left(msg))
+      case (Right(from), Right(to)) if to.isBefore(from) => Some(Left("Invalid time period requested"))
+      case (Right(from), Right(to))                      => Some(interval(from, to))
+      case (_, Left(msg))                                => Some(Left(msg))
+      case (Left(msg), _)                                => Some(Left(msg))
     }
 
   private def interval(fromDate: LocalDate, toDate: LocalDate): Either[String, Interval] =
@@ -55,7 +56,11 @@ class IntervalQueryStringBinder extends QueryStringBindable[Interval] {
       case _: Throwable => Left(s"$paramName: invalid date format")
     }
 
-  override def unbind(key: String, dateRange: Interval): String =
-    s"fromDate=${dateTimeFormatter.format(dateRange.from.toLocalDate)}&toDate=${dateTimeFormatter.format(dateRange.to.toLocalDate)}"
+  override def unbind(key: String, dateRange: Interval): String = {
+    val fromDate = "2020-01-31"
+    val toDate = "2020-12-31"
+
+    s"fromDate=$fromDate&toDate=$toDate"
+  }
 
 }

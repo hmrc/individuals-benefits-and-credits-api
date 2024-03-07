@@ -35,5 +35,5 @@ object Dates {
     if (fromDate.isBefore(desDataInceptionDate))
       throw new ValidationException("fromDate earlier than 31st March 2013")
     else
-      Interval(fromDate.atTime(LocalTime.MIN), toDate.atTime(0, 0, 0, 1))
+      Interval(fromDate.atTime(LocalTime.MIN), toDate.atTime(0, 0, 0, 1000000))
 }

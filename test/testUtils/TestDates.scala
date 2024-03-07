@@ -16,14 +16,19 @@
 
 package testUtils
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.{Dates, Interval}
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId}
 import java.time.LocalDateTime.parse
 
 trait TestDates {
 
   protected def toInterval(fromDate: String, toDate: String): Interval =
+    //    TODO: BELOW CODE WORKS FOR UNBIND UNIT TEST, ORIGINAL CODE THROWS ERROR - WHY???
+//    val dateTimeFormatter = Dates.localDatePattern
+//    val fromDateLDT: LocalDateTime = dateTimeFormatter.parse(fromDate).toInstant.atZone(ZoneId.systemDefault()).toLocalDateTime
+//    val toDateLDT: LocalDateTime = dateTimeFormatter.parse(toDate).toInstant.atZone(ZoneId.systemDefault()).toLocalDateTime
+//    Interval(fromDateLDT, toDateLDT)
     toInterval(parse(fromDate), parse(toDate))
 
   protected def toInterval(fromDate: LocalDateTime, toDate: LocalDateTime): Interval =
