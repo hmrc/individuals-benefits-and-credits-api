@@ -16,7 +16,6 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
-import org.joda.time.{Interval, LocalDate}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -31,8 +30,10 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcA
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheIdBase, CacheService}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesHelper, ScopesService, TaxCreditsService}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
+import java.time.LocalDate
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
@@ -61,9 +62,9 @@ class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelp
       )
 
     val nino: Nino = Nino("AB123456C")
-    private val fromDate = new LocalDate("2017-03-02").toDateTimeAtStartOfDay
-    private val toDate = new LocalDate("2017-05-31").toDateTimeAtStartOfDay
-    val testInterval = new Interval(fromDate, toDate)
+    private val fromDate = LocalDate.parse("2017-03-02").atStartOfDay()
+    private val toDate = LocalDate.parse("2017-05-31").atStartOfDay()
+    val testInterval = Interval(fromDate, toDate)
     val testMatchId: UUID =
       UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
 

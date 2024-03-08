@@ -16,7 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcAward
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers

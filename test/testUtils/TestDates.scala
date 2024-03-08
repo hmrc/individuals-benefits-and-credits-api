@@ -16,8 +16,10 @@
 
 package testUtils
 
-import org.joda.time.LocalDateTime.parse
-import org.joda.time.{Interval, LocalDateTime}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
+
+import java.time.LocalDateTime
+import java.time.LocalDateTime.parse
 
 trait TestDates {
 
@@ -25,6 +27,6 @@ trait TestDates {
     toInterval(parse(fromDate), parse(toDate))
 
   protected def toInterval(fromDate: LocalDateTime, toDate: LocalDateTime): Interval =
-    new Interval(fromDate.toDate.getTime, toDate.toDate.getTime)
+    Interval(fromDate, toDate)
 
 }

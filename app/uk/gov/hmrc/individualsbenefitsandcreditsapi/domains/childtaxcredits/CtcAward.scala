@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.http.controllers.RestFormats
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
 case class CtcAward(
@@ -39,6 +38,5 @@ object CtcAward {
         .map(_.map(CtcPayment.create))
     )
 
-  implicit val dateFormat: Format[LocalDate] = RestFormats.localDateFormats
   implicit val awardFormat: Format[CtcAward] = Json.format[CtcAward]
 }

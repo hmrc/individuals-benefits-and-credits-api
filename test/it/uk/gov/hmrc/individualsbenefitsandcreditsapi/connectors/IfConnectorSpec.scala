@@ -65,7 +65,7 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
     val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
     val sampleCorrelationIdHeader = ("CorrelationId" -> sampleCorrelationId)
 
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val config = fakeApplication.injector.instanceOf[ServicesConfig]
     val httpClient = fakeApplication.injector.instanceOf[HttpClient]
@@ -89,7 +89,7 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
 
     val startDate = "2016-01-01"
     val endDate = "2017-03-01"
-    val interval = toInterval(startDate, endDate)
+    val interval = toInterval(s"${startDate}T00:00:00.000", s"${endDate}T00:00:00.000")
     val nino = Nino("NA000799C")
 
     "Fail when IF returns an error" in new Setup {

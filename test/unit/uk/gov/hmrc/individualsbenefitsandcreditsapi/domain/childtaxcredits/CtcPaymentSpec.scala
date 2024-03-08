@@ -16,7 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.childtaxcredits
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcPayment
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec

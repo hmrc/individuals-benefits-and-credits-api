@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
-import org.joda.time.Interval
 import play.api.libs.json.Format
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.{CacheRepository, CacheRepositoryConfiguration}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 
 import java.util.UUID
 import javax.inject.Inject
@@ -63,6 +63,6 @@ trait CacheIdBase {
 case class CacheId(matchId: UUID, interval: Interval, fields: String) extends CacheIdBase {
 
   lazy val id: String =
-    s"$matchId-${interval.getStart}-${interval.getEnd}-$fields"
+    s"$matchId-${interval.from}-${interval.to}-$fields"
 
 }
