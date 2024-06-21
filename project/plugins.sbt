@@ -10,4 +10,4 @@ addSbtPlugin("org.playframework" %% "sbt-plugin" % "3.0.1")
 
 addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "2.0.10")
 
-addSbtPlugin("com.lucidchart" %% "sbt-scalafmt" % "1.16")
+addSbtPlugin("org.scalameta" %% "sbt-scalafmt" % "2.5.2")
