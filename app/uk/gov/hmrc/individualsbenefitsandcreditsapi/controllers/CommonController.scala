@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-abstract class CommonController @Inject()(
+abstract class CommonController @Inject() (
   cc: ControllerComponents
 ) extends BackendController(cc) {
 
@@ -42,40 +42,34 @@ abstract class CommonController @Inject()(
     getQueryParam("toDate") map (toDate => s"$urlWithFromDate&toDate=$toDate") getOrElse urlWithFromDate
   }
 
-  private[controllers] def withAudit(correlationId: Option[String], matchId: String, url: String)(
-    implicit request: RequestHeader,
-    auditHelper: AuditHelper): PartialFunction[Throwable, Result] = {
-    case _: MatchNotFoundException => {
+  private[controllers] def withAudit(correlationId: Option[String], matchId: String, url: String)(implicit
+    request: RequestHeader,
+    auditHelper: AuditHelper
+  ): PartialFunction[Throwable, Result] = {
+    case _: MatchNotFoundException =>
       logger.warn("Controllers MatchNotFoundException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, "Not Found")
       ErrorNotFound.toHttpResponse
-    }
-    case e: InsufficientEnrolments => {
+    case e: InsufficientEnrolments =>
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorUnauthorized("Insufficient Enrolments").toHttpResponse
-    }
-    case e: AuthorisationException => {
+    case e: AuthorisationException =>
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorUnauthorized(e.getMessage).toHttpResponse
-    }
-    case tmr: TooManyRequestException => {
+    case tmr: TooManyRequestException =>
       logger.warn("Controllers TooManyRequestException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, tmr.getMessage)
       ErrorTooManyRequests.toHttpResponse
-    }
-    case br: BadRequestException => {
+    case br: BadRequestException =>
       auditHelper.auditApiFailure(correlationId, matchId, request, url, br.getMessage)
       ErrorInvalidRequest(br.getMessage).toHttpResponse
-    }
-    case e: IllegalArgumentException => {
+    case e: IllegalArgumentException =>
       logger.warn("Controllers IllegalArgumentException encountered")
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInvalidRequest(e.getMessage).toHttpResponse
-    }
-    case e: Exception => {
+    case e: Exception =>
       logger.error("Unexpected exception", e)
       auditHelper.auditApiFailure(correlationId, matchId, request, url, e.getMessage)
       ErrorInternalServer("Something went wrong.").toHttpResponse
-    }
   }
 }

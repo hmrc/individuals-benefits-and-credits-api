@@ -28,18 +28,24 @@ object IfStub extends MockHost(22004) {
       get(urlPathEqualTo(s"/individuals/tax-credits/nino/$nino"))
         .withQueryParam("startDate", equalTo(fromDate))
         .withQueryParam("endDate", equalTo(toDate))
-        .willReturn(aResponse()
-          .withStatus(OK)
-          .withBody(Json.toJson(ifApplications).toString())))
+        .willReturn(
+          aResponse()
+            .withStatus(OK)
+            .withBody(Json.toJson(ifApplications).toString())
+        )
+    )
 
   def customResponse(nino: String, fromDate: String, toDate: String, status: Int, response: JsValue) =
     mock.register(
       get(urlPathEqualTo(s"/individuals/tax-credits/nino/$nino"))
         .withQueryParam("startDate", equalTo(fromDate))
         .withQueryParam("endDate", equalTo(toDate))
-        .willReturn(aResponse()
-          .withStatus(status)
-          .withBody(response.toString())))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withBody(response.toString())
+        )
+    )
 
   def enforceRateLimit(nino: String, fromDate: String, toDate: String): Unit =
     mock.register(
@@ -49,8 +55,10 @@ object IfStub extends MockHost(22004) {
         .withQueryParam(
           "fields",
           equalTo(
-            "employments(employer(address(line1,line2,line3,line4,line5,postcode),districtNumber,name,schemeRef),employment(endDate,startDate))")
+            "employments(employer(address(line1,line2,line3,line4,line5,postcode),districtNumber,name,schemeRef),employment(endDate,startDate))"
+          )
         )
-        .willReturn(aResponse().withStatus(TOO_MANY_REQUESTS)))
+        .willReturn(aResponse().withStatus(TOO_MANY_REQUESTS))
+    )
 
 }

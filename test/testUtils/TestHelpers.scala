@@ -43,7 +43,8 @@ trait TestHelpers {
     familyAmount = Some(22),
     babyAmount = Some(22),
     entitlementYTD = Some(22),
-    paidYTD = Some(22))
+    paidYTD = Some(22)
+  )
 
   val etcPayment = IfPayment(
     periodStartDate = Some("2020-08-18"),
@@ -137,7 +138,8 @@ trait TestHelpers {
       ceasedDate = Some("2020-08-18"),
       entStartDate = Some("2020-08-18"),
       entEndDate = Some("2020-08-18"),
-      awards = Some(Seq(ifAwards)))
+      awards = Some(Seq(ifAwards))
+    )
 
     IfApplications(Seq(application, application))
   }

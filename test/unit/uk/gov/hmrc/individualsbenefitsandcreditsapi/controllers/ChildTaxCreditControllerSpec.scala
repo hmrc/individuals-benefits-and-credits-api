@@ -17,7 +17,7 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import org.apache.pekko.stream.Materializer
-import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo, refEq}
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -93,7 +93,8 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
 
           when(
             taxCreditsService
-              .getChildTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+              .getChildTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.successful(Seq(createValidCtcApplication(), createValidCtcApplication()))
             )
@@ -117,7 +118,8 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
 
           when(
             taxCreditsService
-              .getChildTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+              .getChildTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )
@@ -167,7 +169,8 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
             intercept[Exception] {
               await(
                 childTaxCreditsController
-                  .childTaxCredit(testMatchId, testInterval)(fakeRequest))
+                  .childTaxCredit(testMatchId, testInterval)(fakeRequest)
+              )
             }
           assert(result.getMessage == "No scopes defined")
         }
@@ -179,8 +182,10 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
           val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest("GET", s"/working-tax-credits/")
 
-          when(taxCreditsService
-            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+          when(
+            taxCreditsService
+              .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
@@ -208,8 +213,10 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
             FakeRequest("GET", s"/working-tax-credits/")
               .withHeaders("correlationId" -> "InvalidId")
 
-          when(taxCreditsService
-            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+          when(
+            taxCreditsService
+              .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )

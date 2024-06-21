@@ -42,6 +42,7 @@ trait PatternsAndValidators {
 
   def paymentAmountValidator: Reads[Double] =
     min[Double](minPaymentValue) andKeep max[Double](maxPaymentValue) andKeep verifying[Double](
-      isMultipleOfPointZeroOne)
+      isMultipleOfPointZeroOne
+    )
 
 }

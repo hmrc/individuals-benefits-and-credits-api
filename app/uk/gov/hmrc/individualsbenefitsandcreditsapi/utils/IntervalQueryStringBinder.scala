@@ -35,9 +35,9 @@ class IntervalQueryStringBinder extends QueryStringBindable[Interval] {
     }
 
   private def interval(fromDate: LocalDate, toDate: LocalDate): Either[String, Interval] =
-    try {
+    try
       Right(toInterval(fromDate, toDate))
-    } catch {
+    catch {
       case e: ValidationException => Left(e.getMessage)
       case _: Throwable           => Left("Invalid time period requested")
     }
@@ -45,14 +45,15 @@ class IntervalQueryStringBinder extends QueryStringBindable[Interval] {
   private def getParam(
     params: Map[String, Seq[String]],
     paramName: String,
-    default: Option[LocalDate] = None): Either[String, LocalDate] =
-    try {
+    default: Option[LocalDate] = None
+  ): Either[String, LocalDate] =
+    try
       params.get(paramName).flatMap(_.headOption) match {
         case Some(date) => Right(LocalDate.parse(date, localDatePattern))
         case None =>
           default.map(Right(_)).getOrElse(Left(s"$paramName is required"))
       }
-    } catch {
+    catch {
       case _: Throwable => Left(s"$paramName: invalid date format")
     }
 

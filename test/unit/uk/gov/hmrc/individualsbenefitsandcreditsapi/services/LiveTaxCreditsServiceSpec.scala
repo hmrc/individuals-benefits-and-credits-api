@@ -86,18 +86,21 @@ class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelp
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response: Seq[WtcApplication] = await(
         taxCreditsService
-          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
+      )
       response.isEmpty shouldBe true
     }
 
     "return list of working tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any()))
+          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any())
+      )
         .thenReturn(Future.successful(createValidIfApplicationsMultiple.applications))
       val response: Seq[WtcApplication] = await(
         taxCreditsService
-          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
+          .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
+      )
       response.isEmpty shouldBe false
     }
 
@@ -106,18 +109,21 @@ class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelp
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
       val response: Seq[CtcApplication] = await(
         taxCreditsService
-          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
+      )
       response.isEmpty shouldBe true
     }
 
     "return list of child tax credits when records exists for the given matchId" in new Setup {
       when(
         ifConnector
-          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any()))
+          .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any())
+      )
         .thenReturn(Future.successful(createValidIfApplicationsMultiple.applications))
       val response: Seq[CtcApplication] = await(
         taxCreditsService
-          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec))
+          .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
+      )
       response.isEmpty shouldBe false
     }
   }

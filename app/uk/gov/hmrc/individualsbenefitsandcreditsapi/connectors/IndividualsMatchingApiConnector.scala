@@ -26,16 +26,16 @@ import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 @Singleton
-class IndividualsMatchingApiConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)(
-  implicit ec: ExecutionContext) {
+class IndividualsMatchingApiConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClient)(implicit
+  ec: ExecutionContext
+) {
 
   private[connectors] val serviceUrl =
     servicesConfig.baseUrl("individuals-matching-api")
 
   def resolve(matchId: UUID)(implicit hc: HeaderCarrier): Future[MatchedCitizen] =
-    http.GET[MatchedCitizen](s"$serviceUrl/match-record/$matchId") recover {
-      case UpstreamErrorResponse(_, 404, _, _) =>
-        throw new MatchNotFoundException
+    http.GET[MatchedCitizen](s"$serviceUrl/match-record/$matchId") recover { case UpstreamErrorResponse(_, 404, _, _) =>
+      throw new MatchNotFoundException
     }
 
 }

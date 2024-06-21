@@ -102,7 +102,9 @@ trait CommonControllerWithIfRequestSpec extends CommonControllerSpec with TestHe
       UNPROCESSABLE_ENTITY,
       Json.obj(
         "reason" ->
-          "There are 1 or more unknown data items in the 'fields' query string"))
+          "There are 1 or more unknown data items in the 'fields' query string"
+      )
+    )
 
     When(s"I make a call to ${if (endpoint.isEmpty) "root" else endpoint} endpoint")
     val response = invokeEndpoint(s"$serviceUrl/$endpoint?matchId=$matchId&fromDate=$fromDate&toDate=$toDate")
