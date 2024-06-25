@@ -25,7 +25,8 @@ case class IfApplication(
   ceasedDate: Option[String],
   entStartDate: Option[String],
   entEndDate: Option[String],
-  awards: Option[Seq[IfAward]])
+  awards: Option[Seq[IfAward]]
+)
 
 object IfApplication extends PatternsAndValidators {
 

@@ -45,7 +45,7 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
   val applicationId = "80a6bb14-d888-436e-a541-4000674c60bb"
   val request: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withHeaders("X-Application-Id" -> applicationId)
-  val response: JsValue = Json.toJson("some"     -> "json")
+  val response: JsValue = Json.toJson("some" -> "json")
   val ifUrl =
     s"host/individuals/benefits-and-credits/child-tax-credit/nino/$nino?startDate=2019-01-01&endDate=2020-01-01&fields=some(vals(val1),val2)"
   val endpoint = "/test"

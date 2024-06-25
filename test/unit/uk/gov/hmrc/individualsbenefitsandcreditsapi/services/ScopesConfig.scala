@@ -64,6 +64,6 @@ trait ScopesConfig {
     (s"api-config.fields.F", "path/to/f"),
     (s"api-config.fields.G", "path/to/g"),
     (s"api-config.fields.H", "path/to/h"),
-    (s"api-config.fields.I", "path/to/i"),
+    (s"api-config.fields.I", "path/to/i")
   )
 }

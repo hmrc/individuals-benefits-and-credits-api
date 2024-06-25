@@ -28,7 +28,8 @@ case class RootApiResponseEventModel(
   correlationId: Option[String],
   applicationId: String,
   scopes: String,
-  returnLinks: String)
+  returnLinks: String
+)
 
 object RootApiResponseEventModel {
   implicit val formatApiResponseEventModel =

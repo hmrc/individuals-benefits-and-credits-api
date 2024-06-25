@@ -29,16 +29,18 @@ import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaxCreditsService @Inject()(
+class TaxCreditsService @Inject() (
   cacheService: CacheService,
   ifConnector: IfConnector,
   scopesService: ScopesService,
   scopesHelper: ScopesHelper,
-  individualsMatchingApiConnector: IndividualsMatchingApiConnector) {
-  def getWorkingTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(
-    implicit hc: HeaderCarrier,
+  individualsMatchingApiConnector: IndividualsMatchingApiConnector
+) {
+  def getWorkingTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(implicit
+    hc: HeaderCarrier,
     request: RequestHeader,
-    ec: ExecutionContext): Future[Seq[WtcApplication]] = {
+    ec: ExecutionContext
+  ): Future[Seq[WtcApplication]] = {
 
     val endpoint: String = "working-tax-credit"
 
@@ -46,15 +48,14 @@ class TaxCreditsService @Inject()(
 
     cacheService
       .get(
-        cacheid, {
-          resolve(matchId)
-            .flatMap(ninoMatch => {
-              val fieldsQuery =
-                scopesHelper.getQueryStringFor(scopes.toList, Seq(endpoint).toList)
-              ifConnector
-                .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
-            })
-        }
+        cacheid,
+        resolve(matchId)
+          .flatMap { ninoMatch =>
+            val fieldsQuery =
+              scopesHelper.getQueryStringFor(scopes.toList, Seq(endpoint).toList)
+            ifConnector
+              .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
+          }
       )
       .map(applications => applications.map(WtcApplication.create))
   }
@@ -62,10 +63,11 @@ class TaxCreditsService @Inject()(
   def resolve(matchId: UUID)(implicit hc: HeaderCarrier): Future[MatchedCitizen] =
     individualsMatchingApiConnector.resolve(matchId)
 
-  def getChildTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(
-    implicit hc: HeaderCarrier,
+  def getChildTaxCredits(matchId: UUID, interval: Interval, scopes: Iterable[String])(implicit
+    hc: HeaderCarrier,
     request: RequestHeader,
-    ec: ExecutionContext): Future[Seq[CtcApplication]] = {
+    ec: ExecutionContext
+  ): Future[Seq[CtcApplication]] = {
 
     val endpoint: String = "child-tax-credit"
 
@@ -73,15 +75,14 @@ class TaxCreditsService @Inject()(
 
     cacheService
       .get(
-        cacheid, {
-          resolve(matchId)
-            .flatMap(ninoMatch => {
-              val fieldsQuery =
-                scopesHelper.getQueryStringFor(scopes.toList, List(endpoint))
-              ifConnector
-                .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
-            })
-        }
+        cacheid,
+        resolve(matchId)
+          .flatMap { ninoMatch =>
+            val fieldsQuery =
+              scopesHelper.getQueryStringFor(scopes.toList, List(endpoint))
+            ifConnector
+              .fetchTaxCredits(ninoMatch.nino, interval, Option(fieldsQuery).filter(_.nonEmpty), matchId.toString)
+          }
       )
       .map(applications => applications.map(CtcApplication.create))
   }

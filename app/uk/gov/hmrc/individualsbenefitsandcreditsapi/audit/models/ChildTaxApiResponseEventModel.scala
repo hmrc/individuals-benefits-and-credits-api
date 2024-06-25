@@ -30,7 +30,8 @@ case class ChildTaxApiResponseEventModel(
   applicationId: String,
   scopes: String,
   returnLinks: String,
-  childTaxCredit: Seq[CtcApplication])
+  childTaxCredit: Seq[CtcApplication]
+)
 
 object ChildTaxApiResponseEventModel {
   implicit val formatApiResponseEventModel =

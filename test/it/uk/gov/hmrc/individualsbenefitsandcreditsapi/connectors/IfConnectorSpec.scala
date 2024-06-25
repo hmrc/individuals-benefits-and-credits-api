@@ -63,7 +63,7 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
   trait Setup {
     val matchId = "80a6bb14-d888-436e-a541-4000674c60aa"
     val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
-    val sampleCorrelationIdHeader = ("CorrelationId" -> sampleCorrelationId)
+    val sampleCorrelationIdHeader = "CorrelationId" -> sampleCorrelationId
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -100,7 +100,8 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
           .withQueryParam("endDate", equalTo(endDate))
-          .willReturn(aResponse().withStatus(500)))
+          .willReturn(aResponse().withStatus(500))
+      )
 
       intercept[InternalServerException] {
         await(
@@ -123,7 +124,8 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
           .withQueryParam("endDate", equalTo(endDate))
-          .willReturn(aResponse().withStatus(400)))
+          .willReturn(aResponse().withStatus(400))
+      )
 
       intercept[InternalServerException] {
         await(
@@ -146,11 +148,13 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
           .withQueryParam("endDate", equalTo(endDate))
-          .willReturn(aResponse().withStatus(404).withBody("NO_DATA_FOUND")))
+          .willReturn(aResponse().withStatus(404).withBody("NO_DATA_FOUND"))
+      )
 
       val result = await(
         underTest
-          .fetchTaxCredits(nino, interval, None, matchId)(hc, FakeRequest().withHeaders(sampleCorrelationIdHeader), ec))
+          .fetchTaxCredits(nino, interval, None, matchId)(hc, FakeRequest().withHeaders(sampleCorrelationIdHeader), ec)
+      )
 
       result shouldBe List()
 
@@ -165,7 +169,8 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
         get(urlPathMatching(s"/individuals/tax-credits/$idType/$idValue"))
           .withQueryParam("startDate", equalTo(startDate))
           .withQueryParam("endDate", equalTo(endDate))
-          .willReturn(aResponse().withStatus(404).withBody("NOT_FOUND")))
+          .willReturn(aResponse().withStatus(404).withBody("NOT_FOUND"))
+      )
 
       intercept[NotFoundException] {
         await(
@@ -191,9 +196,12 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
           .withHeader(HeaderNames.authorisation, equalTo(s"Bearer $integrationFrameworkAuthorizationToken"))
           .withHeader("Environment", equalTo(integrationFrameworkEnvironment))
           .withHeader("CorrelationId", equalTo(sampleCorrelationId))
-          .willReturn(aResponse()
-            .withStatus(200)
-            .withBody(Json.toJson(applicationsData).toString())))
+          .willReturn(
+            aResponse()
+              .withStatus(200)
+              .withBody(Json.toJson(applicationsData).toString())
+          )
+      )
 
       val result =
         await(

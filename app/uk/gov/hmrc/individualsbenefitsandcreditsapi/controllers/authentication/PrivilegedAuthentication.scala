@@ -30,21 +30,19 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
   def authPredicate(scopes: Iterable[String]): Predicate =
     scopes.map(Enrolment(_): Predicate).reduce(_ or _)
 
-  def authenticate(endpointScopes: Iterable[String], matchId: String)(f: Iterable[String] => Future[Result])(
-    implicit hc: HeaderCarrier,
+  def authenticate(endpointScopes: Iterable[String], matchId: String)(f: Iterable[String] => Future[Result])(implicit
+    hc: HeaderCarrier,
     ec: ExecutionContext,
     request: RequestHeader,
-    auditHelper: AuditHelper): Future[Result] =
+    auditHelper: AuditHelper
+  ): Future[Result] =
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
     else {
       authorised(authPredicate(endpointScopes))
-        .retrieve(Retrievals.allEnrolments) {
-          case scopes => {
+        .retrieve(Retrievals.allEnrolments) { case scopes =>
+          auditHelper.auditAuthScopes(matchId, scopes.enrolments.map(e => e.key).mkString(","), request)
 
-            auditHelper.auditAuthScopes(matchId, scopes.enrolments.map(e => e.key).mkString(","), request)
-
-            f(scopes.enrolments.map(e => e.key))
-          }
+          f(scopes.enrolments.map(e => e.key))
         }
     }
 }

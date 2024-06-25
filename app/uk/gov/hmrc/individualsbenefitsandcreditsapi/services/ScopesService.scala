@@ -21,7 +21,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.{ApiConfig, InternalE
 
 import javax.inject.Inject
 
-class ScopesService @Inject()(configuration: Configuration) {
+class ScopesService @Inject() (configuration: Configuration) {
 
   private lazy val apiConfig =
     configuration.get[ApiConfig]("api-config")
@@ -54,11 +54,11 @@ class ScopesService @Inject()(configuration: Configuration) {
 
   def getValidFilters(scopes: Iterable[String]): Iterable[String] = {
     val filterKeys = scopes.flatMap(getScopeFilterKeys).toList
-    getInternalEndpoints(scopes).flatMap(
-      endpoint =>
-        endpoint.filters
-          .filter(filterMap => filterKeys.contains(filterMap._1))
-          .values)
+    getInternalEndpoints(scopes).flatMap(endpoint =>
+      endpoint.filters
+        .filter(filterMap => filterKeys.contains(filterMap._1))
+        .values
+    )
   }
 
   def getIfDataPaths(scopes: Iterable[String], endpoints: List[String]): Set[String] = {

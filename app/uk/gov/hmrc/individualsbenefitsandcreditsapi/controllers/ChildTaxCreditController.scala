@@ -31,7 +31,7 @@ import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ChildTaxCreditController @Inject()(
+class ChildTaxCreditController @Inject() (
   val authConnector: AuthConnector,
   cc: ControllerComponents,
   scopeService: ScopesService,
@@ -49,28 +49,29 @@ class ChildTaxCreditController @Inject()(
 
         taxCreditsService
           .getChildTaxCredits(matchId, interval, authScopes)
-          .map(
-            applications => {
-              val selfLink = HalLink(
-                "self",
-                urlWithInterval(s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId", interval.from))
-              val response =
-                Json.obj("applications" -> Json.toJson(applications))
+          .map { applications =>
+            val selfLink = HalLink(
+              "self",
+              urlWithInterval(s"/individuals/benefits-and-credits/child-tax-credits?matchId=$matchId", interval.from)
+            )
+            val response =
+              Json.obj("applications" -> Json.toJson(applications))
 
-              auditHelper.childTaxCreditAuditApiResponse(
-                correlationId.toString,
-                matchId.toString,
-                authScopes.mkString(","),
-                request,
-                selfLink.toString,
-                applications)
+            auditHelper.childTaxCreditAuditApiResponse(
+              correlationId.toString,
+              matchId.toString,
+              authScopes.mkString(","),
+              request,
+              selfLink.toString,
+              applications
+            )
 
-              Ok(state(response) ++ selfLink)
-            }
-          )
+            Ok(state(response) ++ selfLink)
+          }
       } recover withAudit(
         maybeCorrelationId(request),
         matchId.toString,
-        "/individuals/benefits-and-credits/child-tax-credits")
+        "/individuals/benefits-and-credits/child-tax-credits"
+      )
     }
 }

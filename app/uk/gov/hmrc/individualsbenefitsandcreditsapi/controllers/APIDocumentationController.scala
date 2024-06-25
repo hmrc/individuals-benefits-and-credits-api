@@ -30,10 +30,10 @@ import scala.concurrent.ExecutionContext
 // $COVERAGE-OFF$
 
 @Singleton
-class APIDocumentationController @Inject()(cc: ControllerComponents, assets: Assets, config: Configuration)(
-  implicit materializer: Materializer,
-  executionContext: ExecutionContext)
-    extends BackendController(cc) {
+class APIDocumentationController @Inject() (cc: ControllerComponents, assets: Assets, config: Configuration)(implicit
+  materializer: Materializer,
+  executionContext: ExecutionContext
+) extends BackendController(cc) {
 
   private lazy val privilegedWhitelistedApplicationIds =
     config

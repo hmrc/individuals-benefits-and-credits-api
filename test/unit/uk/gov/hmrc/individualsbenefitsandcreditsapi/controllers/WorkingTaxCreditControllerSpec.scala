@@ -17,7 +17,7 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import org.apache.pekko.stream.Materializer
-import org.mockito.ArgumentMatchers.{any, refEq, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo, refEq}
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -94,8 +94,10 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
             FakeRequest("GET", s"/working-tax-credits/")
               .withHeaders(correlationIdHeader)
 
-          when(liveTaxCreditsService
-            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+          when(
+            liveTaxCreditsService
+              .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
@@ -117,8 +119,10 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
 
           Mockito.reset(workingTaxCreditsController.auditHelper)
 
-          when(liveTaxCreditsService
-            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+          when(
+            liveTaxCreditsService
+              .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.failed(new MatchNotFoundException)
             )
@@ -168,7 +172,8 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
             intercept[Exception] {
               await(
                 workingTaxCreditsController
-                  .workingTaxCredit(testMatchId, testInterval)(fakeRequest))
+                  .workingTaxCredit(testMatchId, testInterval)(fakeRequest)
+              )
             }
           assert(result.getMessage == "No scopes defined")
         }
@@ -179,8 +184,10 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
           val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest("GET", s"/working-tax-credits/")
 
-          when(liveTaxCreditsService
-            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+          when(
+            liveTaxCreditsService
+              .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
@@ -208,8 +215,10 @@ class WorkingTaxCreditControllerSpec extends SpecBase with MockitoSugar with Dom
             FakeRequest("GET", s"/working-tax-credits/")
               .withHeaders("correlationId" -> "InvalidId")
 
-          when(liveTaxCreditsService
-            .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any()))
+          when(
+            liveTaxCreditsService
+              .getWorkingTaxCredits(eqTo(testMatchId), eqTo(testInterval), eqTo(Set("test-scope")))(any(), any(), any())
+          )
             .thenReturn(
               Future.successful(Seq(createValidWtcApplication(), createValidWtcApplication()))
             )
