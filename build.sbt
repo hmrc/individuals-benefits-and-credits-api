@@ -25,12 +25,9 @@ lazy val microservice =
     .configs(ItTest)
     .settings(inConfig(ItTest)(Defaults.testSettings) *)
     .settings(
-      ItTest / Keys.fork := false,
       ItTest / unmanagedSourceDirectories := (ItTest / baseDirectory)(base => Seq(base / "test")).value,
       ItTest / testOptions := Seq(Tests.Filter((name: String) => name startsWith "it")),
       addTestReportOption(ItTest, "int-test-reports"),
-      ItTest / testGrouping := oneForkedJvmPerTest((ItTest / definedTests).value),
-      ItTest / parallelExecution := false,
       // Disable default sbt Test options (might change with new versions of bootstrap)
       ItTest / testOptions -= Tests
         .Argument("-o", "-u", "target/int-test-reports", "-h", "target/int-test-reports/html-report"),
@@ -47,8 +44,6 @@ lazy val microservice =
     .settings(
       ComponentTest / testOptions := Seq(Tests.Filter((name: String) => name startsWith "component")),
       ComponentTest / unmanagedSourceDirectories := (ComponentTest / baseDirectory)(base => Seq(base / "test")).value,
-      ComponentTest / testGrouping := oneForkedJvmPerTest((ComponentTest / definedTests).value),
-      ComponentTest / parallelExecution := false,
       // Disable default sbt Test options (might change with new versions of bootstrap)
       ComponentTest / testOptions -= Tests
         .Argument("-o", "-u", "target/component-test-reports", "-h", "target/component-test-reports/html-report"),
@@ -74,8 +69,3 @@ lazy val microservice =
       "target/test-reports",
       "-h",
       "target/test-reports/html-report"))
-
-def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
-  tests.map { test =>
-    new Group(test.name, Seq(test), SubProcess(ForkOptions().withRunJVMOptions(Vector(s"-Dtest.name=${test.name}"))))
-  }
