@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 
 case class WorkingTaxApiResponseEventModel(
@@ -34,6 +34,6 @@ case class WorkingTaxApiResponseEventModel(
 )
 
 object WorkingTaxApiResponseEventModel {
-  implicit val formatApiResponseEventModel =
+  implicit val formatApiResponseEventModel: OFormat[WorkingTaxApiResponseEventModel] =
     Json.format[WorkingTaxApiResponseEventModel]
 }
