@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplications
 
 case class IfApiResponseEventModel(
@@ -33,6 +33,6 @@ case class IfApiResponseEventModel(
 )
 
 object IfApiResponseEventModel {
-  implicit val formatIfApiResponseEventModel =
+  implicit val formatIfApiResponseEventModel: OFormat[IfApiResponseEventModel] =
     Json.format[IfApiResponseEventModel]
 }
