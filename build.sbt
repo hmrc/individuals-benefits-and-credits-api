@@ -1,4 +1,3 @@
-import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.addTestReportOption
 
 val appName = "individuals-benefits-and-credits-api"
