@@ -24,12 +24,14 @@ import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import testUtils.{TestDates, TestHelpers}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, InternalServerException, NotFoundException}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.IfConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -47,7 +49,7 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
 
   def externalServices: Seq[String] = Seq.empty
 
-  override lazy val fakeApplication = new GuiceApplicationBuilder()
+  override lazy val fakeApplication: Application = new GuiceApplicationBuilder()
     .bindings(bindModules: _*)
     .configure(
       "microservice.services.integration-framework.host"                -> "127.0.0.1",
@@ -68,7 +70,7 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val config = fakeApplication.injector.instanceOf[ServicesConfig]
-    val httpClient = fakeApplication.injector.instanceOf[HttpClient]
+    val httpClient = fakeApplication.injector.instanceOf[HttpClientV2]
     val auditHelper = mock[AuditHelper]
     val underTest = new IfConnector(config, httpClient, auditHelper)
   }

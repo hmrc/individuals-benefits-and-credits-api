@@ -21,12 +21,13 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.JsonFormatters._
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.{MatchNotFoundException, MatchedCitizen}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 @Singleton
-class IndividualsMatchingApiConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClient)(implicit
+class IndividualsMatchingApiConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClientV2)(implicit
   ec: ExecutionContext
 ) {
 
@@ -34,8 +35,9 @@ class IndividualsMatchingApiConnector @Inject() (servicesConfig: ServicesConfig,
     servicesConfig.baseUrl("individuals-matching-api")
 
   def resolve(matchId: UUID)(implicit hc: HeaderCarrier): Future[MatchedCitizen] =
-    http.GET[MatchedCitizen](s"$serviceUrl/match-record/$matchId") recover { case UpstreamErrorResponse(_, 404, _, _) =>
-      throw new MatchNotFoundException
+    http.get(url"$serviceUrl/match-record/$matchId").execute[MatchedCitizen] recover {
+      case UpstreamErrorResponse(_, 404, _, _) =>
+        throw new MatchNotFoundException
     }
 
 }

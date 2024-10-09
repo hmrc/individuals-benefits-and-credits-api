@@ -16,21 +16,22 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 import play.api.Logger
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, InternalServerException, JsValidationException, NotFoundException, TooManyRequestException, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, InternalServerException, JsValidationException, NotFoundException, StringContextOps, TooManyRequestException, UpstreamErrorResponse}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IfConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClient, val auditHelper: AuditHelper) {
+class IfConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClientV2, val auditHelper: AuditHelper) {
 
   private val logger = Logger(getClass)
 
@@ -73,9 +74,8 @@ class IfConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClient, v
     ec: ExecutionContext
   ) =
     recover[IfApplication](
-      http.GET[IfApplications](url, headers = setHeaders(request)) map { response =>
+      http.get(url"$url").transform(_.addHttpHeaders(setHeaders(request): _*)).execute[IfApplications] map { response =>
         auditHelper.auditIfApiResponse(extractCorrelationId(request), matchId, request, url, response)
-
         response.applications
       },
       extractCorrelationId(request),
