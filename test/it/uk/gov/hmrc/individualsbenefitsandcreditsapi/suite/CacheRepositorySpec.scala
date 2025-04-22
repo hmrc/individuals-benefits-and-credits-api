@@ -25,6 +25,7 @@ import play.api.libs.json.{JsString, Json, OFormat}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.cache.CacheRepository
 import uk.gov.hmrc.mongo.play.json.Codecs.toBson
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.TestSupport
+import org.mongodb.scala.SingleObservableFuture
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global

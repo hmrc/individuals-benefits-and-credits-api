@@ -41,7 +41,7 @@ class IndividualsMatchingApiConnectorSpec extends SpecBase with BeforeAndAfterEa
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val individualsMatchingApiConnector: IndividualsMatchingApiConnector =
-      new IndividualsMatchingApiConnector(servicesConfig, fakeApplication.injector.instanceOf[HttpClientV2]) {
+      new IndividualsMatchingApiConnector(servicesConfig, fakeApplication().injector.instanceOf[HttpClientV2]) {
         override val serviceUrl = "http://127.0.0.1:11121"
       }
   }

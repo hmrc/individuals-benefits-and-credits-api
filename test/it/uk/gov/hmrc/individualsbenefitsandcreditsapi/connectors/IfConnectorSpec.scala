@@ -40,7 +40,7 @@ import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 import scala.concurrent.ExecutionContext
 
 class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers with MockitoSugar with TestDates {
-  val stubPort = sys.env.getOrElse("WIREMOCK", "11122").toInt
+  val stubPort: Int = sys.env.getOrElse("WIREMOCK", "11122").toInt
   val stubHost = "localhost"
   val wireMockServer = new WireMockServer(wireMockConfig().port(stubPort))
   val integrationFrameworkAuthorizationToken = "IF_TOKEN"
@@ -49,7 +49,7 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
 
   def externalServices: Seq[String] = Seq.empty
 
-  override lazy val fakeApplication: Application = new GuiceApplicationBuilder()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .bindings(bindModules: _*)
     .configure(
       "microservice.services.integration-framework.host"                -> "127.0.0.1",
@@ -60,18 +60,18 @@ class IfConnectorSpec extends SpecBase with BeforeAndAfterEach with TestHelpers 
     .build()
 
   implicit val ec: ExecutionContext =
-    fakeApplication.injector.instanceOf[ExecutionContext]
+    fakeApplication().injector.instanceOf[ExecutionContext]
 
   trait Setup {
     val matchId = "80a6bb14-d888-436e-a541-4000674c60aa"
     val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
-    val sampleCorrelationIdHeader = "CorrelationId" -> sampleCorrelationId
+    val sampleCorrelationIdHeader: (String, String) = "CorrelationId" -> sampleCorrelationId
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
-    val config = fakeApplication.injector.instanceOf[ServicesConfig]
-    val httpClient = fakeApplication.injector.instanceOf[HttpClientV2]
-    val auditHelper = mock[AuditHelper]
+    val config: ServicesConfig = fakeApplication().injector.instanceOf[ServicesConfig]
+    val httpClient: HttpClientV2 = fakeApplication().injector.instanceOf[HttpClientV2]
+    val auditHelper: AuditHelper = mock[AuditHelper]
     val underTest = new IfConnector(config, httpClient, auditHelper)
   }
 
