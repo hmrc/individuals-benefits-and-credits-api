@@ -14,8 +14,7 @@ lazy val microservice =
     .settings(scalafmtOnCompile := true)
     .settings(onLoadMessage := "")
     .settings(
-      scalacOptions += "-Wconf:src=routes/.*:s",
-      scalacOptions += "-Wconf:cat=unused-imports&src=txt/.*:s",
+      scalacOptions += "-Wconf:src=routes/.*:s,src=txt/.*:s",
       libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test(),
       Test / testOptions := Seq(Tests.Filter((name: String) => name startsWith "unit")),
       routesImport := Seq("uk.gov.hmrc.individualsbenefitsandcreditsapi.Binders._")

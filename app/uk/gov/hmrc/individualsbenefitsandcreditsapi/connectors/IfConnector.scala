@@ -48,14 +48,13 @@ class IfConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClientV2,
     ec: ExecutionContext
   ): Future[Seq[IfApplication]] = {
 
-    val endpoint = "IfConnector::fetchTaxCredits"
     val startDate = interval.from.toLocalDate
     val endDate = interval.to.toLocalDate
 
     val url = s"$serviceUrl/individuals/tax-credits/nino/$nino?" +
       s"startDate=$startDate&endDate=$endDate${filter.map(f => s"&fields=$f").getOrElse("")}"
 
-    call(url, endpoint, matchId)
+    call(url, matchId)
 
   }
 
@@ -68,7 +67,7 @@ class IfConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClientV2,
     "CorrelationId"           -> extractCorrelationId(requestHeader)
   )
 
-  private def call(url: String, endpoint: String, matchId: String)(implicit
+  private def call(url: String, matchId: String)(implicit
     hc: HeaderCarrier,
     request: RequestHeader,
     ec: ExecutionContext
