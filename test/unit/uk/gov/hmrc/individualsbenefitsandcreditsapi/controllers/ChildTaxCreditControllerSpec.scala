@@ -44,10 +44,10 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
   val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
   val correlationIdHeader: (String, String) = "CorrelationId" -> sampleCorrelationId
 
-  implicit lazy val materializer: Materializer = fakeApplication.materializer
+  implicit lazy val materializer: Materializer = fakeApplication().materializer
 
   implicit val ec: ExecutionContext =
-    fakeApplication.injector.instanceOf[ExecutionContext]
+    fakeApplication().injector.instanceOf[ExecutionContext]
 
   private val testMatchId =
     UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
@@ -159,7 +159,7 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
         }
 
         "return error when no scopes" in new Fixture {
-          when(scopeService.getEndPointScopes(any())).thenReturn(None)
+          when(scopeService.getEndPointScopes(any())).thenReturn(List.empty)
 
           val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest("GET", s"/child-tax-credits/")

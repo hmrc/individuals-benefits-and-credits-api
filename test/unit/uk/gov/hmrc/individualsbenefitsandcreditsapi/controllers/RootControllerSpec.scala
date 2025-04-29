@@ -44,7 +44,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
   val sampleCorrelationId = "188e9400-b636-4a3b-80ba-230a8c72b92a"
   val correlationIdHeader: (String, String) = "CorrelationId" -> sampleCorrelationId
 
-  implicit lazy val materializer: Materializer = fakeApplication.materializer
+  implicit lazy val materializer: Materializer = fakeApplication().materializer
 
   private val testMatchId =
     UUID.fromString("be2dbba5-f650-47cf-9753-91cdaeb16ebe")
@@ -52,7 +52,7 @@ class RootControllerSpec extends SpecBase with MockitoSugar {
   trait Fixture extends ScopesConfigHelper {
 
     implicit val ec: ExecutionContext =
-      fakeApplication.injector.instanceOf[ExecutionContext]
+      fakeApplication().injector.instanceOf[ExecutionContext]
     lazy val scopeService: ScopesService = new ScopesService(mockScopesConfig)
     lazy val scopesHelper: ScopesHelper = new ScopesHelper(scopeService)
 
