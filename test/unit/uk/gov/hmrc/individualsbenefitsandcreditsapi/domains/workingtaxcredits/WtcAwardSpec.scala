@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import java.time.LocalDate
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcAward
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class WtcAwardSpec extends UnitSpec with DomainHelpers {

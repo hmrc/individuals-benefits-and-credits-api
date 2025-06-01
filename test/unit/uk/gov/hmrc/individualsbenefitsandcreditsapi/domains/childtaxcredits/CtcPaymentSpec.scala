@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import java.time.LocalDate
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcPayment
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcPayment
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class WtcPaymentSpec extends UnitSpec {
+class CtcPaymentSpec extends UnitSpec {
   "Create correctly from If Payment" in {
     val ifPayment = IfPayment(
       Some("2017-09-09"),
@@ -37,7 +37,7 @@ class WtcPaymentSpec extends UnitSpec {
       Some("test9")
     )
 
-    val result = WtcPayment.create(ifPayment)
+    val result = CtcPayment.create(ifPayment)
 
     result.startDate shouldBe Some(LocalDate.parse("2017-08-08"))
     result.endDate shouldBe Some(LocalDate.parse("2017-09-09"))

@@ -33,7 +33,7 @@ import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.WorkingTaxCredit
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesService, TaxCreditsService}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.SpecBase
 
 import java.time.LocalDate

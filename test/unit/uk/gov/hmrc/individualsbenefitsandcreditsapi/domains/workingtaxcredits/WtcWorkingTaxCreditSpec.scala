@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.workingtaxcredits
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcChildTaxCredit
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcWorkingTaxCredit
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class WtcChildTaxCreditSpec extends UnitSpec {
-  "Creates correctly from IF Child Tax Credit" in {
-    val ifChildTaxCredit: IfChildTaxCredit = IfChildTaxCredit(
-      Some(10.0),
-      Some(20.0),
-      Some(30.0),
-      Some(40.0),
-      Some(50.0),
-      Some(60.0)
-    )
-
-    val result = WtcChildTaxCredit.create(ifChildTaxCredit)
-    result.childCareAmount shouldBe Some(10.0)
+class WtcWorkingTaxCreditSpec extends UnitSpec {
+  "Creates Successfully from IfWorkTaxCredit" in {
+    val ifWorkingTaxCredit = IfWorkTaxCredit(Some(10.0), Some(20.0), Some(30.0))
+    val result = WtcWorkingTaxCredit.create(ifWorkingTaxCredit)
+    result.amount shouldBe Some(10.0)
+    result.paidYTD shouldBe Some(30.0)
   }
 }

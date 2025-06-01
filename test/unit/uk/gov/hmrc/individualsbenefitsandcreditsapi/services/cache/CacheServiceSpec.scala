@@ -17,7 +17,7 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache
 
 import org.mockito.BDDMockito.`given`
-import org.mockito.Mockito.verifyNoInteractions
+import org.mockito.Mockito.{verifyNoInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -57,6 +57,20 @@ class CacheServiceSpec extends SpecBase with MockitoSugar with Matchers with Bef
       await(cacheService.get[TestClass](cacheId, Future.successful(newValue))) shouldBe newValue
       verifyNoInteractions(mockClient)
 
+    }
+
+    "ignore the cache when caching is enabled" in new Setup {
+
+      `given`(mockCacheConfig.cacheEnabled).willReturn(true)
+      when(mockClient.fetchAndGetEntry[TestClass](cacheId.id)).thenReturn(Future.successful(Some(cachedValue)))
+      await(cacheService.get[TestClass](cacheId, Future.successful(cachedValue))) shouldBe cachedValue
+    }
+
+    "ignore the cache when caching is enabled and none fetchAndGetEntry " in new Setup {
+
+      `given`(mockCacheConfig.cacheEnabled).willReturn(true)
+      when(mockClient.fetchAndGetEntry[TestClass](cacheId.id)).thenReturn(Future.successful(None))
+      await(cacheService.get[TestClass](cacheId, Future.successful(cachedValue))) shouldBe cachedValue
     }
   }
 }

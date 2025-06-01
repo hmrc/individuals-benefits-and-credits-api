@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.childtaxcredits
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class CtcApplicationSpec extends UnitSpec with DomainHelpers {

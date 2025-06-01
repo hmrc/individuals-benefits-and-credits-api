@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.childtaxcredits
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import java.time.LocalDate
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcAward
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
-import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.DomainHelpers
+import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.DomainHelpers
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
 class CtcAwardSpec extends UnitSpec with DomainHelpers {
