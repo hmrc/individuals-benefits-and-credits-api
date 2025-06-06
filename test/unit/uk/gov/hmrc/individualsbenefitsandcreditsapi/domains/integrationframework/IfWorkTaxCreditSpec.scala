@@ -14,40 +14,39 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.integrationframework
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class IfApplicationSpec extends UnitSpec {
+class IfWorkTaxCreditSpec extends UnitSpec {
 
-  val application: IfApplication =
-    IfApplication(Some(9), Some("2020-08-18"), Some("2020-08-18"), Some("2019-08-18"), None)
-  val invalidApplication: IfApplication =
-    IfApplication(Some(-42), Some("abcdefghijklmnopqrstuvwxyz0123456789"), Some("a"), Some("as"), None)
+  val workTaxCredit: IfWorkTaxCredit =
+    IfWorkTaxCredit(Some(20), Some(20), Some(20))
+  val invalidWorkTaxCredit: IfWorkTaxCredit =
+    IfWorkTaxCredit(Some(-20), Some(-20), Some(-20))
 
   "Contact details" should {
     "Write to JSON" in {
-      val result = Json.toJson(application)
+      val result = Json.toJson(workTaxCredit)
       val expectedJson = Json.parse("""
                                       |{
-                                      |  "id" : 9,
-                                      |  "ceasedDate" : "2020-08-18",
-                                      |  "entStartDate" : "2020-08-18",
-                                      |  "entEndDate" : "2019-08-18"
+                                      |  "amount" : 20,
+                                      |  "entitlementYTD" : 20,
+                                      |  "paidYTD" : 20
                                       |}"""".stripMargin)
 
       result shouldBe expectedJson
     }
 
     "Validate successfully when reading valid contact details" in {
-      val result = Json.toJson(application).validate[IfApplication]
+      val result = Json.toJson(workTaxCredit).validate[IfWorkTaxCredit]
       result.isSuccess shouldBe true
     }
 
     "Validate unsuccessfully when reading invalid contact details" in {
-      val result = Json.toJson(invalidApplication).validate[IfApplication]
+      val result = Json.toJson(invalidWorkTaxCredit).validate[IfWorkTaxCredit]
       result.isError shouldBe true
     }
   }

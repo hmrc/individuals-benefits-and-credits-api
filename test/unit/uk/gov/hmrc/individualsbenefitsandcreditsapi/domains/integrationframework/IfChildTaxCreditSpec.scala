@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.integrationframework
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class IfWorkTaxCreditSpec extends UnitSpec {
+class IfChildTaxCreditSpec extends UnitSpec {
 
-  val workTaxCredit: IfWorkTaxCredit =
-    IfWorkTaxCredit(Some(20), Some(20), Some(20))
-  val invalidWorkTaxCredit: IfWorkTaxCredit =
-    IfWorkTaxCredit(Some(-20), Some(-20), Some(-20))
+  val childTaxCredit: IfChildTaxCredit =
+    IfChildTaxCredit(Some(20), Some(20), Some(20), Some(20), Some(20), Some(20))
+  val invalidChildTaxCredit: IfChildTaxCredit =
+    IfChildTaxCredit(Some(-20), Some(-20), Some(-20), Some(-20), Some(-20), Some(-20))
 
   "Contact details" should {
     "Write to JSON" in {
-      val result = Json.toJson(workTaxCredit)
+      val result = Json.toJson(childTaxCredit)
       val expectedJson = Json.parse("""
                                       |{
-                                      |  "amount" : 20,
+                                      |  "childCareAmount" : 20,
+                                      |  "ctcChildAmount" : 20,
+                                      |  "familyAmount" : 20,
+                                      |  "babyAmount" : 20,
                                       |  "entitlementYTD" : 20,
                                       |  "paidYTD" : 20
                                       |}"""".stripMargin)
@@ -41,12 +44,12 @@ class IfWorkTaxCreditSpec extends UnitSpec {
     }
 
     "Validate successfully when reading valid contact details" in {
-      val result = Json.toJson(workTaxCredit).validate[IfWorkTaxCredit]
+      val result = Json.toJson(childTaxCredit).validate[IfChildTaxCredit]
       result.isSuccess shouldBe true
     }
 
     "Validate unsuccessfully when reading invalid contact details" in {
-      val result = Json.toJson(invalidWorkTaxCredit).validate[IfWorkTaxCredit]
+      val result = Json.toJson(invalidChildTaxCredit).validate[IfChildTaxCredit]
       result.isError shouldBe true
     }
   }

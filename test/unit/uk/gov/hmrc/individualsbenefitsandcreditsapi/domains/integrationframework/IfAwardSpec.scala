@@ -14,42 +14,41 @@
  * limitations under the License.
  */
 
-package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domain.integrationframework
+package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
-class IfChildTaxCreditSpec extends UnitSpec {
+class IfAwardSpec extends UnitSpec {
 
-  val childTaxCredit: IfChildTaxCredit =
-    IfChildTaxCredit(Some(20), Some(20), Some(20), Some(20), Some(20), Some(20))
-  val invalidChildTaxCredit: IfChildTaxCredit =
-    IfChildTaxCredit(Some(-20), Some(-20), Some(-20), Some(-20), Some(-20), Some(-20))
+  val awards: IfAward =
+    IfAward(Some("2020-08-18"), Some("2020-08-18"), Some("2020-08-18"), Some(0), None, None, Some(20), None)
+  val invalidAwards: IfAward =
+    IfAward(Some("asd"), Some("abcdefghijklmnopqrstuvwxyz0123456789"), Some("a"), Some(0), None, None, None, None)
 
   "Contact details" should {
     "Write to JSON" in {
-      val result = Json.toJson(childTaxCredit)
+      val result = Json.toJson(awards)
       val expectedJson = Json.parse("""
                                       |{
-                                      |  "childCareAmount" : 20,
-                                      |  "ctcChildAmount" : 20,
-                                      |  "familyAmount" : 20,
-                                      |  "babyAmount" : 20,
-                                      |  "entitlementYTD" : 20,
-                                      |  "paidYTD" : 20
+                                      |  "payProfCalcDate" : "2020-08-18",
+                                      |  "startDate" : "2020-08-18",
+                                      |  "endDate" : "2020-08-18",
+                                      |  "totalEntitlement" : 0,
+                                      |  "grossTaxYearAmount" : 20
                                       |}"""".stripMargin)
 
       result shouldBe expectedJson
     }
 
     "Validate successfully when reading valid contact details" in {
-      val result = Json.toJson(childTaxCredit).validate[IfChildTaxCredit]
+      val result = Json.toJson(awards).validate[IfAward]
       result.isSuccess shouldBe true
     }
 
     "Validate unsuccessfully when reading invalid contact details" in {
-      val result = Json.toJson(invalidChildTaxCredit).validate[IfChildTaxCredit]
+      val result = Json.toJson(invalidAwards).validate[IfAward]
       result.isError shouldBe true
     }
   }
