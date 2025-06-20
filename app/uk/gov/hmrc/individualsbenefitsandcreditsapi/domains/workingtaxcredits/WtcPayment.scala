@@ -17,21 +17,12 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import java.time.LocalDate
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.WtcPaymentModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
-case class WtcPayment(
-  startDate: Option[LocalDate],
-  endDate: Option[LocalDate],
-  postedDate: Option[LocalDate],
-  frequency: Option[Int],
-  tcType: Option[String],
-  amount: Option[Double]
-)
-
 object WtcPayment {
-  def create(ifPayment: IfPayment): WtcPayment =
-    WtcPayment(
+  def create(ifPayment: IfPayment): WtcPaymentModel =
+    WtcPaymentModel(
       ifPayment.startDate.map(LocalDate.parse),
       ifPayment.endDate.map(LocalDate.parse),
       ifPayment.postedDate.map(LocalDate.parse),
@@ -39,6 +30,4 @@ object WtcPayment {
       ifPayment.tcType,
       ifPayment.amount
     )
-
-  implicit val paymentFormat: Format[WtcPayment] = Json.format[WtcPayment]
 }

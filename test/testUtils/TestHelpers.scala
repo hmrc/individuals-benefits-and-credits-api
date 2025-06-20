@@ -16,7 +16,7 @@
 
 package testUtils
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework._
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications, IfAward, IfChildTaxCredit, IfPayment, IfWorkTaxCredit}
 
 import scala.util.Random
 
@@ -35,9 +35,10 @@ trait TestHelpers {
     generate("")
   }
 
-  val ifWorkTaxCredit = IfWorkTaxCredit(amount = Some(22), entitlementYTD = Some(22), paidYTD = Some(22))
+  val ifWorkTaxCredit: IfWorkTaxCredit =
+    IfWorkTaxCredit(amount = Some(22), entitlementYTD = Some(22), paidYTD = Some(22))
 
-  val ifChildTaxCredit = IfChildTaxCredit(
+  val ifChildTaxCredit: IfChildTaxCredit = IfChildTaxCredit(
     childCareAmount = Some(22),
     ctcChildAmount = Some(22),
     familyAmount = Some(22),
@@ -46,7 +47,7 @@ trait TestHelpers {
     paidYTD = Some(22)
   )
 
-  val etcPayment = IfPayment(
+  val etcPayment: IfPayment = IfPayment(
     periodStartDate = Some("2020-08-18"),
     periodEndDate = Some("2020-08-18"),
     startDate = Some("2020-08-18"),
@@ -60,7 +61,7 @@ trait TestHelpers {
     method = Some("R")
   )
 
-  val iccPayment = IfPayment(
+  val iccPayment: IfPayment = IfPayment(
     periodStartDate = Some("2020-08-17"),
     periodEndDate = Some("2020-08-17"),
     startDate = Some("2020-08-17"),
@@ -144,7 +145,7 @@ trait TestHelpers {
     IfApplications(Seq(application, application))
   }
 
-  def createIfApplicationsWithEmptyRewards() = {
+  def createIfApplicationsWithEmptyRewards(): IfApplications = {
     val application = IfApplication(
       id = Some(22),
       ceasedDate = Some("2020-08-18"),

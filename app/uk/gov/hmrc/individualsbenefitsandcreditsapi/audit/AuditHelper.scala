@@ -18,10 +18,10 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit
 
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.*
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.{ChildTaxApiResponseEventModel, CtcApplicationModel}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.{WorkingTaxApiResponseEventModel, WtcApplicationModel}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplications
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class AuditHelper @Inject() (auditConnector: AuditConnector)(implicit ec: Execut
     scopes: String,
     request: RequestHeader,
     selfLink: String,
-    response: Seq[CtcApplication]
+    response: Seq[CtcApplicationModel]
   )(implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "ApiResponseEvent",
@@ -83,7 +83,7 @@ class AuditHelper @Inject() (auditConnector: AuditConnector)(implicit ec: Execut
     scopes: String,
     request: RequestHeader,
     selfLink: String,
-    response: Seq[WtcApplication]
+    response: Seq[WtcApplicationModel]
   )(implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExplicitAudit(
       "ApiResponseEvent",

@@ -16,6 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.CtcChildTaxCreditModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcChildTaxCredit
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
@@ -30,7 +31,7 @@ class CtcChildTaxCreditSpec extends UnitSpec {
     Some(60.0)
   )
 
-  val result: CtcChildTaxCredit = CtcChildTaxCredit.create(ifChildTaxCredit)
+  val result: CtcChildTaxCreditModel = CtcChildTaxCredit.create(ifChildTaxCredit)
   result.childCareAmount shouldBe Some(10.0)
   result.ctcChildAmount shouldBe Some(20.0)
   result.familyAmount shouldBe Some(30.0)

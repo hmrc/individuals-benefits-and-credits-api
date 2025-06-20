@@ -19,6 +19,8 @@ package uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.CtcApplicationModel
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.WtcApplicationModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
@@ -40,7 +42,7 @@ class TaxCreditsService @Inject() (
     hc: HeaderCarrier,
     request: RequestHeader,
     ec: ExecutionContext
-  ): Future[Seq[WtcApplication]] = {
+  ): Future[Seq[WtcApplicationModel]] = {
 
     val endpoint: String = "working-tax-credit"
 
@@ -67,7 +69,7 @@ class TaxCreditsService @Inject() (
     hc: HeaderCarrier,
     request: RequestHeader,
     ec: ExecutionContext
-  ): Future[Seq[CtcApplication]] = {
+  ): Future[Seq[CtcApplicationModel]] = {
 
     val endpoint: String = "child-tax-credit"
 

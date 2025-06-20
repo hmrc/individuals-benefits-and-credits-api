@@ -16,16 +16,12 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.WtcChildTaxCreditModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
-
-case class WtcChildTaxCredit(childCareAmount: Option[Double])
 
 object WtcChildTaxCredit {
 
-  def create(ifChildTaxTaxCredit: IfChildTaxCredit): WtcChildTaxCredit =
-    WtcChildTaxCredit(ifChildTaxTaxCredit.childCareAmount)
+  def create(ifChildTaxTaxCredit: IfChildTaxCredit): WtcChildTaxCreditModel =
+    WtcChildTaxCreditModel(ifChildTaxTaxCredit.childCareAmount)
 
-  implicit val childTaxCreditFormat: Format[WtcChildTaxCredit] =
-    Json.format[WtcChildTaxCredit]
 }

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 
-case class WorkingTaxApiResponseEventModel(
+case class ChildTaxApiResponseEventModel(
   deviceId: String,
   input: String,
   method: String,
@@ -30,10 +29,10 @@ case class WorkingTaxApiResponseEventModel(
   applicationId: String,
   scopes: String,
   returnLinks: String,
-  workingTaxCredit: Seq[WtcApplication]
+  childTaxCredit: Seq[CtcApplicationModel]
 )
 
-object WorkingTaxApiResponseEventModel {
-  implicit val formatApiResponseEventModel: OFormat[WorkingTaxApiResponseEventModel] =
-    Json.format[WorkingTaxApiResponseEventModel]
+object ChildTaxApiResponseEventModel {
+  implicit val formatApiResponseEventModel: OFormat[ChildTaxApiResponseEventModel] =
+    Json.format[ChildTaxApiResponseEventModel]
 }
