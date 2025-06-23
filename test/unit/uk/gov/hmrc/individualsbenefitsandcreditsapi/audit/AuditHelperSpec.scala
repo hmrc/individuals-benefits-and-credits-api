@@ -16,7 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.audit
 
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{times, verify}
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
@@ -25,10 +25,10 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models._
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.{CtcApplication, CtcAward}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.*
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.{ChildTaxApiResponseEventModel, CtcApplicationModel, CtcAwardModel}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.{WorkingTaxApiResponseEventModel, WtcApplicationModel, WtcAwardModel}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.{IfApplication, IfApplications}
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.{WtcApplication, WtcAward}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.UnitSpec
 
@@ -52,8 +52,8 @@ class AuditHelperSpec extends UnitSpec with MockitoSugar {
 
   val auditConnector: AuditConnector = mock[AuditConnector]
 
-  val workingTaxCreditResponse = Seq(WtcApplication(None, Seq(WtcAward(None, None, None, None, None))))
-  val childTaxCreditResponse = Seq(CtcApplication(None, Seq(CtcAward(None, None, None, None))))
+  val workingTaxCreditResponse = Seq(WtcApplicationModel(None, Seq(WtcAwardModel(None, None, None, None, None))))
+  val childTaxCreditResponse = Seq(CtcApplicationModel(None, Seq(CtcAwardModel(None, None, None, None))))
   val ifResponse: IfApplications = IfApplications(Seq(IfApplication(None, None, None, None, None)))
 
   val auditHelper = new AuditHelper(auditConnector)

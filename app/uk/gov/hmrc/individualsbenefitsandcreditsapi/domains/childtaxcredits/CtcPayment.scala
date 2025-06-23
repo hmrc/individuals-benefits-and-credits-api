@@ -17,21 +17,12 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
 import java.time.LocalDate
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.CtcPaymentModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfPayment
 
-case class CtcPayment(
-  startDate: Option[LocalDate],
-  endDate: Option[LocalDate],
-  postedDate: Option[LocalDate],
-  frequency: Option[Int],
-  tcType: Option[String],
-  amount: Option[Double]
-)
-
 object CtcPayment {
-  def create(ifPayment: IfPayment): CtcPayment =
-    CtcPayment(
+  def create(ifPayment: IfPayment): CtcPaymentModel =
+    CtcPaymentModel(
       ifPayment.startDate.map(LocalDate.parse),
       ifPayment.endDate.map(LocalDate.parse),
       ifPayment.postedDate.map(LocalDate.parse),
@@ -40,5 +31,4 @@ object CtcPayment {
       ifPayment.amount
     )
 
-  implicit val paymentFormat: Format[CtcPayment] = Json.format[CtcPayment]
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
+package uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits
 
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.WtcWorkingTaxCreditModel
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfWorkTaxCredit
+import play.api.libs.json.{Format, Json}
+import java.time.LocalDate
 
-object WtcWorkingTaxCredit {
-  def create(ifWorkTaxCredit: IfWorkTaxCredit): WtcWorkingTaxCreditModel =
-    WtcWorkingTaxCreditModel(ifWorkTaxCredit.amount, ifWorkTaxCredit.paidYTD)
+case class WtcAwardModel(
+  payProfCalcDate: Option[LocalDate],
+  totalEntitlement: Option[Double],
+  workingTaxCredit: Option[WtcWorkingTaxCreditModel],
+  childTaxCredit: Option[WtcChildTaxCreditModel],
+  payments: Option[Seq[WtcPaymentModel]]
+)
+
+object WtcAwardModel {
+  implicit val awardFormat: Format[WtcAwardModel] = Json.format[WtcAwardModel]
 }

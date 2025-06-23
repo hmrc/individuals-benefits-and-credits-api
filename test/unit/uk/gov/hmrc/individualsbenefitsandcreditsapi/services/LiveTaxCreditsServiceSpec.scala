@@ -16,7 +16,7 @@
 
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.services
 
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Format
@@ -24,10 +24,10 @@ import play.api.test.FakeRequest
 import testUtils.TestHelpers
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.CtcApplicationModel
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.WtcApplicationModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.connectors.{IfConnector, IndividualsMatchingApiConnector}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchedCitizen
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits.CtcApplication
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits.WtcApplication
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.cache.{CacheIdBase, CacheService}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesHelper, ScopesService, TaxCreditsService}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.utils.Interval
@@ -84,7 +84,7 @@ class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelp
     "return empty list of working tax credits when no records exists for the given matchId" in new Setup {
       when(ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
-      val response: Seq[WtcApplication] = await(
+      val response: Seq[WtcApplicationModel] = await(
         taxCreditsService
           .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
       )
@@ -97,7 +97,7 @@ class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelp
           .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any())
       )
         .thenReturn(Future.successful(createValidIfApplicationsMultiple.applications))
-      val response: Seq[WtcApplication] = await(
+      val response: Seq[WtcApplicationModel] = await(
         taxCreditsService
           .getWorkingTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
       )
@@ -107,7 +107,7 @@ class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelp
     "return empty list of child tax credits when no records exists for the given matchId" in new Setup {
       when(ifConnector.fetchTaxCredits(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(createEmptyIfApplications.applications))
-      val response: Seq[CtcApplication] = await(
+      val response: Seq[CtcApplicationModel] = await(
         taxCreditsService
           .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
       )
@@ -120,7 +120,7 @@ class LiveTaxCreditsServiceSpec extends UnitSpec with MockitoSugar with TestHelp
           .fetchTaxCredits(eqTo(nino), eqTo(testInterval), any(), eqTo(testMatchId.toString))(any(), any(), any())
       )
         .thenReturn(Future.successful(createValidIfApplicationsMultiple.applications))
-      val response: Seq[CtcApplication] = await(
+      val response: Seq[CtcApplicationModel] = await(
         taxCreditsService
           .getChildTaxCredits(testMatchId, testInterval, Seq("testScope"))(hc, FakeRequest(), ec)
       )

@@ -17,24 +17,16 @@
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
 import java.time.LocalDate
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.WtcAwardModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfAward
 
-case class WtcAward(
-  payProfCalcDate: Option[LocalDate],
-  totalEntitlement: Option[Double],
-  workingTaxCredit: Option[WtcWorkingTaxCredit],
-  childTaxCredit: Option[WtcChildTaxCredit],
-  payments: Option[Seq[WtcPayment]]
-)
-
 object WtcAward {
-  def create(ifAward: IfAward): WtcAward = {
+  def create(ifAward: IfAward): WtcAwardModel = {
 
     val wtc = ifAward.workingTaxCredit.map(WtcWorkingTaxCredit.create)
     val ctc = ifAward.childTaxCredit.map(WtcChildTaxCredit.create)
 
-    WtcAward(
+    WtcAwardModel(
       ifAward.payProfCalcDate.map(LocalDate.parse),
       ifAward.totalEntitlement,
       wtc,
@@ -45,5 +37,4 @@ object WtcAward {
     )
   }
 
-  implicit val awardFormat: Format[WtcAward] = Json.format[WtcAward]
 }

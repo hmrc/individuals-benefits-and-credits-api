@@ -16,20 +16,12 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.CtcChildTaxCreditModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfChildTaxCredit
 
-case class CtcChildTaxCredit(
-  childCareAmount: Option[Double],
-  ctcChildAmount: Option[Double],
-  familyAmount: Option[Double],
-  babyAmount: Option[Double],
-  paidYTD: Option[Double]
-)
-
 object CtcChildTaxCredit {
-  def create(ifChildTaxCredit: IfChildTaxCredit): CtcChildTaxCredit =
-    CtcChildTaxCredit(
+  def create(ifChildTaxCredit: IfChildTaxCredit): CtcChildTaxCreditModel =
+    CtcChildTaxCreditModel(
       ifChildTaxCredit.childCareAmount,
       ifChildTaxCredit.ctcChildAmount,
       ifChildTaxCredit.familyAmount,
@@ -37,6 +29,4 @@ object CtcChildTaxCredit {
       ifChildTaxCredit.paidYTD
     )
 
-  implicit val childTaxCreditFormat: Format[CtcChildTaxCredit] =
-    Json.format[CtcChildTaxCredit]
 }

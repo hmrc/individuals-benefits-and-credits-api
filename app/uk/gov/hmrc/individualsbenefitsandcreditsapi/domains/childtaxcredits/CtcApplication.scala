@@ -16,18 +16,14 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.childtaxcredits
 
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.childtaxcredits.CtcApplicationModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
 
-case class CtcApplication(id: Option[Double], awards: Seq[CtcAward])
-
 object CtcApplication {
-  def create(ifApplication: IfApplication): CtcApplication =
-    CtcApplication(
+  def create(ifApplication: IfApplication): CtcApplicationModel =
+    CtcApplicationModel(
       ifApplication.id,
       ifApplication.awards.map(x => x.map(CtcAward.create)).getOrElse(Seq.empty)
     )
 
-  implicit val applicationFormat: Format[CtcApplication] =
-    Json.format[CtcApplication]
 }

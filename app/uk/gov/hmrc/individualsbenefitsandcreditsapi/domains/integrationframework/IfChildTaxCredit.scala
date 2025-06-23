@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{Format, JsPath, Json}
 
 case class IfChildTaxCredit(

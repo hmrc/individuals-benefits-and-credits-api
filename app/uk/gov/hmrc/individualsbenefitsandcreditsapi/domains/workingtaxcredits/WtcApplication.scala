@@ -16,19 +16,15 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.workingtaxcredits
 
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.models.workingtaxcredits.WtcApplicationModel
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.integrationframework.IfApplication
-
-case class WtcApplication(id: Option[Double], awards: Seq[WtcAward])
 
 object WtcApplication {
 
-  def create(ifApplication: IfApplication) =
-    WtcApplication(
+  def create(ifApplication: IfApplication): WtcApplicationModel =
+    WtcApplicationModel(
       ifApplication.id,
       ifApplication.awards.map(x => x.map(WtcAward.create)).getOrElse(Seq.empty)
     )
 
-  implicit val applicationFormat: Format[WtcApplication] =
-    Json.format[WtcApplication]
 }
