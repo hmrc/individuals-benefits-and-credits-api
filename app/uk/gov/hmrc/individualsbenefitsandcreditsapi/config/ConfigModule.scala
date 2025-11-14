@@ -21,7 +21,6 @@ import com.google.inject.name.Names
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.individualsbenefitsandcreditsapi.backgroundJob.UpdateDateTimeFormatModule
 import uk.gov.hmrc.play.bootstrap.auth.DefaultAuthConnector
 import uk.gov.hmrc.play.bootstrap.http.HttpClientV2Provider
 import scala.annotation.unused
@@ -34,6 +33,5 @@ class ConfigModule(@unused environment: Environment, configuration: Configuratio
 
     bind(classOf[HttpClientV2]).toProvider(classOf[HttpClientV2Provider])
     bind(classOf[AuthConnector]).to(classOf[DefaultAuthConnector])
-    bind(classOf[UpdateDateTimeFormatModule]).asEagerSingleton()
   }
 }
