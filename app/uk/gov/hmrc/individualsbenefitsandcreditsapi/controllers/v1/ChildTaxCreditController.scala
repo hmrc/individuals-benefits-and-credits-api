@@ -23,6 +23,7 @@ import play.api.mvc.hal.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.{CommonController, PrivilegedAuthentication}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.play.RequestHeaderUtils.{maybeCorrelationId, validateCorrelationId}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.*
@@ -38,7 +39,7 @@ class ChildTaxCreditController @Inject() (
   scopeService: ScopesService,
   implicit val auditHelper: AuditHelper,
   taxCreditsService: TaxCreditsService
-)(implicit val ec: ExecutionContext)
+)(implicit val ec: ExecutionContext, appConfig: AppConfig)
     extends CommonController(cc) with PrivilegedAuthentication {
 
   def childTaxCredit(matchId: UUID, interval: Interval): Action[AnyContent] =

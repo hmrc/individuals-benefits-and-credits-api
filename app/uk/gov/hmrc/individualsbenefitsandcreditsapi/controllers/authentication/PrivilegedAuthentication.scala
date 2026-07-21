@@ -22,6 +22,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,10 +35,13 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
     hc: HeaderCarrier,
     ec: ExecutionContext,
     request: RequestHeader,
-    auditHelper: AuditHelper
+    auditHelper: AuditHelper,
+    appConfig: AppConfig
   ): Future[Result] =
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
-    else {
+    if (appConfig.localEnv) {
+      f(endpointScopes.toList)
+    } else {
       authorised(authPredicate(endpointScopes))
         .retrieve(Retrievals.allEnrolments) { case scopes =>
           auditHelper.auditAuthScopes(matchId, scopes.enrolments.map(e => e.key).mkString(","), request)

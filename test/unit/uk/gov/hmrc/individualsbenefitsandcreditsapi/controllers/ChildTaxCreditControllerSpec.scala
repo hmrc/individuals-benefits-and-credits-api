@@ -17,17 +17,18 @@
 package unit.uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
 import org.apache.pekko.stream.Materializer
-import org.mockito.ArgumentMatchers.{any, eq => eqTo, refEq}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo, refEq}
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, verifyNoInteractions, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.audit.AuditHelper
+import uk.gov.hmrc.individualsbenefitsandcreditsapi.config.AppConfig
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers.v1.ChildTaxCreditController
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.domains.MatchNotFoundException
 import uk.gov.hmrc.individualsbenefitsandcreditsapi.services.{ScopesService, TaxCreditsService}
@@ -45,6 +46,7 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
   val correlationIdHeader: (String, String) = "CorrelationId" -> sampleCorrelationId
 
   implicit lazy val materializer: Materializer = fakeApplication().materializer
+  lazy val appConfig: AppConfig = fakeApplication().injector.instanceOf[AppConfig]
 
   implicit val ec: ExecutionContext =
     fakeApplication().injector.instanceOf[ExecutionContext]
@@ -77,7 +79,7 @@ class ChildTaxCreditControllerSpec extends SpecBase with MockitoSugar with Domai
         scopeService,
         auditHelper,
         taxCreditsService
-      )
+      )(using ec, appConfig)
 
     when(scopeService.getEndPointScopes(any())).thenReturn(scopes)
   }
