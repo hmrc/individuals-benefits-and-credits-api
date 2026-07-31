@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.individualsbenefitsandcreditsapi.controllers
 
+import play.api.{Environment, Mode}
 import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -36,10 +37,11 @@ trait PrivilegedAuthentication extends AuthorisedFunctions {
     ec: ExecutionContext,
     request: RequestHeader,
     auditHelper: AuditHelper,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    environment: Environment
   ): Future[Result] =
     if (endpointScopes.isEmpty) throw new Exception("No scopes defined")
-    if (appConfig.localEnv) {
+    if (appConfig.localEnv && environment.mode == Mode.Dev) {
       f(endpointScopes.toList)
     } else {
       authorised(authPredicate(endpointScopes))
